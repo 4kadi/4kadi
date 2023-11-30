@@ -67,7 +67,7 @@ namespace KontrolaKadi
         {
             backImage.Top = 80;
             backImage.Height = 180;
-            backImage.BackgroundImageLayout = ImageLayout.Stretch;            
+            backImage.BackgroundImageLayout = ImageLayout.Stretch;             
 
             if (designMode == true)
             {
