@@ -1,0 +1,1 @@
+16.11.2023  21:42:39 : Message shown to user: WindowsFormsApp2.WarningManager+WarningNoConnection

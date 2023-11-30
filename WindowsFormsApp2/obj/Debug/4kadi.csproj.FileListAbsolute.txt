@@ -1,0 +1,20 @@
+H:\_Dev\4kadi\WindowsFormsApp2\bin\Debug\Icon.ico
+H:\_Dev\4kadi\WindowsFormsApp2\bin\Debug\Log\Log.txt
+H:\_Dev\4kadi\WindowsFormsApp2\bin\Debug\XMLFile-Settings.xml
+H:\_Dev\4kadi\WindowsFormsApp2\bin\Debug\Log\Temperatures.csv
+H:\_Dev\4kadi\WindowsFormsApp2\bin\Debug\Log\UserActions.csv
+H:\_Dev\4kadi\WindowsFormsApp2\bin\Debug\Kontrola Male Peči.exe.config
+H:\_Dev\4kadi\WindowsFormsApp2\bin\Debug\Kontrola Male Peči.exe.manifest
+H:\_Dev\4kadi\WindowsFormsApp2\bin\Debug\Kontrola Male Peči.application
+H:\_Dev\4kadi\WindowsFormsApp2\bin\Debug\Kontrola Male Peči.exe
+H:\_Dev\4kadi\WindowsFormsApp2\bin\Debug\Kontrola Male Peči.pdb
+H:\_Dev\4kadi\WindowsFormsApp2\obj\Debug\KontrolaKadi.FormControl.resources
+H:\_Dev\4kadi\WindowsFormsApp2\obj\Debug\KontrolaKadi.Gui_MalaPec.resources
+H:\_Dev\4kadi\WindowsFormsApp2\obj\Debug\KontrolaKadi.SettingsForm.resources
+H:\_Dev\4kadi\WindowsFormsApp2\obj\Debug\KontrolaKadi.Properties.Resources.resources
+H:\_Dev\4kadi\WindowsFormsApp2\obj\Debug\4kadi.csproj.GenerateResource.cache
+H:\_Dev\4kadi\WindowsFormsApp2\obj\Debug\4kadi.csproj.CoreCompileInputs.cache
+H:\_Dev\4kadi\WindowsFormsApp2\obj\Debug\Kontrola Male Peči.exe.manifest
+H:\_Dev\4kadi\WindowsFormsApp2\obj\Debug\Kontrola Male Peči.application
+H:\_Dev\4kadi\WindowsFormsApp2\obj\Debug\Kontrola Male Peči.exe
+H:\_Dev\4kadi\WindowsFormsApp2\obj\Debug\Kontrola Male Peči.pdb
