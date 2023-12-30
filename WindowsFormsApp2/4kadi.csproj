@@ -80,6 +80,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GuiLink.cs" />
     <Compile Include="SmartComponents\MyDateTimePicker.cs">
       <SubType>Component</SubType>
     </Compile>

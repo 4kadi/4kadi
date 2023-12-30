@@ -3839,7 +3839,7 @@ namespace Sharp7
         public class PLCBuffer
         {
             int errCode = 0;
-            readonly static int length = 850;
+            readonly static int length = 1000;
             byte[] byteBuffer = new byte[length];
             S7Client Client;
 

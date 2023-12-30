@@ -21,39 +21,34 @@ namespace KontrolaKadi
         public bool AlertState = false;
 
         private BtnTimeset btnOpomnik;
-
         private BtnTimeset btnPause;
 
-        PlcVars.AlarmBit buzzPulseUrgent;  // TODO SET FROM OUTSIDE
-        PlcVars.AlarmBit buzzPulseNormal;  // TODO SET FROM OUTSIDE
-        PlcVars.AlarmBit buzzPulseStop;  // TODO SET FROM OUTSIDE
-
-        PlcVars.Bit setReminderPlus;    // TODO SET FROM OUTSIDE
-        PlcVars.Bit setReminderMinus;   // TODO SET FROM OUTSIDE
-
-        PlcVars.Bit setPausePlus;   // TODO SET FROM OUTSIDE
-        PlcVars.Bit setPauseMinus;  // TODO SET FROM OUTSIDE
-
-        PlcVars.Word CurrentTime;  // TODO SET FROM OUTSIDE
-        PlcVars.Word ReminderTime;  // TODO SET FROM OUTSIDE
-        PlcVars.Word PauseTime;   // TODO SET FROM OUTSIDE
+        public PlcVars.DWord CurrentTime;  
+        public PlcVars.Word TimeLeft; 
+        public PlcVars.DWord ReminderTime;  
+        public PlcVars.DWord PauseTime;
+        public PlcVars.Bit Finished;
+        public PlcVars.Bit Paused;
+        public PlcVars.Bit Prisotnost;
+        public PlcVars.Word Autostart;
 
         private GroupBox groupBox2;
-        private Label lblReminder;
+        private Label stopwatchTime;
         private Label label11;
         private Label label12;
         private Label label4;
         private Label label3;
         private Label label2;
 
-        const string dflttime = "0:00:00";
-        const string dflttimeFormat = @"h\:mm\:ss";
-        const string dflttimeFormat2 = @"HH\:mm\:ss";
+        private CheckBox chkAutostart;
+
+        const string dflttimeFormat = @"HH\:mm\:ss";
+        const string dflttimeFormat2 = @"h\:mm\:ss";        
 
         const string OKstring = "OK";
         const string EDITstring = "Edit";      
        
-        private int panelMaxWidth = 135;
+        private int panelMaxWidth = 145;
                 
         MyTimer updater = new MyTimer();
 
@@ -66,11 +61,12 @@ namespace KontrolaKadi
             this.label4 = new Label();
             this.label3 = new Label();
             this.label2 = new Label();
-            this.lblReminder = new Label();           
+            this.stopwatchTime = new Label();           
             this.label11 = new Label();
             this.label12 = new Label();
             this.btnOpomnik = new BtnTimeset();
-            this.btnPause = new BtnTimeset();          
+            this.btnPause = new BtnTimeset();
+            chkAutostart = new CheckBox();
 
             // 
             // panel1
@@ -79,19 +75,20 @@ namespace KontrolaKadi
             groupBox2.Controls.Add(this.btnOpomnik);
             groupBox2.Controls.Add(this.btnPause);
             groupBox2.Controls.Add(this.btnPause);
-            Size = new Size(panelMaxWidth, 205);
+            Size = new Size(panelMaxWidth, 255);
             // 
             // groupBox2
             // 
             groupBox2.Controls.Add(this.label4);
             groupBox2.Controls.Add(this.label3);
             groupBox2.Controls.Add(this.label2);
-            groupBox2.Controls.Add(this.lblReminder);
+            groupBox2.Controls.Add(this.stopwatchTime);
             groupBox2.Controls.Add(this.label11);
             groupBox2.Controls.Add(this.label12);
+            groupBox2.Controls.Add(chkAutostart);
             groupBox2.Location = new Point(3, 3);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(panelMaxWidth - 6, 200);
+            groupBox2.Size = new Size(panelMaxWidth - 6, Size.Height - 35);
             groupBox2.TabIndex = 1;
             groupBox2.TabStop = false;
             // 
@@ -124,11 +121,11 @@ namespace KontrolaKadi
             //  
             // label1 - stopwatch time
             // 
-            this.lblReminder.AutoSize = true;
-            this.lblReminder.Font = new Font("Impact", 24F);
-            this.lblReminder.Location = new Point(5, 20);
-            this.lblReminder.Name = "label1";
-            this.lblReminder.Size = new Size(panelMaxWidth - 20, 48);
+            this.stopwatchTime.AutoSize = true;
+            this.stopwatchTime.Font = new Font("Impact", 24F);
+            this.stopwatchTime.Location = new Point(5, 20);
+            this.stopwatchTime.Name = "label1";
+            this.stopwatchTime.Size = new Size(panelMaxWidth - 20, 48);
             // 
             // label11
             // 
@@ -157,7 +154,9 @@ namespace KontrolaKadi
             this.btnOpomnik.UseVisualStyleBackColor = true;
             btnOpomnik.Enabled = true;
             btnOpomnik.Click += BtnOpomnik_Click;
+            btnOpomnik.OKbtn.Click += btnOpomnikOK_Click;
             btnOpomnik.StopWatchReference = this;
+            btnOpomnik.Font = new Font("arial", 13, FontStyle.Bold);
             // 
             // btnPause
             // 
@@ -167,8 +166,18 @@ namespace KontrolaKadi
             this.btnPause.TabIndex = 1;
             this.btnPause.UseVisualStyleBackColor = true;
             btnPause.Enabled = true;
-            btnPause.Click += btnPause_Click;
+            btnPause.Click += btnPause_Click; 
+            btnPause.OKbtn.Click += btnPauseOK_Click;
             btnPause.StopWatchReference = this;
+            btnPause.Font = new Font("arial", 13, FontStyle.Bold);
+            //
+            // chkAutostart
+            //
+            chkAutostart.Text = "Samodejno zaženi";
+            chkAutostart.Click += ChkAutostart_Click;
+            chkAutostart.Top = btnPause.Bottom + 10;
+            chkAutostart.Left = 10;
+            chkAutostart.Width = 120;
 
             if (designMode)
             {
@@ -182,28 +191,114 @@ namespace KontrolaKadi
 
         }
 
-        private void Updater_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        private void ChkAutostart_Click(object sender, EventArgs e)
         {
+            if (chkAutostart.Checked)
+            {
+                Autostart.Value_short = 1;
+            }
+            else
+            {
+                Autostart.Value_short = 0;
+            }
+        }
+
+        private void btnOpomnikOK_Click(object sender, EventArgs e)
+        {
+            var timeSpan = (btnOpomnik.dateTimePicker.Value - DateTime.MinValue).TotalSeconds;
+            ReminderTime.Value_short = (short)timeSpan;
+            btnOpomnik.OpomnikSetFormSetForm.Hide();
+        }
+
+        private void btnPauseOK_Click(object sender, EventArgs e) 
+        {
+            var timeSpan = (btnPause.dateTimePicker.Value - DateTime.MinValue).TotalSeconds;
+            PauseTime.Value_short = (short)timeSpan;
+            btnPause.OpomnikSetFormSetForm.Hide();
+        }
+
+        private void Updater_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {           
             if (CurrentTime != null)
             {
-                btnOpomnik.dateTimePicker.Text = ConvertPlcVarToDisplayTime(CurrentTime);
+                Invoke(new MethodInvoker(delegate 
+                {
+                    var test = ConvertPlcVarToDisplayTime(CurrentTime); 
+                    stopwatchTime.Text = ConvertPlcVarToDisplayTime(CurrentTime);
+                    btnOpomnik.SetValue(ReminderTime);
+                    btnPause.Text = ConvertPlcVarToDisplayTime(PauseTime);
+                    backcolor();
+                    autostart();
+                }));
+                    
             }
-            if (ReminderTime != null)
+            
+        }
+
+        void autostart()
+        {
+            if (Autostart.Value_short >= 1)
             {
-                lblReminder.Text = ConvertPlcVarToDisplayTime(CurrentTime);
+                chkAutostart.Checked = true;
             }
-            if (PauseTime != null)
+            else
             {
-                btnPause.Text = ConvertPlcVarToDisplayTime(PauseTime);
+                chkAutostart.Checked = false;
             }
+        }
+
+        void backcolor()
+        {
+            // TODO normal color
+
+            if (Finished.Value_bool && Prisotnost.Value_bool)
+            {
+                BackColor = AlertBackColor;
+            }
+
+            else if (!Paused.Value_bool && Prisotnost.Value_bool)
+            {
+                BackColor = ActiveBackColor;
+            }
+
+            else if (Prisotnost.Value_bool)
+            {
+                BackColor = PausedBackColor;
+            }
+            
+            else
+            {
+                BackColor = NormalColor;
+            }
+        }
+
+        public static string ConvertPlcVarToDisplayTime(PlcVars.DWord plcTime)
+        {
+            var buff = new TimeSpan(0, 0, (int)plcTime.Value_short);
+            var str = buff.ToString(dflttimeFormat2);
+            return str;  
         }
 
         public static string ConvertPlcVarToDisplayTime(PlcVars.Word plcTime)
         {
-            return "0:00:00"; // TODO convert logic
+            var buff = new TimeSpan(0, 0, (int)plcTime.Value_short);
+            return buff.ToString(dflttimeFormat2);
         }
-           
-       
+
+        public static DateTime ConvertPlcVarToDateTime(PlcVars.DWord plcTime)
+        {
+            var d = DateTime.MinValue;
+            var dt = d.AddSeconds((int)plcTime.Value_short);
+            return dt;
+        }
+        public static DateTime ConvertPlcVarToDateTime(PlcVars.Word plcTime)
+        {
+            var d = DateTime.MinValue;
+            var dt = d.AddSeconds((int)plcTime.Value_short);
+            return dt;
+        }
+
+
         public void SetWidth(int width)
         {
             if (width <= panelMaxWidth)
@@ -224,41 +319,19 @@ namespace KontrolaKadi
         private void btnPause_Click(object sender, EventArgs e)
         {
             btnPause.ShowForm();
-        }
-               
-        private void ResumeTiming(string oldSarzaID, string oldTime)
-        {            
-            BackColor = ActiveBackColor;
-        }
-
-
-        private void StartNewTiming()
-        { 
-            // Todo send to plc reset command
-        }
-
-        private void StopTiming()
-        {            
-            btnOpomnik.Enabled = true;            
-            BackColor = NormalColor;        
-        }
-
-        private void PauseTiming()
-        {        
-            BackColor = PausedBackColor;            
-        }
+        }               
 
         public string UnknownID()
         {
             return "UNKNOWN ID!"; // TODO - avtomatsko generiranje imen za saržo
         }
-
+               
         public class BtnTimeset : Button
         {
             public Form OpomnikSetFormSetForm = new Form();
             public MyDateTimePicker dateTimePicker = new MyDateTimePicker();
             Label label = new Label();
-            Button OKbtn = new Button();
+            public Button OKbtn = new Button();
             public StopWatch StopWatchReference;
             public string Text1
             {
@@ -275,7 +348,8 @@ namespace KontrolaKadi
                     return val;                
                 }
                 set 
-                { 
+                {
+                    Text = value.ToString(dflttimeFormat);                    
                     val = value;                
                 }
             }
@@ -308,14 +382,13 @@ namespace KontrolaKadi
                 OpomnikSetFormSetForm.Controls.Add(dateTimePicker);
 
                 OpomnikSetFormSetForm.LostFocus += SetTemps_form_LostFocus;
-                OKbtn.Click += OKbtn_Click;
+                OKbtn.Click += OKbtn_Click;                
 
             }
 
             private void OKbtn_Click(object sender, EventArgs e)
             {
-                // TODO send to PLC
-                OpomnikSetFormSetForm.Hide();
+                
             }
 
             private void SetTemps_form_LostFocus(object sender, EventArgs e)
@@ -326,8 +399,25 @@ namespace KontrolaKadi
             public void ShowForm()
             {
                 OpomnikSetFormSetForm.Show();
+                dateTimePicker.Value = Value;
+                dateTimePicker.UpdateTextBox();
             }
+
+            public void SetValue(DateTime value)
+            {
+                Value = value;
+            }
+
+            public void SetValue(PlcVars.DWord value)
+            {                
+                Value = ConvertPlcVarToDateTime(value);
+            }
+            public void SetValue(PlcVars.Word value)
+            {
+                Value = ConvertPlcVarToDateTime(value);
+            }
+
         }
-      
+
     }
 }

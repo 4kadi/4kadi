@@ -139,14 +139,32 @@ namespace KontrolaKadi
         }
         public static string GetWatchdogValue(int deviceNum)
         {
+            if (deviceNum >= WatchdogValues.Length-1)
+            {
+                return PropComm.NA;
+            }
+            else if (deviceNum < 0)
+            {
+                return PropComm.NA;
+            }
+
             try
             {
-                return WatchdogValues[deviceNum];
+                if (WatchdogValues[deviceNum] != null)
+                {
+                    return WatchdogValues[deviceNum];
+                }
+                else
+                {
+                    return PropComm.NA;
+                }
+                
             }
             catch
             {
                 return PropComm.NA;
             }
+            
             
         }
 

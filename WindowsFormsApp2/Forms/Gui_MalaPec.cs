@@ -19,6 +19,8 @@ namespace KontrolaKadi
         Prop2 p2 = Val.logocontroler.Prop2;
 
         Prop1 prop = Val.logocontroler.Prop1;
+
+        GuiLink guiLink;
        
 
         public Gui_MalaPec()
@@ -47,8 +49,11 @@ namespace KontrolaKadi
 
         private void Gui_MalaPec_Load(object sender, EventArgs e)
         {           
-            registerEvents();            
+            registerEvents();
+            guiLink = new GuiLink(this);            
         }
+
+
 
         private void Gui_MalaPec_FormClosed(object sender, FormClosedEventArgs e)
         {

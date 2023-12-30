@@ -9,7 +9,7 @@ namespace KontrolaKadi
         private Button btnIncrement;
         private Button btnDecrement;
 
-        private DateTime currentValue;
+        public DateTime Value;
 
         MyTimer TimerCnt = new MyTimer();
         bool directionIncrement = true;
@@ -60,13 +60,17 @@ namespace KontrolaKadi
             Controls.Add(btnIncrement);
             Controls.Add(btnDecrement);
 
-            textBox.VisibleChanged += TextBox_VisibleChanged;
+            textBox.VisibleChanged += TextBox_VisibleChanged;            
 
         }
 
         private void TextBox_VisibleChanged(object sender, EventArgs e)
         {
-            textBox.Select(2, 2);
+            if (Visible)
+            {
+                textBox.Select(2, 2);                
+                UpdateTextBox();
+            }            
         }
 
         void startTimerCnt()
@@ -136,11 +140,11 @@ namespace KontrolaKadi
         {
             try
             {
-                if (currentValue == null)
+                if (Value == null)
                 {
                     return;
                 }
-                if (currentValue >= DateTime.MinValue + TimeSpan.FromHours(9))
+                if (Value >= DateTime.MinValue + TimeSpan.FromHours(9))
                 {
                     return;
                 }
@@ -148,25 +152,25 @@ namespace KontrolaKadi
                 if (textBox.SelectionStart == 0)
                 {
                     // hours selected
-                    currentValue = currentValue.AddHours(1);
+                    Value = Value.AddHours(1);
                 }
                 else if (textBox.SelectionStart == 2)
                 {
                     // minutes selected
                     if (pressedDuration > 5)
                     {
-                        currentValue = currentValue.AddMinutes(5);
+                        Value = Value.AddMinutes(5);
                     }
                     else
                     {
-                        currentValue = currentValue.AddMinutes(1);
+                        Value = Value.AddMinutes(1);
                     }
                     
                 }
                 else if (textBox.SelectionStart == 5)
                 {
                     // seconds selected
-                    currentValue = currentValue.AddSeconds(10);
+                    Value = Value.AddSeconds(10);
                 }
                 else
                 {
@@ -184,35 +188,43 @@ namespace KontrolaKadi
 
         private void Decrement()
         {
-            if (currentValue == null)
+            if (Value == null)
             {
                 return;
             }
-            if (currentValue <= DateTime.MinValue)
+            if (Value <= DateTime.MinValue)
             {
                 return;
             }
             if (textBox.SelectionStart == 0)
             {
                 // hours selected
-                currentValue = currentValue.AddHours(-1);
+                Value = Value.AddHours(-1);
             }
             else if (textBox.SelectionStart == 2)
             {
-                // minutes selected
-                if (pressedDuration > 5)
+                try
                 {
-                    currentValue = currentValue.AddMinutes(-5);
+                    // minutes selected
+                    if (pressedDuration > 5)
+                    {
+                        Value = Value.AddMinutes(-5);
+                    }
+                    else
+                    {
+                        Value = Value.AddMinutes(-1);
+                    }
                 }
-                else
+                catch 
                 {
-                    currentValue = currentValue.AddMinutes(-1);
+                    Value = DateTime.MinValue;
                 }
+               
             }
             else if (textBox.SelectionStart == 5)
             {
                 // seconds selected
-                currentValue = currentValue.AddSeconds(-10);
+                Value = Value.AddSeconds(-10);
             }
             else
             {
@@ -245,11 +257,11 @@ namespace KontrolaKadi
             }
         }
 
-        private void UpdateTextBox()
+        public void UpdateTextBox()
         {
             var ss = textBox.SelectionStart;
             var sl = textBox.SelectionLength;
-            textBox.Text = currentValue.ToString("H:mm:ss");
+            textBox.Text = Value.ToString("H:mm:ss");
             textBox.Select(ss, sl);
         }
     }
