@@ -22,8 +22,7 @@ namespace KontrolaKadi
         public void UpdateFieldsXML()
         {
             try
-            {
-                settingsXML = Linq.XDocument.Load(Properties.Settings.Default.PathXML);
+            {                
                 var conn = XmlController.XmlConn;
 
                 UpdateFieldsLOGO1(conn.Element("LOGO1"));
@@ -56,9 +55,7 @@ namespace KontrolaKadi
 
                 
                 #endregion
-
-                checkBoxAutoconnect.Checked = Convert.ToBoolean(XmlController.XmlGeneral.Element("AutoConnect").Value.Replace("\"", ""));
-                checkBox_Generate_PC.Checked = Convert.ToBoolean(XmlController.XmlGeneral.Element("GeneratePC_WD").Value.Replace("\"", ""));
+                                                
                 settingsXML.Save(textBoxPathXML.Text);
 
             }

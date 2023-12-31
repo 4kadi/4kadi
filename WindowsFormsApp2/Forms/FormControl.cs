@@ -202,6 +202,15 @@ namespace KontrolaKadi
         
         public void Starter_DoWork()
         {
+            try
+            {
+                sysLog = new SysLog();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
 
             // forms init
             try
@@ -226,17 +235,7 @@ namespace KontrolaKadi
                 MessageBox.Show("GUI was not initialised properly. Application will now close: " + ex.Message);
                 Environment.Exit(0);
             }
-
-            try
-            {
-                 sysLog = new SysLog();
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-
+                        
 
             Application.DoEvents();
             

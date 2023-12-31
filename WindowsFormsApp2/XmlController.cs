@@ -542,28 +542,7 @@ namespace KontrolaKadi
                 throw;
             }
         }
-
-        public static bool IsDebugEnabled()
-        {
-            try
-            {
-                if (Convert.ToBoolean(XmlGeneral.Element("debugToConsole").Value))
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-
-            }
-            catch (Exception)
-            {
-                return true;
-            }
-
-        }
-
+               
         public static PlcVars.DoubleWordAddress GetWDAddress(int device)
         {
             if (device < 0 || device > Settings.Devices)

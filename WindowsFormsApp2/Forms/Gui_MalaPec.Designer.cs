@@ -72,7 +72,7 @@ namespace KontrolaKadi
             // 
             // stopWatch1
             // 
-            this.stopWatch1.Location = new System.Drawing.Point(808, 426);
+            this.stopWatch1.Location = new System.Drawing.Point(278, 486);
             this.stopWatch1.Name = "stopWatch1";
             this.stopWatch1.Size = new System.Drawing.Size(145, 255);
             this.stopWatch1.TabIndex = 6;
@@ -82,7 +82,7 @@ namespace KontrolaKadi
             this.enojnaKad1.ID = 0;
             this.enojnaKad1.Location = new System.Drawing.Point(230, 108);
             this.enojnaKad1.Name = "enojnaKad1";
-            this.enojnaKad1.Size = new System.Drawing.Size(250, 600);
+            this.enojnaKad1.Size = new System.Drawing.Size(250, 659);
             this.enojnaKad1.TabIndex = 5;
             // 
             // connectedButton1
@@ -125,7 +125,7 @@ namespace KontrolaKadi
         private System.Windows.Forms.Button btnSettings;
         private System.Windows.Forms.Label label2;
         private EnojnaKad enojnaKad1;
-        private StopWatch stopWatch1;
         private ConnectedButton connectedButton1;
+        private StopWatch stopWatch1;
     }
 }

@@ -22,9 +22,6 @@ namespace KontrolaKadi
         public int WatchdogRetries = 1;
         Thread switchToGuiThread;
 
-        public bool init = false;
-
-
         public SettingsForm()
         {
             switchToGuiThread = new Thread(SwitchToGui);
@@ -36,7 +33,7 @@ namespace KontrolaKadi
             try
             {
                 InitializeComponent();
-                Show();               
+                Show();
 
             }
             catch (Exception e)
@@ -53,14 +50,10 @@ namespace KontrolaKadi
 
             try
             {
-                if (Convert.ToBoolean(XmlController.XmlGeneral.Element("AutoConnect").Value))
-                {
-                    WL("Autoconnect at startup", 0);
+                WL("Autoconnect at startup", 0);
 
-                    object o = (string)"Skip UpdateFieldsXML";
-                    ButtonConnectALL_Click(o, null);
-
-                }
+                object o = (string)"Skip UpdateFieldsXML";
+                ButtonConnectALL_Click(o, null);
             }
             catch (Exception e)
             {
@@ -106,176 +99,7 @@ namespace KontrolaKadi
         {
             Environment.Exit(0);
         }
-
-        #region CheckBoxLOGO_EN_CheckedChanged
-
-        private void CheckBoxLOGO_EN1_CheckedChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                if (CheckBoxLOGO_EN1.Checked)
-                {
-                    XmlController.XmlConn.Element("LOGO1").Element("enabled").SetValue("true");
-                }
-                else
-                {
-                    XmlController.XmlConn.Element("LOGO1").Element("enabled").SetValue("false");
-                }
-                FormControl.SaveXML();
-
-            }
-            catch (Exception ex)
-            {
-                WL("Error while changing settings - XML file entry is corupted (entry: LOGO enabled): " + ex.Message, 1);
-            }
-
-        }
-
-        private void CheckBoxLOGO_EN2_CheckedChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                if (CheckBoxLOGO_EN2.Checked)
-                {
-                    XmlController.XmlConn.Element("LOGO2").Element("enabled").SetValue("true");
-                }
-                else
-                {
-                    XmlController.XmlConn.Element("LOGO2").Element("enabled").SetValue("false");
-                }
-                FormControl.SaveXML();
-            }
-            catch (Exception ex)
-            {
-                WL("Error while changing settings - XML file entry is corupted (entry: LOGO enabled): " + ex.Message, 2);
-            }
-        }
-
-        private void CheckBoxLOGO_EN3_CheckedChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                if (CheckBoxLOGO_EN3.Checked)
-                {
-                    XmlController.XmlConn.Element("LOGO3").Element("enabled").SetValue("true");
-                }
-                else
-                {
-                    XmlController.XmlConn.Element("LOGO3").Element("enabled").SetValue("false");
-                }
-                FormControl.SaveXML();
-            }
-            catch (Exception ex)
-            {
-                WL("Error while changing settings - XML file entry is corupted (entry: LOGO enabled): " + ex.Message, 3);
-            }
-        }
-
-        private void CheckBoxLOGO_EN4_CheckedChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                if (CheckBoxLOGO_EN4.Checked)
-                {
-                    XmlController.XmlConn.Element("LOGO4").Element("enabled").SetValue("true");
-                }
-                else
-                {
-                    XmlController.XmlConn.Element("LOGO4").Element("enabled").SetValue("false");
-                }
-                FormControl.SaveXML();
-            }
-            catch (Exception ex)
-            {
-                WL("Error while changing settings - XML file entry is corupted (entry: LOGO enabled): " + ex.Message, 4);
-            }
-        }
-
-        private void CheckBoxLOGO_EN5_CheckedChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                if (CheckBoxLOGO_EN5.Checked)
-                {
-                    XmlController.XmlConn.Element("LOGO5").Element("enabled").SetValue("true");
-                }
-                else
-                {
-                    XmlController.XmlConn.Element("LOGO5").Element("enabled").SetValue("false");
-                }
-                FormControl.SaveXML();
-            }
-            catch (Exception ex)
-            {
-                WL("Error while changing settings - XML file entry is corupted (entry: LOGO enabled): " + ex.Message, 5);
-            }
-        }
-
-        private void CheckBoxLOGO_EN6_CheckedChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                if (CheckBoxLOGO_EN6.Checked)
-                {
-                    XmlController.XmlConn.Element("LOGO6").Element("enabled").SetValue("true");
-                }
-                else
-                {
-                    XmlController.XmlConn.Element("LOGO6").Element("enabled").SetValue("false");
-                }
-                FormControl.SaveXML();
-            }
-            catch (Exception ex)
-            {
-                WL("Error while changing settings - XML file entry is corupted (entry: LOGO enabled): " + ex.Message, 6);
-            }
-        }
-
-        private void CheckBoxLOGO_EN7_CheckedChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                if (CheckBoxLOGO_EN7.Checked)
-                {
-                    XmlController.XmlConn.Element("LOGO7").Element("enabled").SetValue("true");
-                }
-                else
-                {
-                    XmlController.XmlConn.Element("LOGO7").Element("enabled").SetValue("false");
-                }
-                FormControl.SaveXML();
-            }
-            catch (Exception ex)
-            {
-                WL("Error while changing settings - XML file entry is corupted (entry: LOGO enabled): " + ex.Message, 7);
-            }
-        }
-
-        private void CheckBoxLOGO_EN8_CheckedChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                if (CheckBoxLOGO_EN8.Checked)
-                {
-                    XmlController.XmlConn.Element("LOGO8").Element("enabled").SetValue("true");
-                }
-                else
-                {
-                    XmlController.XmlConn.Element("LOGO8").Element("enabled").SetValue("false");
-                }
-                FormControl.SaveXML();
-            }
-            catch (Exception ex)
-            {
-                WL("Error while changing settings - XML file entry is corupted (entry: LOGO enabled): " + ex.Message, 8);
-            }
-        }
-
-
-
-
-        #endregion CheckBoxLOGO_EN_CheckedChanged
-
+      
         #region btnConnect
 
         private void BtnConnectLOGO1_Click(object sender, EventArgs e)
@@ -405,356 +229,8 @@ namespace KontrolaKadi
             DisconnectAsync(20);
         }
 
-        #endregion btnDisconnect
-
-        #region ENWatchdog
-
-        private void CheckBoxWatchdogENLOGO1_CheckedChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                XmlController.XmlConn.Element("LOGO1").Element("watchdogEN").SetValue(CheckBoxWatchdogENLOGO1.Checked);
-                settingsXML.Save(textBoxPathXML.Text);
-            }
-            catch (Exception ex)
-            {
-
-                WL("Error while changing settings - XML file entry is corupted (entry: LOGO watchdogEN): " + ex.Message, 1);
-            }
-
-        }
-
-        private void CheckBoxWatchdogENLOGO2_CheckedChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                XmlController.XmlConn.Element("LOGO2").Element("watchdogEN").SetValue(CheckBoxWatchdogENLOGO2.Checked);
-                settingsXML.Save(textBoxPathXML.Text);
-            }
-            catch (Exception ex)
-            {
-
-                WL("Error while changing settings - XML file entry is corupted (entry: LOGO watchdogEN): " + ex.Message, 2);
-            }
-        }
-
-        private void CheckBoxWatchdogENLOGO3_CheckedChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                XmlController.XmlConn.Element("LOGO3").Element("watchdogEN").SetValue(CheckBoxWatchdogENLOGO3.Checked);
-                settingsXML.Save(textBoxPathXML.Text);
-            }
-            catch (Exception ex)
-            {
-
-                WL("Error while changing settings - XML file entry is corupted (entry: LOGO watchdogEN): " + ex.Message, 3);
-            }
-        }
-
-        private void CheckBoxWatchdogENLOGO4_CheckedChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                XmlController.XmlConn.Element("LOGO4").Element("watchdogEN").SetValue(CheckBoxWatchdogENLOGO4.Checked);
-                settingsXML.Save(textBoxPathXML.Text);
-            }
-            catch (Exception ex)
-            {
-
-                WL("Error while changing settings - XML file entry is corupted (entry: LOGO watchdogEN): " + ex.Message, 4);
-            }
-        }
-
-        private void CheckBoxWatchdogENLOGO5_CheckedChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                XmlController.XmlConn.Element("LOGO5").Element("watchdogEN").SetValue(CheckBoxWatchdogENLOGO5.Checked);
-                settingsXML.Save(textBoxPathXML.Text);
-            }
-            catch (Exception ex)
-            {
-
-                WL("Error while changing settings - XML file entry is corupted (entry: LOGO watchdogEN): " + ex.Message, 5);
-            }
-        }
-
-        private void CheckBoxWatchdogENLOGO6_CheckedChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                XmlController.XmlConn.Element("LOGO6").Element("watchdogEN").SetValue(CheckBoxWatchdogENLOGO6.Checked);
-                settingsXML.Save(textBoxPathXML.Text);
-            }
-            catch (Exception ex)
-            {
-
-                WL("Error while changing settings - XML file entry is corupted (entry: LOGO watchdogEN): " + ex.Message, 6);
-            }
-        }
-
-        private void CheckBoxWatchdogENLOGO7_CheckedChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                XmlController.XmlConn.Element("LOGO7").Element("watchdogEN").SetValue(CheckBoxWatchdogENLOGO7.Checked);
-                settingsXML.Save(textBoxPathXML.Text);
-            }
-            catch (Exception ex)
-            {
-
-                WL("Error while changing settings - XML file entry is corupted (entry: LOGO watchdogEN): " + ex.Message, 7);
-            }
-        }
-
-        private void CheckBoxWatchdogENLOGO8_CheckedChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                XmlController.XmlConn.Element("LOGO8").Element("watchdogEN").SetValue(CheckBoxWatchdogENLOGO8.Checked);
-                settingsXML.Save(textBoxPathXML.Text);
-            }
-            catch (Exception ex)
-            {
-
-                WL("Error while changing settings - XML file entry is corupted (entry: LOGO watchdogEN): " + ex.Message, 8);
-            }
-        }
-
-
-
-
-        #endregion ENWatchdog
-
-        #region AddressWatchdog
-
-
-        private void TextBoxWatchdogAddressLOGO1_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                XmlController.XmlConn.Element("LOGO1").Element("watchdogAddress").SetValue(TextBoxWatchdogAddressLOGO1.Text);
-                settingsXML.Save(textBoxPathXML.Text);
-            }
-            catch (Exception ex)
-            {
-
-                WL("Error while changing settings - XML file entry is corupted (entry: LOGO watchdogEN): " + ex.Message, 1);
-            }
-
-        }
-
-        private void TextBoxWatchdogAddressLOGO2_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                XmlController.XmlConn.Element("LOGO2").Element("watchdogAddress").SetValue(TextBoxWatchdogAddressLOGO2.Text);
-                settingsXML.Save(textBoxPathXML.Text);
-            }
-            catch (Exception ex)
-            {
-
-                WL("Error while changing settings - XML file entry is corupted (entry: LOGO watchdogEN): " + ex.Message, 2);
-            }
-        }
-
-        private void TextBoxWatchdogAddressLOGO3_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                XmlController.XmlConn.Element("LOGO3").Element("watchdogAddress").SetValue(TextBoxWatchdogAddressLOGO3.Text);
-                settingsXML.Save(textBoxPathXML.Text);
-            }
-            catch (Exception ex)
-            {
-
-                WL("Error while changing settings - XML file entry is corupted (entry: LOGO watchdogEN): " + ex.Message, 3);
-            }
-        }
-
-        private void TextBoxWatchdogAddressLOGO4_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                XmlController.XmlConn.Element("LOGO4").Element("watchdogAddress").SetValue(TextBoxWatchdogAddressLOGO4.Text);
-                settingsXML.Save(textBoxPathXML.Text);
-            }
-            catch (Exception ex)
-            {
-
-                WL("Error while changing settings - XML file entry is corupted (entry: LOGO watchdogEN): " + ex.Message, 4);
-            }
-        }
-
-        private void TextBoxWatchdogAddressLOGO5_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                XmlController.XmlConn.Element("LOGO5").Element("watchdogAddress").SetValue(TextBoxWatchdogAddressLOGO5.Text);
-                settingsXML.Save(textBoxPathXML.Text);
-            }
-            catch (Exception ex)
-            {
-
-                WL("Error while changing settings - XML file entry is corupted (entry: LOGO watchdogEN): " + ex.Message, 5);
-            }
-        }
-
-        private void TextBoxWatchdogAddressLOGO6_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                XmlController.XmlConn.Element("LOGO6").Element("watchdogAddress").SetValue(TextBoxWatchdogAddressLOGO6.Text);
-                settingsXML.Save(textBoxPathXML.Text);
-            }
-            catch (Exception ex)
-            {
-
-                WL("Error while changing settings - XML file entry is corupted (entry: LOGO watchdogEN): " + ex.Message, 6);
-            }
-        }
-
-        private void TextBoxWatchdogAddressLOGO7_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                XmlController.XmlConn.Element("LOGO7").Element("watchdogAddress").SetValue(TextBoxWatchdogAddressLOGO7.Text);
-                settingsXML.Save(textBoxPathXML.Text);
-            }
-            catch (Exception ex)
-            {
-
-                WL("Error while changing settings - XML file entry is corupted (entry: LOGO watchdogEN): " + ex.Message, 7);
-            }
-        }
-
-        private void TextBoxWatchdogAddressLOGO8_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                XmlController.XmlConn.Element("LOGO8").Element("watchdogAddress").SetValue(TextBoxWatchdogAddressLOGO8.Text);
-                settingsXML.Save(textBoxPathXML.Text);
-            }
-            catch (Exception ex)
-            {
-
-                WL("Error while changing settings - XML file entry is corupted (entry: LOGO watchdogEN): " + ex.Message, 8);
-            }
-        }
-
-
-
-        #endregion
-
-        #region RWcycle        
-
-        private void TextBoxRWcycLOGO1_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                XmlController.XmlConn.Element("LOGO1").Element("ReadWriteCycle").SetValue(TextBoxRWcycLOGO1.Text);
-                settingsXML.Save(textBoxPathXML.Text);
-
-
-            }
-            catch (Exception ex) { WL("Error while changing settings - XML file entry is corupted (entry: LOGO enabled): " + ex.Message, 1); }
-        }
-
-
-        private void TextBoxRWcycLOGO2_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                XmlController.XmlConn.Element("LOGO2").Element("ReadWriteCycle").SetValue(TextBoxRWcycLOGO2.Text);
-                settingsXML.Save(textBoxPathXML.Text);
-
-                FormControl.Form_settings.TextBoxRWcycLOGO2.Text = TextBoxRWcycLOGO2.Text;
-            }
-            catch (Exception ex) { WL("Error while changing settings - XML file entry is corupted (entry: LOGO enabled): " + ex.Message, 2); }
-
-
-        }
-
-        private void TextBoxRWcycLOGO3_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                XmlController.XmlConn.Element("LOGO3").Element("ReadWriteCycle").SetValue(TextBoxRWcycLOGO3.Text);
-                settingsXML.Save(textBoxPathXML.Text);
-
-
-            }
-            catch (Exception ex) { WL("Error while changing settings - XML file entry is corupted (entry: LOGO enabled): " + ex.Message, 3); }
-        }
-
-        private void TextBoxRWcycLOGO4_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                XmlController.XmlConn.Element("LOGO4").Element("ReadWriteCycle").SetValue(TextBoxRWcycLOGO4.Text);
-                settingsXML.Save(textBoxPathXML.Text);
-
-
-            }
-            catch (Exception ex) { WL("Error while changing settings - XML file entry is corupted (entry: LOGO enabled): " + ex.Message, 4); }
-        }
-
-        private void TextBoxRWcycLOGO5_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                XmlController.XmlConn.Element("LOGO5").Element("ReadWriteCycle").SetValue(TextBoxRWcycLOGO5.Text);
-                settingsXML.Save(textBoxPathXML.Text);
-
-
-            }
-            catch (Exception ex) { WL("Error while changing settings - XML file entry is corupted (entry: LOGO enabled): " + ex.Message, 5); }
-        }
-
-        private void TextBoxRWcycLOGO6_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                XmlController.XmlConn.Element("LOGO6").Element("ReadWriteCycle").SetValue(TextBoxRWcycLOGO6.Text);
-                settingsXML.Save(textBoxPathXML.Text);
-
-
-            }
-            catch (Exception ex) { WL("Error while changing settings - XML file entry is corupted (entry: LOGO enabled): " + ex.Message, 6); }
-        }
-
-        private void TextBoxRWcycLOGO7_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                XmlController.XmlConn.Element("LOGO7").Element("ReadWriteCycle").SetValue(TextBoxRWcycLOGO7.Text);
-                settingsXML.Save(textBoxPathXML.Text);
-
-
-            }
-            catch (Exception ex) { WL("Error while changing settings - XML file entry is corupted (entry: LOGO enabled): " + ex.Message, 7); }
-        }
-
-        private void TextBoxRWcycLOGO8_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                XmlController.XmlConn.Element("LOGO8").Element("ReadWriteCycle").SetValue(TextBoxRWcycLOGO8.Text);
-                settingsXML.Save(textBoxPathXML.Text);
-
-
-            }
-            catch (Exception ex) { WL("Error while changing settings - XML file entry is corupted (entry: LOGO enabled): " + ex.Message, 8); }
-        }
-
-
-
-
-
-
-        #endregion
-
+        #endregion btnDisconnect        
+              
         // button open XML
         private void ButtonOpenXML_Click(object sender, EventArgs e)
         {
@@ -847,32 +323,12 @@ namespace KontrolaKadi
             }
 
         }
-
-        private void CheckBoxAutoconnect_CheckedChanged(object sender, EventArgs e)
-        {
-            settingsXML.Element("root").Element("GENERAL").Element("AutoConnect").SetValue(checkBoxAutoconnect.Checked.ToString());
-            settingsXML.Save(textBoxPathXML.Text);
-        }
-
-
+                
         // after form shows up
         // after form shows up
         // after form shows up
         public void SettingsAfterjobs()
-        {
-
-            FormControl.Form_settings.TextBoxWatchdogAddressLOGO1 = TextBoxWatchdogAddressLOGO1;
-            FormControl.Form_settings.TextBoxWatchdogAddressLOGO2 = TextBoxWatchdogAddressLOGO2;
-            FormControl.Form_settings.TextBoxWatchdogAddressLOGO3 = TextBoxWatchdogAddressLOGO3;
-            FormControl.Form_settings.TextBoxWatchdogAddressLOGO4 = TextBoxWatchdogAddressLOGO4;
-            FormControl.Form_settings.TextBoxWatchdogAddressLOGO5 = TextBoxWatchdogAddressLOGO5;
-            FormControl.Form_settings.TextBoxWatchdogAddressLOGO6 = TextBoxWatchdogAddressLOGO6;
-            FormControl.Form_settings.TextBoxWatchdogAddressLOGO7 = TextBoxWatchdogAddressLOGO7;
-            FormControl.Form_settings.TextBoxWatchdogAddressLOGO8 = TextBoxWatchdogAddressLOGO8;
-
-                        
-            init = true;
-
+        {  
 
             // Checking if path exists XML
             if (File.Exists(Settings.pathToConfigFile))  
@@ -950,17 +406,7 @@ namespace KontrolaKadi
             {
                 WL("Error while loading GUI - XML file entry is corupted (show): " + ex.Message, -1);
             }
-
-            try
-            {
-                WatchdogRetries = int.Parse(settingsXML.Element("root").Element("GENERAL").Element("WatchdogRetries").Value);
-            }
-            catch (Exception ex)
-            {
-                WL("Error while loading configuration - XML file entry is corupted (WatchdogRetries): " + ex.Message, -1);
-            }
-
-
+           
             // Load Values to FormControl.bt1        
 
             #region Load Values to gui
@@ -1172,21 +618,7 @@ namespace KontrolaKadi
 
 
             }));
-
-            try
-            {
-                refreshOriginalVal = int.Parse(settingsXML.Element("root").Element("GENERAL").Element("SettingsMenuRefreshrate").Value);
-                if (refreshOriginalVal > 1000 || refreshOriginalVal < 100)
-                {
-                    refreshOriginalVal = 1000;
-                    FormControl.WL("GUI Refresh rate is not a suitable value (must not be >1000 or <100). Default value of 1000ms is set.(message source: Form Settings)", -1);
-                }
-            }
-            catch (Exception)
-            {
-                FormControl.WL("GUI Refresh rate entry can not be found in XML file provided. Default value of 500ms is set.(message source: Form Settings)", -1);
-            }
-
+                      
             while (true)
             {
                 try
@@ -1228,28 +660,7 @@ namespace KontrolaKadi
             }
 
         }
-
-        private void generatePC_WD_CheckedChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                if (checkBox_Generate_PC.Checked)
-                {
-                    settingsXML.Element("root").Element("GENERAL").Element("GeneratePC_WD").SetValue("true");
-                }
-                else
-                {
-                    settingsXML.Element("root").Element("GENERAL").Element("GeneratePC_WD").SetValue("false");
-                }
-                settingsXML.Save(textBoxPathXML.Text);
-
-            }
-            catch (Exception ex)
-            {
-                WL("Error while changing settings - XML file entry is corupted (entry: GeneratePC_WD): " + ex.Message, 0);
-            }
-        }
-
+                
         private void buttonOpen_Click(object sender, EventArgs e)
         {
             ColorDialog cd = new ColorDialog();

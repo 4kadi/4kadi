@@ -404,14 +404,12 @@ namespace KontrolaKadi
 
         void Watchdog_PC_DoWork(object sender, EventArgs e)
         {
-
-            bool firstpass = true;
-
             try
             {
+                WL("PC Watchdog is now running", 0);
+
                 while (true)
                 {
-
 
                     if (Watchdog_PC_value >= 8)
                     {
@@ -419,27 +417,13 @@ namespace KontrolaKadi
                     }
 
                     Watchdog_PC_value++;
-                    
-                    if (firstpass)
-                    {                       
-                        WL("PC Watchdog is now running", 0);
-                       
-                        firstpass = false;
-                    }
-
-
-
-
-
-                    Thread.Sleep(1000);
+                    Thread.Sleep(200);
                 }
             }
             catch (Exception ex)
             {
-
                 WL("PC Watchdog has encountered an error and must be stopped: " + ex.Message, -2);
             }
-
 
         }
 
@@ -567,13 +551,8 @@ namespace KontrolaKadi
 
             try
             {
-                if (XmlController.IsDebugEnabled())
-                {
-                    System.Diagnostics.Debug.WriteLine(msg);
-                }
-
+                System.Diagnostics.Debug.WriteLine(msg);
                 SettingsForm.WL(message, 0);
-
             }
             catch (Exception ex)
             {

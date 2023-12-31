@@ -95,7 +95,7 @@ namespace KontrolaKadi
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new Point(80, 10);
+            this.label4.Location = new Point(90, 10);
             this.label4.Name = "label4";
             this.label4.Size = new Size(24, 13);
             this.label4.TabIndex = 5;
@@ -104,7 +104,7 @@ namespace KontrolaKadi
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new Point(40, 10);
+            this.label3.Location = new Point(50, 10);
             this.label3.Name = "label3";
             this.label3.Size = new Size(23, 13);
             this.label3.TabIndex = 4;
@@ -113,7 +113,7 @@ namespace KontrolaKadi
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new Point(12, 10);
+            this.label2.Location = new Point(22, 10);
             this.label2.Name = "label2";
             this.label2.Size = new Size(13, 13);
             this.label2.TabIndex = 3;
@@ -123,7 +123,7 @@ namespace KontrolaKadi
             // 
             this.stopwatchTime.AutoSize = true;
             this.stopwatchTime.Font = new Font("Impact", 24F);
-            this.stopwatchTime.Location = new Point(5, 20);
+            this.stopwatchTime.Location = new Point(15, 20);
             this.stopwatchTime.Name = "label1";
             this.stopwatchTime.Size = new Size(panelMaxWidth - 20, 48);
             // 

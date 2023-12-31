@@ -23,8 +23,8 @@ namespace KontrolaKadi
 
         public Prop1(Sharp7.S7Client client) : base(client)
         {
-            //PC Watchdog
-            PCWD = new PlcVars.Word(this, new PlcVars.WordAddress(GetPCWD_Address()), false);
+            
+            PCWD = new PlcVars.Word(this, new PlcVars.WordAddress(GetPCWD_Address()), false); //PC Watchdog
 
             stopwatchCurrentTime = new PlcVars.DWord(this, new PlcVars.DoubleWordAddress(10), false);
             stopwatchTimeLeft = new PlcVars.Word(this, new PlcVars.WordAddress(14), false);
