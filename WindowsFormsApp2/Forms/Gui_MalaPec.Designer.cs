@@ -31,11 +31,11 @@ namespace KontrolaKadi
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Gui_MalaPec));
             this.panelTop = new System.Windows.Forms.Panel();
+            this.connectedButton1 = new KontrolaKadi.ConnectedButton();
             this.label2 = new System.Windows.Forms.Label();
             this.btnSettings = new System.Windows.Forms.Button();
             this.stopWatch1 = new KontrolaKadi.StopWatch();
             this.enojnaKad1 = new KontrolaKadi.EnojnaKad();
-            this.connectedButton1 = new KontrolaKadi.ConnectedButton();
             this.panelTop.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -49,6 +49,20 @@ namespace KontrolaKadi
             this.panelTop.Name = "panelTop";
             this.panelTop.Size = new System.Drawing.Size(1469, 78);
             this.panelTop.TabIndex = 4;
+            // 
+            // connectedButton1
+            // 
+            this.connectedButton1.BackColor = System.Drawing.Color.Transparent;
+            this.connectedButton1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("connectedButton1.BackgroundImage")));
+            this.connectedButton1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.connectedButton1.ConnectionStatus = -4;
+            this.connectedButton1.ID = 1;
+            this.connectedButton1.Location = new System.Drawing.Point(11, 26);
+            this.connectedButton1.Name = "connectedButton1";
+            this.connectedButton1.RefreshOriginalVal = 500;
+            this.connectedButton1.Size = new System.Drawing.Size(60, 40);
+            this.connectedButton1.TabIndex = 7;
+            this.connectedButton1.UseVisualStyleBackColor = false;
             // 
             // label2
             // 
@@ -72,32 +86,18 @@ namespace KontrolaKadi
             // 
             // stopWatch1
             // 
-            this.stopWatch1.Location = new System.Drawing.Point(278, 486);
+            this.stopWatch1.Location = new System.Drawing.Point(333, 423);
             this.stopWatch1.Name = "stopWatch1";
             this.stopWatch1.Size = new System.Drawing.Size(145, 255);
             this.stopWatch1.TabIndex = 6;
             // 
             // enojnaKad1
             // 
-            this.enojnaKad1.ID = 0;
-            this.enojnaKad1.Location = new System.Drawing.Point(230, 108);
+            this.enojnaKad1.ID = 1;
+            this.enojnaKad1.Location = new System.Drawing.Point(530, 103);
             this.enojnaKad1.Name = "enojnaKad1";
-            this.enojnaKad1.Size = new System.Drawing.Size(250, 659);
-            this.enojnaKad1.TabIndex = 5;
-            // 
-            // connectedButton1
-            // 
-            this.connectedButton1.BackColor = System.Drawing.Color.Transparent;
-            this.connectedButton1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("connectedButton1.BackgroundImage")));
-            this.connectedButton1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.connectedButton1.ConnectionStatus = -4;
-            this.connectedButton1.ID = 0;
-            this.connectedButton1.Location = new System.Drawing.Point(11, 26);
-            this.connectedButton1.Name = "connectedButton1";
-            this.connectedButton1.RefreshOriginalVal = 500;
-            this.connectedButton1.Size = new System.Drawing.Size(60, 40);
-            this.connectedButton1.TabIndex = 7;
-            this.connectedButton1.UseVisualStyleBackColor = false;
+            this.enojnaKad1.Size = new System.Drawing.Size(250, 600);
+            this.enojnaKad1.TabIndex = 7;
             // 
             // Gui_MalaPec
             // 
@@ -105,8 +105,8 @@ namespace KontrolaKadi
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.ClientSize = new System.Drawing.Size(1355, 841);
-            this.Controls.Add(this.stopWatch1);
             this.Controls.Add(this.enojnaKad1);
+            this.Controls.Add(this.stopWatch1);
             this.Controls.Add(this.panelTop);
             this.DoubleBuffered = true;
             this.Name = "Gui_MalaPec";
@@ -124,8 +124,8 @@ namespace KontrolaKadi
         private System.Windows.Forms.Panel panelTop;
         private System.Windows.Forms.Button btnSettings;
         private System.Windows.Forms.Label label2;
-        private EnojnaKad enojnaKad1;
         private ConnectedButton connectedButton1;
         private StopWatch stopWatch1;
+        private EnojnaKad enojnaKad1;
     }
 }

@@ -55,8 +55,6 @@ namespace KontrolaKadi
 
                 
                 #endregion
-                                                
-                settingsXML.Save(textBoxPathXML.Text);
 
             }
             catch (Exception e)
@@ -108,9 +106,6 @@ namespace KontrolaKadi
 
             TextBoxWatchdogAddressLOGO1.Text = config.Element("watchdogAddress").Value.Replace("\"", "");
             TextBoxRWcycLOGO1.Text = config.Element("ReadWriteCycle").Value.Replace("\"", "");
-
-            if (!Convert.ToBoolean(config.Element("show").Value.Replace("\"", ""))) { config.Element("enabled").SetValue("false"); config.Save(textBoxPathXML.Text); }
-
         }
 
         private void UpdateFieldsLOGO2(Linq.XElement config)
@@ -127,9 +122,6 @@ namespace KontrolaKadi
 
             TextBoxWatchdogAddressLOGO2.Text = config.Element("watchdogAddress").Value.Replace("\"", "");
             TextBoxRWcycLOGO2.Text = config.Element("ReadWriteCycle").Value.Replace("\"", "");
-
-            if (!Convert.ToBoolean(config.Element("show").Value.Replace("\"", ""))) { config.Element("enabled").SetValue("false"); config.Save(textBoxPathXML.Text); }
-
         }
 
         private void UpdateFieldsLOGO3(Linq.XElement config)
@@ -146,9 +138,6 @@ namespace KontrolaKadi
 
             TextBoxWatchdogAddressLOGO3.Text = config.Element("watchdogAddress").Value.Replace("\"", "");
             TextBoxRWcycLOGO3.Text = config.Element("ReadWriteCycle").Value.Replace("\"", "");
-
-            if (!Convert.ToBoolean(config.Element("show").Value.Replace("\"", ""))) { config.Element("enabled").SetValue("false"); config.Save(textBoxPathXML.Text); }
-
         }
 
         private void UpdateFieldsLOGO4(Linq.XElement config)
@@ -165,9 +154,6 @@ namespace KontrolaKadi
 
             TextBoxWatchdogAddressLOGO4.Text = config.Element("watchdogAddress").Value.Replace("\"", "");
             TextBoxRWcycLOGO4.Text = config.Element("ReadWriteCycle").Value.Replace("\"", "");
-
-            if (!Convert.ToBoolean(config.Element("show").Value.Replace("\"", ""))) { config.Element("enabled").SetValue("false"); config.Save(textBoxPathXML.Text); }
-
         }
 
         private void UpdateFieldsLOGO5(Linq.XElement config)
@@ -184,8 +170,6 @@ namespace KontrolaKadi
 
             TextBoxWatchdogAddressLOGO5.Text = config.Element("watchdogAddress").Value.Replace("\"", "");
             TextBoxRWcycLOGO5.Text = config.Element("ReadWriteCycle").Value.Replace("\"", "");
-
-            if (!Convert.ToBoolean(config.Element("show").Value.Replace("\"", ""))) { config.Element("enabled").SetValue("false"); config.Save(textBoxPathXML.Text); }
         }
 
         private void UpdateFieldsLOGO6(Linq.XElement config)
@@ -204,8 +188,6 @@ namespace KontrolaKadi
 
             TextBoxWatchdogAddressLOGO6.Text = config.Element("watchdogAddress").Value.Replace("\"", "");
             TextBoxRWcycLOGO6.Text = config.Element("ReadWriteCycle").Value.Replace("\"", "");
-
-            if (!Convert.ToBoolean(config.Element("show").Value.Replace("\"", ""))) { config.Element("enabled").SetValue("false"); config.Save(textBoxPathXML.Text); }
         }
 
         private void UpdateFieldsLOGO7(Linq.XElement config)
@@ -224,9 +206,6 @@ namespace KontrolaKadi
 
             TextBoxWatchdogAddressLOGO7.Text = config.Element("watchdogAddress").Value.Replace("\"", "");
             TextBoxRWcycLOGO7.Text = config.Element("ReadWriteCycle").Value.Replace("\"", "");
-
-            if (!Convert.ToBoolean(config.Element("show").Value.Replace("\"", ""))) { config.Element("enabled").SetValue("false"); config.Save(textBoxPathXML.Text); }
-
         }
 
         private void UpdateFieldsLOGO8(Linq.XElement config)
@@ -243,15 +222,8 @@ namespace KontrolaKadi
 
             TextBoxWatchdogAddressLOGO8.Text = config.Element("watchdogAddress").Value.Replace("\"", "");
             TextBoxRWcycLOGO8.Text = config.Element("ReadWriteCycle").Value.Replace("\"", "");
-
-            if (!Convert.ToBoolean(config.Element("show").Value.Replace("\"", ""))) { config.Element("enabled").SetValue("false"); config.Save(textBoxPathXML.Text); }
-
         }
 
-
         #endregion UPDATE_FIELDS
-
-        
-
     }
 }

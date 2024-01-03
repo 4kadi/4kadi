@@ -23,8 +23,10 @@ namespace KontrolaKadi
         void thread()
         {
             //
+            var kad1 = (EnojnaKad)findControl("enojnaKad1");
+         
+
             var cb1 = (ConnectedButton)findControl("connectedButton1");
-            cb1.ID = 1;
 
             var stopWatch1 = (StopWatch)findControl("stopWatch1");
             var p = Val.logocontroler.Prop1;

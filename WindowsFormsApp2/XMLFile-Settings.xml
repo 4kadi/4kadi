@@ -1,13 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<root> // Please close program before editing this document! In other case changes might be overwritten
-  <GENERAL>//			
+<root> // 1Please close program before editing this document! In other case changes might be overwritten
+    <GENERAL>//			
 		<AddressPC_WD>2</AddressPC_WD>									// program will generate watchdog counter on specified profinet address (type is WORD; example/default value: "278")				
 		<LogInRequired>false</LogInRequired>						//
 		</GENERAL>//
-		//
-		<CONNECTION>//
-	  <LOGO1>//
-		<show>true</show>							// indicates if tabpage is shown on GUI
+  //
+  <KADI>//
+    <Kad1>//
+			<Ime>CDFE5</Ime> // Ime kadi za prikaz na Gui
+		</Kad1>//
+  </KADI>//
+  //
+  <CONNECTION>//
+	  <LOGO1>//		
 		<enabled>true</enabled>						// indicates if device is enabled - (gui, communication ...)
 		<showname>LOGO1</showname>					// Showname
 		<serverIP>192.168.50.201</serverIP>		// format must be ###.###.###.### (192.168.0.1) IP of PLC
@@ -18,8 +23,7 @@
 		<ReadWriteCycle>100</ReadWriteCycle>		// value in miliseconds - frequency at which data aquisition is preformed - read, action, write, delay. (watchdog is also bound at this frequency)
 	  </LOGO1>//
 	  //
-	  <LOGO2>//
-		<show>true</show>//
+	  <LOGO2>//		
 		<enabled>true</enabled>//
 		<showname>LOGO2</showname>//
 		<serverIP>10.199.197.42</serverIP>//
@@ -31,7 +35,6 @@
 		</LOGO2>//
 	  //
 	  <LOGO3>//
-		<show>false</show>//
 		<enabled>false</enabled>//
 		<showname>LOGO3</showname>//
 		<serverIP>192.168.10.203</serverIP>//
@@ -43,7 +46,6 @@
 		</LOGO3>//
 	  //
 	  <LOGO4>//
-		<show>false</show>//
 		<enabled>false</enabled>//
 		<showname>LOGO4</showname>//
 		<serverIP>192.168.10.204</serverIP>//
@@ -55,7 +57,6 @@
 		</LOGO4>//
 	  //
 	  <LOGO5>//
-		<show>false</show>//
 		<enabled>false</enabled>//
 		<showname>LOGO5</showname>//
 		<serverIP>192.168.10.205</serverIP>//
@@ -67,7 +68,6 @@
 		</LOGO5>//
 	  //
 	  <LOGO6>//
-		<show>false</show>//
 		<enabled>false</enabled>//
 		<showname>LOGO6</showname>//
 		<serverIP>192.168.10.206</serverIP>//
@@ -79,7 +79,6 @@
 		</LOGO6>//
 	  //
 	  <LOGO7>//
-		<show>false</show>//
 		<enabled>false</enabled>//
 		<showname>LOGO7</showname>//
 		<serverIP>192.168.10.207</serverIP>//
@@ -91,7 +90,6 @@
 		</LOGO7>//
 	  //
 	  <LOGO8>//
-		<show>false</show>//
 		<enabled>false</enabled>//
 		<showname>LOGO8</showname>//
 		<serverIP>192.168.10.208</serverIP>//

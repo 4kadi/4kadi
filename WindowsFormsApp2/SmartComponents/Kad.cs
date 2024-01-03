@@ -12,7 +12,33 @@ namespace KontrolaKadi
 {
     class Kad : UserControl
     {
-        public int ID {get;set;} = 0; // set in the designer or dinamically
+        private int id;
+        public int ID 
+        {
+            get 
+            {
+                return id; 
+            }
+            set 
+            { 
+                id = value; 
+            }
+
+        }
+
+        private string displayName;
+
+        public string DisplayName
+        {
+            get { return displayName; }
+            set 
+            { 
+                displayName = value;
+                displayNameChanged.Invoke(null, null);
+            }
+        }
+
+        public EventHandler displayNameChanged;
 
         public SPanel backImage = new SPanel();  
         public readonly int backImageHeight = 137;
@@ -44,7 +70,14 @@ namespace KontrolaKadi
             manageInfoIconsPanel();
 
             Paint += Kad_Paint;
-            
+
+            XmlController.XmlChanged += RefreshFromXml;
+
+        }
+
+        void RefreshFromXml(object sender, EventArgs e)
+        {            
+            displayName = XmlController.GetImeKadi(ID);
         }
 
         void manageInfoIconsPanel()
@@ -96,7 +129,6 @@ namespace KontrolaKadi
             Invalidate();
         }
 
-
     }
 
     public partial class ErrDialogForm : Form
@@ -119,7 +151,6 @@ namespace KontrolaKadi
         Color BarvaKadi = Color.Red;
         SPanel rectBarvaKadi;
 
-
         KadNaslov lblKadNaslov = new KadNaslov();
 
         public EnojnaKad() : base()
@@ -130,12 +161,17 @@ namespace KontrolaKadi
             base.Controls.Add(backImage);
             barvajKad();
             backImage.Controls.Add(rectBarvaKadi);            
-            rectBarvaKadi.Controls.Add(lblKadNaslov);
-
+            rectBarvaKadi.Controls.Add(lblKadNaslov);        
             this.Paint += EnojnaKad_Paint;
-            
+            base.displayNameChanged += displayName;
+
         }
 
+        void displayName(object sender, EventArgs e)
+        {
+            lblKadNaslov.Text = base.DisplayName;
+        }
+        
         private void EnojnaKad_Paint(object sender, PaintEventArgs e)
         {
            

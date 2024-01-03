@@ -180,19 +180,6 @@ namespace KontrolaKadi
             }
 
         }
-
-        public static int GetPCWD_Address()
-        {
-            try
-            {
-                return Convert.ToInt32(XmlController.XmlGeneral.Element("AddressPC_WD").Value);
-            }
-            catch
-            {
-                throw new Exception("AddressPC_WD is not valid xml entry. Please provide valid entry for that, for example 100.");
-            }
-        }
-
     }
 
     public class AutoSync

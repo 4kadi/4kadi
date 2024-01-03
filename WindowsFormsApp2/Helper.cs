@@ -70,11 +70,6 @@ namespace KontrolaKadi
             return new string(input.Where(c => char.IsDigit(c)).ToArray());
         }
 
-        public static void XML_Was_Changed()
-        {
-            
-        }
-
         private static bool alreadyClosing = false;
         public static void ExitApp()
         {

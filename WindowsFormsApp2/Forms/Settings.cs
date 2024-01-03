@@ -107,7 +107,6 @@ namespace KontrolaKadi
             ConnectAsync(1);
         }
 
-
         private void BtnConnectLOGO2_Click(object sender, EventArgs e)
         {
             ConnectAsync(2);
@@ -286,44 +285,31 @@ namespace KontrolaKadi
             }
             object device = new object[1];
 
-            if (IsEnabled(1)) { BtnConnectLOGO1_Click(device = (int)1, null); }
-            if (IsEnabled(2)) { BtnConnectLOGO2_Click(device = (int)2, null); }
-            if (IsEnabled(3)) { BtnConnectLOGO3_Click(device = (int)3, null); }
-            if (IsEnabled(4)) { BtnConnectLOGO4_Click(device = (int)4, null); }
-            if (IsEnabled(5)) { BtnConnectLOGO5_Click(device = (int)5, null); }
-            if (IsEnabled(6)) { BtnConnectLOGO6_Click(device = (int)6, null); }
-            if (IsEnabled(7)) { BtnConnectLOGO7_Click(device = (int)7, null); }
-            if (IsEnabled(8)) { BtnConnectLOGO8_Click(device = (int)8, null); }
+            if (XmlController.IsLogoEnabled(1)) { BtnConnectLOGO1_Click(device = (int)1, null); }
+            if (XmlController.IsLogoEnabled(2)) { BtnConnectLOGO2_Click(device = (int)2, null); }
+            if (XmlController.IsLogoEnabled(3)) { BtnConnectLOGO3_Click(device = (int)3, null); }
+            if (XmlController.IsLogoEnabled(4)) { BtnConnectLOGO4_Click(device = (int)4, null); }
+            if (XmlController.IsLogoEnabled(5)) { BtnConnectLOGO5_Click(device = (int)5, null); }
+            if (XmlController.IsLogoEnabled(6)) { BtnConnectLOGO6_Click(device = (int)6, null); }
+            if (XmlController.IsLogoEnabled(7)) { BtnConnectLOGO7_Click(device = (int)7, null); }
+            if (XmlController.IsLogoEnabled(8)) { BtnConnectLOGO8_Click(device = (int)8, null); }
 
         }
 
         // button disconnect all
         public void ButtonDisconnectALL_Click(object sender, EventArgs e)
         {
-            if (IsEnabled(1)) { BtnDisconnectLOGO1_Click(null, null); }
-            if (IsEnabled(2)) { BtnDisconnectLOGO2_Click(null, null); }
-            if (IsEnabled(3)) { BtnDisconnectLOGO3_Click(null, null); }
-            if (IsEnabled(4)) { BtnDisconnectLOGO4_Click(null, null); }
-            if (IsEnabled(5)) { BtnDisconnectLOGO5_Click(null, null); }
-            if (IsEnabled(6)) { BtnDisconnectLOGO6_Click(null, null); }
-            if (IsEnabled(7)) { BtnDisconnectLOGO7_Click(null, null); }
-            if (IsEnabled(8)) { BtnDisconnectLOGO8_Click(null, null); }
+            if (XmlController.IsLogoEnabled(1)) { BtnDisconnectLOGO1_Click(null, null); }
+            if (XmlController.IsLogoEnabled(2)) { BtnDisconnectLOGO2_Click(null, null); }
+            if (XmlController.IsLogoEnabled(3)) { BtnDisconnectLOGO3_Click(null, null); }
+            if (XmlController.IsLogoEnabled(4)) { BtnDisconnectLOGO4_Click(null, null); }
+            if (XmlController.IsLogoEnabled(5)) { BtnDisconnectLOGO5_Click(null, null); }
+            if (XmlController.IsLogoEnabled(6)) { BtnDisconnectLOGO6_Click(null, null); }
+            if (XmlController.IsLogoEnabled(7)) { BtnDisconnectLOGO7_Click(null, null); }
+            if (XmlController.IsLogoEnabled(8)) { BtnDisconnectLOGO8_Click(null, null); }
 
         }
-
-        private bool IsEnabled(int device)
-        {
-            try
-            {
-                return Convert.ToBoolean(XmlController.XmlConn.Element("LOGO" + device).Element("enabled").Value);
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-
-        }
-                
+                                
         // after form shows up
         // after form shows up
         // after form shows up
@@ -390,14 +376,14 @@ namespace KontrolaKadi
             // show devices
             try
             {
-                if (!Convert.ToBoolean(XmlController.XmlConn.Element("LOGO1").Element("show").Value)) { tabControl1.TabPages.Remove(tabPageLOGO1); CheckBoxLOGO_EN1.Hide(); }
-                if (!Convert.ToBoolean(XmlController.XmlConn.Element("LOGO2").Element("show").Value)) { tabControl1.TabPages.Remove(tabPageLOGO2); CheckBoxLOGO_EN2.Hide(); }
-                if (!Convert.ToBoolean(XmlController.XmlConn.Element("LOGO3").Element("show").Value)) { tabControl1.TabPages.Remove(tabPageLOGO3); CheckBoxLOGO_EN3.Hide(); }
-                if (!Convert.ToBoolean(XmlController.XmlConn.Element("LOGO4").Element("show").Value)) { tabControl1.TabPages.Remove(tabPageLOGO4); CheckBoxLOGO_EN4.Hide(); }
-                if (!Convert.ToBoolean(XmlController.XmlConn.Element("LOGO5").Element("show").Value)) { tabControl1.TabPages.Remove(tabPageLOGO5); CheckBoxLOGO_EN5.Hide(); }
-                if (!Convert.ToBoolean(XmlController.XmlConn.Element("LOGO6").Element("show").Value)) { tabControl1.TabPages.Remove(tabPageLOGO6); CheckBoxLOGO_EN6.Hide(); }
-                if (!Convert.ToBoolean(XmlController.XmlConn.Element("LOGO7").Element("show").Value)) { tabControl1.TabPages.Remove(tabPageLOGO7); CheckBoxLOGO_EN7.Hide(); }
-                if (!Convert.ToBoolean(XmlController.XmlConn.Element("LOGO8").Element("show").Value)) { tabControl1.TabPages.Remove(tabPageLOGO8); CheckBoxLOGO_EN8.Hide(); }
+                if (XmlController.IsLogoEnabled(1)) { tabControl1.TabPages.Remove(tabPageLOGO1); CheckBoxLOGO_EN1.Hide(); }
+                if (XmlController.IsLogoEnabled(2)) { tabControl1.TabPages.Remove(tabPageLOGO2); CheckBoxLOGO_EN2.Hide(); }
+                if (XmlController.IsLogoEnabled(3)) { tabControl1.TabPages.Remove(tabPageLOGO3); CheckBoxLOGO_EN3.Hide(); }
+                if (XmlController.IsLogoEnabled(4)) { tabControl1.TabPages.Remove(tabPageLOGO4); CheckBoxLOGO_EN4.Hide(); }
+                if (XmlController.IsLogoEnabled(5)) { tabControl1.TabPages.Remove(tabPageLOGO5); CheckBoxLOGO_EN5.Hide(); }
+                if (XmlController.IsLogoEnabled(6)) { tabControl1.TabPages.Remove(tabPageLOGO6); CheckBoxLOGO_EN6.Hide(); }
+                if (XmlController.IsLogoEnabled(7)) { tabControl1.TabPages.Remove(tabPageLOGO7); CheckBoxLOGO_EN7.Hide(); }
+                if (XmlController.IsLogoEnabled(8)) { tabControl1.TabPages.Remove(tabPageLOGO8); CheckBoxLOGO_EN8.Hide(); }
 
 
                 WL("GUI was loaded successfully", 0);
@@ -411,22 +397,16 @@ namespace KontrolaKadi
 
             #region Load Values to gui
 
-
-
-            textBoxDeviceIPLOGO1.Text = XmlController.XmlConn.Element("LOGO1").Element("serverIP").Value.Replace("\"", "");
-            textBoxDeviceIPLOGO2.Text = XmlController.XmlConn.Element("LOGO2").Element("serverIP").Value.Replace("\"", "");
-            textBoxDeviceIPLOGO3.Text = XmlController.XmlConn.Element("LOGO3").Element("serverIP").Value.Replace("\"", "");
-            textBoxDeviceIPLOGO4.Text = XmlController.XmlConn.Element("LOGO4").Element("serverIP").Value.Replace("\"", "");
-            textBoxDeviceIPLOGO5.Text = XmlController.XmlConn.Element("LOGO5").Element("serverIP").Value.Replace("\"", "");
-            textBoxDeviceIPLOGO6.Text = XmlController.XmlConn.Element("LOGO6").Element("serverIP").Value.Replace("\"", "");
-            textBoxDeviceIPLOGO7.Text = XmlController.XmlConn.Element("LOGO7").Element("serverIP").Value.Replace("\"", "");
-            textBoxDeviceIPLOGO8.Text = XmlController.XmlConn.Element("LOGO8").Element("serverIP").Value.Replace("\"", "");
-
-
+            textBoxDeviceIPLOGO1.Text = XmlController.LogoServerIp(1);
+            textBoxDeviceIPLOGO2.Text = XmlController.LogoServerIp(2);
+            textBoxDeviceIPLOGO3.Text = XmlController.LogoServerIp(3);
+            textBoxDeviceIPLOGO4.Text = XmlController.LogoServerIp(4);
+            textBoxDeviceIPLOGO5.Text = XmlController.LogoServerIp(5);
+            textBoxDeviceIPLOGO6.Text = XmlController.LogoServerIp(6);
+            textBoxDeviceIPLOGO7.Text = XmlController.LogoServerIp(7);
+            textBoxDeviceIPLOGO8.Text = XmlController.LogoServerIp(8);
 
             #endregion
-
-
 
 
             // Worker for populating values

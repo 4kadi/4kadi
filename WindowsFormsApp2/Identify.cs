@@ -63,7 +63,7 @@ namespace KontrolaKadi
 
             try
             {
-                if (!Convert.ToBoolean(XmlController.XmlGeneral.Element("LogInRequired").Value))
+                if (XmlController.IsLoginRequired())
                 {
                     LoggedInID = 1234;
                     return;
@@ -93,7 +93,7 @@ namespace KontrolaKadi
                         buff = Convert.ToInt64(inputBox.Text);
                         if (buff >= 0)
                         {
-                            identifiers = IDs(XmlController.XmlFile);
+                            identifiers = IDs();
                             if (identifiers != null)
                             {
                                 for (int i = 1; i < identifiers.Length; i++)
@@ -135,53 +135,13 @@ namespace KontrolaKadi
 
         public static string GetUserFromID(Int64 ID)
         {
-            try
-            {
-                for (int i = 1; i < 31; i++)
-                {
-                    if (ID == Convert.ToInt64(XmlController.XmlFile.Element("root").Element("USERS").Element("User" + i).Element("ID").Value))
-                    {
-                        return XmlController.XmlFile.Element("root").Element("USERS").Element("User" + i).Element("Name").Value;
-                    }
-                }
-
-                return "ERROR! No such UserID.";
-            }
-            catch
-            {
-                throw new Exception("Internal error Retrievinng IDs of Users From XML File.");
-            }
-
+            return XmlController.GetUserFromID(ID);
         }
 
-        public Int64[] IDs(XDocument settingsXML)
+        public Int64[] IDs()
         {
-            try
-            {
-                try
-                {
-                    for (int i = 1; i < identifiers.Length; i++)
-                    {
-                        identifiers[i] = Convert.ToInt64(settingsXML.Element("root").Element("USERS").Element("User" + i).Element("ID").Value);
-                    }
-                    return identifiers;
-                }
-                catch
-                {
-
-                    throw new Exception();
-                }
-
-
-
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show("Error while loading user IDs and passwords from database. You will not be able to login: " + e.Message);
-                return null;
-            }
-
-
+            var ids = XmlController.GetUserIDs();            
+            return ids.ToArray();            
         }
 
         public void Logoff()
@@ -205,7 +165,7 @@ namespace KontrolaKadi
                     buff = logofID;
                     if (buff >= 0)
                     {
-                        identifiers = IDs(XmlController.XmlFile);
+                        identifiers = IDs();
                         if (identifiers != null)
                         {
                             for (int i = 1; i < identifiers.Length; i++)
@@ -246,19 +206,9 @@ namespace KontrolaKadi
         }
 
 
-        public string GetName(int index)
+        public string GetName(long index)
         {
-            try
-            {
-                string a = XmlController.XmlFile.Element("root").Element("USERS").Element("User" + index).Element("Name").Value.Replace("\"", "");
-                return a;
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show("Error while loading user Names from database. You will not be able to login: " + e.Message);
-                return null;
-            }
-
+            return XmlController.GetUserName(index);
         }
 
         public bool GetPermision(int permissionNum)
@@ -274,15 +224,15 @@ namespace KontrolaKadi
             // 8  - 
             // 9  - 
             // 10 - 
-            var Collection = IDs(XmlController.XmlFile);
-            for (int i = 1; i < Collection.Length; i++)
+            var Collection = IDs();
+            for (int userId = 1; userId < Collection.Length; userId++)
             {
-                if (Collection[i] == LoggedInID)
+                if (Collection[userId] == LoggedInID)
                 {
                     try
                     {
-                        string a = XmlController.XmlFile.Element("root").Element("USERS").Element("User" + i).Element("permission" + permissionNum).Value.Replace("\"", "");
-                        return Convert.ToBoolean(a);
+                        var buff = XmlController.GetPermision(userId, permissionNum);
+                        return buff;
                     }
                     catch (Exception e)
                     {
@@ -312,23 +262,16 @@ namespace KontrolaKadi
 
         private void SetNameOfLogedInUserPrivate()
         {
-            Int64 tmp;
-            try
+
+            var userIds = XmlController.GetUserIDs();
+            foreach (var id in userIds)
             {
-                for (int i = 1; i < identifiers.Length; i++)
+                if (id == LoggedInID)
                 {
-                    tmp = Convert.ToInt64(XmlController.XmlFile.Element("root").Element("USERS").Element("User" + i).Element("ID").Value.Replace("\"", ""));
-                    if (tmp == LoggedInID)
-                    {
-                        LogedInUserName = GetName(i);
-                        break;
-                    }
+                    LogedInUserName = GetName(id);
                 }
             }
-            catch (Exception e)
-            {
-                MessageBox.Show("Error while loading user Names from database. You will not be able to login: " + e.Message);
-            }
+            
         }
 
 
@@ -356,7 +299,7 @@ namespace KontrolaKadi
                         buff = Convert.ToInt64(inputBox.Text);
                         if (buff >= 0)
                         {
-                            identifiers = IDs(XmlController.XmlFile);
+                            identifiers = IDs();
                             if (identifiers != null)
                             {
                                 for (int i = 1; i < identifiers.Length; i++)

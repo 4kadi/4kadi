@@ -62,7 +62,7 @@ namespace KontrolaKadi
             }
             catch (Exception e)
             {
-                System.Windows.Forms.MessageBox.Show("Problem ocurded while initialising streamwriter." + Environment.NewLine + " Error message: " + e.Message + Environment.NewLine + "Application will now close.");
+                MessageBox.Show("Problem ocurded while initialising streamwriter." + Environment.NewLine + " Error message: " + e.Message + Environment.NewLine + "Application will now close.");
                 Environment.Exit(0);
             }
 
@@ -93,7 +93,7 @@ namespace KontrolaKadi
             }
             catch (Exception e)
             {
-                System.Windows.Forms.MessageBox.Show("Problem ocurded while initialising streamwriter." + Environment.NewLine + " Error message: " + e.Message + Environment.NewLine + "Application will now close.");
+                MessageBox.Show("Problem ocurded while initialising streamwriter." + Environment.NewLine + " Error message: " + e.Message + Environment.NewLine + "Application will now close.");
                 Environment.Exit(0);
             }
 
@@ -346,7 +346,7 @@ namespace KontrolaKadi
             var r = Screen.FromControl(this).Bounds;
 
             Left = (r.Width / 2) - Width / 2;
-            Top = (r.Height / 2) - Height / 2;
+            Top = (r.Height / 3) - Height / 2;
 
             FormBorderStyle = FormBorderStyle.None;
         }
