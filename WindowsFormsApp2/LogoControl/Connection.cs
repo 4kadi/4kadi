@@ -204,7 +204,7 @@ namespace KontrolaKadi
                 {
                     try
                     {                        
-                        value = S7.GetByteAt(b, 0);
+                        value = S7.GetByteAt(b, typeAndAdress.Address);
                     }
                     catch
                     {

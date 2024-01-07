@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Security.AccessControl;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace KontrolaKadi
@@ -11,7 +12,7 @@ namespace KontrolaKadi
     public class SysLog
     {      
         public static MessageManager Message;
-        private static bool FileCorupted = false;
+        private static bool FileCorrupted = false;
 
         public SysLog()
         {
@@ -203,7 +204,7 @@ namespace KontrolaKadi
                         var tmp = Path.GetFileName(FilePath);
                         tmp = tmp.Replace(num.ToString(), "");
                         tmp = tmp.Replace(".txt", "");
-                        if (FileCorupted)
+                        if (FileCorrupted)
                         {
                             num++;
                         }                        
@@ -259,45 +260,53 @@ namespace KontrolaKadi
                 {
                     throw;
                 }
-            }
+            }            
 
-            void WriteLogAsync()
-            {                
+            async void WriteLogAsync()
+            {
                 while (true)
                 {
-                    
                     try
                     {
-                        if (FileCorupted)
-                        {                            
-                            CreateFile(LogFilePath);
-                            FileCorupted = false;
-                        }
+                        HandleFileCreationIfNeeded();
 
                         if (PendingMessages.Count > 0)
                         {
-                            StreamWriter s = new StreamWriter(LogFilePath, true);
-
-                            while (PendingMessages.Count > 0)
-                            {
-                                s.WriteLine(PendingMessages[0]);
-                                PendingMessages.RemoveAt(0);
-                            }
-
-                            Thread.Sleep(Settings.defaultCheckTimingInterval);
-                            checkFileSize();
-                            s.Flush();
-                            s.Close();
+                            WritePendingMessagesToFile();
                         }
-
                     }
                     catch (Exception ex)
                     {
-                        var message = "ERROR WRITING TO FILE! " + ex.Message;
-                        FileCorupted = true;
-                    }
+                        Console.WriteLine("Error writing Log file. Method name is: WriteLogAsync(). Exception message: " + ex.Message);
+                    }                    
+                    await Task.Delay(500); 
+                }
+            }
 
-                    Thread.Sleep(300); // check every half second cca
+            private void HandleFileCreationIfNeeded()
+            {
+                if (FileCorrupted)
+                {
+                    CreateFile(LogFilePath);
+                    FileCorrupted = false;
+                }
+            }
+
+            private readonly object _lockObject = new object();
+            private void WritePendingMessagesToFile()
+            {
+                lock (_lockObject)
+                {
+                    using (StreamWriter s = new StreamWriter(LogFilePath, true))
+                    {
+                        while (PendingMessages.Count > 0)
+                        {
+                            s.WriteLine(PendingMessages[0]);
+                            PendingMessages.RemoveAt(0);
+                        }
+                    }
+                    // Moved checkFileSize and Flush out of the StreamWriter using block
+                    checkFileSize();
                 }
             }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -11,7 +12,7 @@ namespace KontrolaKadi
     {
         public static List<AlarmBit> AllAlarmMessageVars { get; private set; } = new List<AlarmBit>();
 
-        public static void ReportComunicatoonMessage(string message)
+        public static void ReportComunicationMessage(string message)
         {
             SysLog.SetMessage(message);
         }
@@ -198,6 +199,7 @@ namespace KontrolaKadi
             }
 
             private short? PLCval;
+            private short? previousPLCval;
             private short? PCval;
             private bool directionToPLC = false;
             private WordAddress _TypeAndAdress;
@@ -209,6 +211,8 @@ namespace KontrolaKadi
             string _postFixToShow;
             bool _IsWritable = false;
 
+            public event EventHandler ValueChanged;
+            
             public Word(PropComm prop, WordAddress TypeAndAdress, string prefixToShow, string postFixToShow, bool IsWritable) : base(prop)
             {
                 Ctor(TypeAndAdress, prefixToShow, postFixToShow, IsWritable);
@@ -228,7 +232,8 @@ namespace KontrolaKadi
                 _TypeAndAdress = TypeAndAdress;
                 _prefixToShow = prefixToShow;
                 _postFixToShow = postFixToShow;
-                _IsWritable = IsWritable;
+                _IsWritable = IsWritable;             
+
             }
 
             public override void SyncWithPLC()
@@ -240,7 +245,7 @@ namespace KontrolaKadi
                 }
                 catch (Exception ex)
                 {
-                    ReportComunicatoonMessage(ex.Message);
+                    ReportComunicationMessage(ex.Message);
                 }
 
             }
@@ -254,7 +259,15 @@ namespace KontrolaKadi
                         buffRead = Connection.BufferRead(Client, _TypeAndAdress, out ErrRead);
                         if (ErrRead == 0 && buffRead != null)
                         {
-                            PLCval = buffRead; buffRead = null;
+                            if (buffRead != PLCval)
+                            {
+                                PLCval = buffRead; buffRead = null;                         
+                            }
+                            if (previousPLCval != PLCval)
+                            {
+                                previousPLCval = PLCval;
+                                ValueChanged?.BeginInvoke(this, null, null, null);
+                            }
                         }
                         else
                         {
@@ -270,7 +283,7 @@ namespace KontrolaKadi
                 {
                     directionToPLC = false;
                 }
-                if (directionToPLC == true)
+                else if (directionToPLC == true)
                 {
                     if (PCval != null && PLCval != null)
                     {
@@ -400,6 +413,7 @@ namespace KontrolaKadi
             }
 
             private byte? PLCval;
+            private byte? previousPLCval;
             private byte? PCval;
             private bool directionToPLC = false;
             private ByteAddress _TypeAndAdress;
@@ -410,6 +424,8 @@ namespace KontrolaKadi
             string _prefixToShow;
             string _postFixToShow;
             bool _IsWritable = false;
+
+            public event EventHandler ValueChanged;           
 
             public Byte(PropComm prop, ByteAddress TypeAndAdress, string prefixToShow, string postFixToShow, bool IsWritable) : base(prop)
             {
@@ -430,7 +446,7 @@ namespace KontrolaKadi
                 _TypeAndAdress = TypeAndAdress;
                 _prefixToShow = prefixToShow;
                 _postFixToShow = postFixToShow;
-                _IsWritable = IsWritable;
+                _IsWritable = IsWritable;                
             }
 
             public override void SyncWithPLC()
@@ -442,7 +458,7 @@ namespace KontrolaKadi
                 }
                 catch (Exception ex)
                 {
-                    ReportComunicatoonMessage(ex.Message);
+                    ReportComunicationMessage(ex.Message);
                 }
 
             }
@@ -454,9 +470,18 @@ namespace KontrolaKadi
                     if (Client != null)
                     {
                         buffRead = (byte)Connection.BufferRead(Client, _TypeAndAdress, out ErrRead);
+
                         if (ErrRead == 0 && buffRead != null)
                         {
-                            PLCval = buffRead; buffRead = null;
+                            if (buffRead != PLCval)
+                            {        
+                                PLCval = buffRead; buffRead = null;
+                            }
+                            if (previousPLCval != PLCval)
+                            {
+                                previousPLCval = PLCval;
+                                ValueChanged?.BeginInvoke(this, null, null, null);                                
+                            }                            
                         }
                         else
                         {
@@ -472,7 +497,7 @@ namespace KontrolaKadi
                 {
                     directionToPLC = false;
                 }
-                if (directionToPLC == true)
+                else if (directionToPLC == true)
                 {
                     if (PCval != null && PLCval != null)
                     {
@@ -605,6 +630,7 @@ namespace KontrolaKadi
             }
 
             private short? PLCval;
+            private short? previousPLCval;
             private short? PCval;
             private bool directionToPLC = false;
             private DoubleWordAddress _TypeAndAdress;            
@@ -616,6 +642,8 @@ namespace KontrolaKadi
             string _postFixToShow;
             bool _IsWritable = false;
 
+            public event EventHandler ValueChanged;
+
             private void Ctor(PropComm prop, DoubleWordAddress TypeAndAdress, string prefixToShow, string postFixToShow, bool IsWritable)
             {
                 PLCval = null;
@@ -625,6 +653,7 @@ namespace KontrolaKadi
                 _prefixToShow = prefixToShow;
                 _postFixToShow = postFixToShow;
                 _IsWritable = IsWritable;
+
             }
 
             public DWord(PropComm prop, DoubleWordAddress TypeAndAdress, string prefixToShow, string postFixToShow, bool IsWritable) : base(prop)
@@ -646,7 +675,7 @@ namespace KontrolaKadi
                 }
                 catch (Exception ex)
                 {
-                    ReportComunicatoonMessage(ex.Message);
+                    ReportComunicationMessage(ex.Message);
                 }
 
             }
@@ -660,7 +689,16 @@ namespace KontrolaKadi
                         buffRead = Connection.BufferRead(Client, _TypeAndAdress, out ErrRead);
                         if (ErrRead == 0 && buffRead != null)
                         {
-                            PLCval = buffRead; buffRead = null;
+                            if (buffRead != PLCval)
+                            {
+                                PLCval = buffRead; buffRead = null;                                
+                            }
+                            if (previousPLCval != PLCval)
+                            {
+                                previousPLCval = PLCval;
+                                ValueChanged?.BeginInvoke(this, null, null, null);
+                            }
+                            
                         }
                         else
                         {
@@ -676,7 +714,7 @@ namespace KontrolaKadi
                 {
                     directionToPLC = false;
                 }
-                if (directionToPLC == true)
+                else if (directionToPLC == true)
                 {
                     if (PCval != null && PLCval != null)
                     {
@@ -766,6 +804,7 @@ namespace KontrolaKadi
             }
 
             private short? PLCval;
+            private short? previousPLCval;
             private short? PCval;
             private bool directionToPLC = false;
             private readonly WordAddress _TypeAndAdress;
@@ -775,6 +814,8 @@ namespace KontrolaKadi
             short? buffRead;
             short? buffWrite;
             readonly bool _IsWritable = false;
+
+            public event EventHandler ValueChanged;
 
             public TimeSet(PropComm prop, WordAddress TypeAndAdress, bool IsWritable) : base(prop)
             {
@@ -795,7 +836,7 @@ namespace KontrolaKadi
                 }
                 catch (Exception ex)
                 {
-                    ReportComunicatoonMessage(ex.Message);
+                    ReportComunicationMessage(ex.Message);
                 }
             }
 
@@ -806,7 +847,15 @@ namespace KontrolaKadi
                     if (_Client != null)
                     {
                         buffRead = Connection.BufferRead(_Client, _TypeAndAdress, out ErrRead);
-                        if (ErrRead == 0 && buffRead != null) { PLCval = buffRead; buffRead = null; }
+                        if (ErrRead == 0 && buffRead != null) 
+                        {                          
+                           PLCval = buffRead; buffRead = null;                           
+                        }
+                        if (previousPLCval != PLCval)
+                        {
+                            previousPLCval = PLCval;
+                            ValueChanged?.BeginInvoke(this, null, null, null);
+                        }
                     }
                     else
                     {
@@ -821,7 +870,7 @@ namespace KontrolaKadi
                 {
                     directionToPLC = false;
                 }
-                if (directionToPLC == true)
+                else if (directionToPLC == true)
                 {
                     if (PCval != null && PLCval != null)
                     {
@@ -950,6 +999,7 @@ namespace KontrolaKadi
             }
 
             private short? PLCval;
+            private short? previousPLCval;
             private short? PCval;
             private bool directionToPLC = false;
             private readonly WordAddress _TypeAndAdress;
@@ -964,6 +1014,9 @@ namespace KontrolaKadi
             public float _n;
             readonly bool _isWritable;
             private int decimalPlaces;
+
+            public event EventHandler ValueChanged;
+
             public int DecimalPlaces
             {
                 get { return decimalPlaces; }
@@ -1007,7 +1060,7 @@ namespace KontrolaKadi
                 }
                 catch (Exception ex)
                 {
-                    ReportComunicatoonMessage(ex.Message);
+                    ReportComunicationMessage(ex.Message);
                 }
             }
 
@@ -1030,7 +1083,15 @@ namespace KontrolaKadi
                     if (_Client != null)
                     {
                         buffRead = Connection.BufferRead(_Client, _TypeAndAdress, out ErrRead);
-                        if (ErrRead == 0 && buffRead != null) { PLCval = buffRead; buffRead = null; }
+                        if (ErrRead == 0 && buffRead != null) 
+                        { 
+                            PLCval = buffRead; buffRead = null; 
+                        }
+                        if (previousPLCval != PLCval)
+                        {
+                            previousPLCval = PLCval;
+                            ValueChanged?.BeginInvoke(this, null, null, null);
+                        }
                         else
                         {
                             ReportError_throwException("Read from PLC failed.", null, forceRead);
@@ -1045,7 +1106,7 @@ namespace KontrolaKadi
                 {
                     directionToPLC = false;
                 }
-                if (directionToPLC == true)
+                else if (directionToPLC == true)
                 {
                     if (PCval != null && PLCval != null)
                     {
@@ -1171,6 +1232,7 @@ namespace KontrolaKadi
             }
 
             private bool? PLCval;
+            private bool? previousPLCval;
             private bool? PCval;
             private bool directionToPLC = false;
             private readonly BitAddress _TypeAndAdress;
@@ -1182,6 +1244,9 @@ namespace KontrolaKadi
             readonly bool _IsWritable = false;
             byte sendpulseState = 0;
 
+            public delegate void ValueChangedDelegate(object sender, EventArgs e);
+            public event ValueChangedDelegate ValueChanged;
+
             public Bit(PropComm prop, BitAddress TypeAndAdress, bool IsWritable) : base(prop)
             {
                 PLCval = null;
@@ -1190,7 +1255,10 @@ namespace KontrolaKadi
                 _Client = Client;
                 _TypeAndAdress = TypeAndAdress;
                 _IsWritable = IsWritable;
+
+                ValueChanged = new ValueChangedDelegate(delegate { });
             }
+
 
             public void SendPulse()
             {
@@ -1235,7 +1303,7 @@ namespace KontrolaKadi
                 }
                 catch (Exception ex)
                 {
-                    ReportComunicatoonMessage(ex.Message);
+                    ReportComunicationMessage(ex.Message);
                 }
             }
 
@@ -1246,7 +1314,24 @@ namespace KontrolaKadi
                     if (_Client != null)
                     {
                         buffRead = Connection.BufferRead(_Client, _TypeAndAdress, out ErrRead);
-                        if (ErrRead == 0 && buffRead != null) { if (buffRead > 0) { PLCval = true; } else { PLCval = false; } buffRead = null; }
+                        if (ErrRead == 0 && buffRead != null)
+                        {
+                            if (buffRead > 0) 
+                            {                                                        
+                                PLCval = true;                                                            
+                            } 
+                            else 
+                            {                                                               
+                                PLCval = false;
+                            }
+                            if (previousPLCval != PLCval)
+                            {
+                                previousPLCval = PLCval;
+                                ValueChanged?.BeginInvoke(this, null, null, null);
+                            }
+
+                            buffRead = null;
+                        }
                         else
                         {
                             ReportError_throwException("Read from PLC failed.", null, forceRead);
@@ -1261,7 +1346,7 @@ namespace KontrolaKadi
                 {
                     directionToPLC = false;
                 }
-                if (directionToPLC == true)
+                else if (directionToPLC == true)
                 {
                     if (PCval != null && PLCval != null)
                     {
@@ -1341,6 +1426,122 @@ namespace KontrolaKadi
                     "Flags: " + Flags);
             }
 
+        }       
+
+        public class LogoClock : PlcType
+        {
+            public string Value_string
+            {
+                get
+                {
+                    if (PLCval != null)
+                    {
+                        if (PLCval != null)
+                        {
+                            return DecodeWordToTime((short)PLCval, 2).ToString();
+                        }
+                    }
+                    return PropComm.NA;
+
+                }
+            }
+
+            public TimeSpan? Value_TimeSpan
+            {
+                get { return ConvertStringToTimeSpan(); }                
+            }
+
+            private short? PLCval;
+            private short? previousPLCval;
+            private readonly WordAddress _TypeAndAdress;
+            private readonly Sharp7.S7Client _Client;
+            int ErrRead;
+            short? buffRead;
+
+            public delegate void ValueChangedDelegate(object sender, EventArgs e);
+            public event ValueChangedDelegate ValueChanged;
+
+            public LogoClock(PropComm prop) : base(prop)
+            {
+                PLCval = null;
+                _Client = Client;
+                _TypeAndAdress = new WordAddress(988);
+                base.SyncEvery_X_Time = 5;
+
+                ValueChanged = new ValueChangedDelegate(delegate { });
+            }
+    
+            public TimeSpan? ConvertStringToTimeSpan()
+            {
+                try
+                {
+                    var h = Value_string[0].ToString() + Value_string[1].ToString();
+                    var m = Value_string[3].ToString() + Value_string[4].ToString();
+
+                    var hh = Convert.ToInt32(h);
+                    var mm = Convert.ToInt32(m);
+
+                    TimeSpan t = new TimeSpan(hh, mm, 00);
+                    
+                    return t;
+                }
+                catch
+                {
+                    return null;
+                }
+                
+            }
+            
+
+            public override void SyncWithPLC()
+            {
+                try
+                {
+                    ReadFromPLCtoBuffer();
+                }
+                catch (Exception ex)
+                {
+                    ReportComunicationMessage(ex.Message);
+                }
+            }
+
+            private void ReadFromPLCtoBuffer()
+            {
+                if (_Client != null)
+                {
+                    buffRead = Connection.BufferRead(_Client, _TypeAndAdress, out ErrRead);
+                    if (ErrRead == 0 && buffRead != null) 
+                    {
+                        if (buffRead != PLCval)
+                        {
+                            PLCval = buffRead; buffRead = null;                            
+                        }
+                        if (previousPLCval != PLCval)
+                        {
+                            previousPLCval = PLCval;
+                            ValueChanged?.BeginInvoke(this, null, null, null);
+                        }
+                    }
+                }
+                else
+                {
+                    ReportError_throwException("Reading Clock / Time from PLC failed.");
+                }
+            }
+
+            public void ReportError_throwException(string Message)
+            {
+                string Address = _TypeAndAdress.GetStringRepresentation();
+                string ErrTyp_Read = _Client.ErrorText(ErrRead);
+                string Client = "Logo" + _Client.deviceID;
+
+                throw new Exception(
+                    Message + " " +
+                    "Address: " + Address + ", " +
+                    "Read Error type: " + ErrTyp_Read + ", " +
+                    "Client: " + Client + ". ");
+
+            }
         }
 
         public class AlarmBit : Bit
@@ -1385,78 +1586,6 @@ namespace KontrolaKadi
                 {
                     AddWarningMonitor(true, WarningManager.WarningTriggerCondition.EqualTo, Message);
                 }
-                
-            }
-        }
-
-        public class LogoClock : PlcType
-        {
-            public string Value
-            {
-                get
-                {
-                    if (PLCval != null)
-                    {
-                        if (PLCval != null)
-                        {
-                            return DecodeWordToTime((short)PLCval, 2).ToString();
-                        }
-                    }
-                    return PropComm.NA;
-
-                }
-            }
-
-            private short? PLCval;
-            private readonly WordAddress _TypeAndAdress;
-            private readonly Sharp7.S7Client _Client;
-            int ErrRead;
-            short? buffRead;
-
-            public LogoClock(PropComm prop) : base(prop)
-            {
-                PLCval = null;
-                _Client = Client;
-                _TypeAndAdress = new WordAddress(988);
-                base.SyncEvery_X_Time = 5;
-            }
-
-            public override void SyncWithPLC()
-            {
-                try
-                {
-                    ReadFromPLCtoBuffer();
-                }
-                catch (Exception ex)
-                {
-                    ReportComunicatoonMessage(ex.Message);
-                }
-            }
-
-            private void ReadFromPLCtoBuffer()
-            {
-                if (_Client != null)
-                {
-                    buffRead = Connection.BufferRead(_Client, _TypeAndAdress, out ErrRead);
-                    if (ErrRead == 0 && buffRead != null) { PLCval = buffRead; buffRead = null; }
-                }
-                else
-                {
-                    ReportError_throwException("Reading Clock / Time from PLC failed.");
-                }
-            }
-
-            public void ReportError_throwException(string Message)
-            {
-                string Address = _TypeAndAdress.GetStringRepresentation();
-                string ErrTyp_Read = _Client.ErrorText(ErrRead);
-                string Client = "Logo" + _Client.deviceID;
-
-                throw new Exception(
-                    Message + " " +
-                    "Address: " + Address + ", " +
-                    "Read Error type: " + ErrTyp_Read + ", " +
-                    "Client: " + Client + ". ");
 
             }
         }

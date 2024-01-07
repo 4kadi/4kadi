@@ -523,12 +523,32 @@ namespace KontrolaKadi
         public class WarningNoConnection : Warning
         {            
             static readonly string message = "NI POVEZAVE S KRMILNIKOM";
+            System.Timers.Timer poll = new System.Timers.Timer();
 
             public WarningNoConnection() : base(message)
             {
-               
+                poll.Elapsed += Poll_Elapsed;
+                poll.Interval = Settings.UpdateValuesPCms;
+                poll.Start();
             }
-                       
+
+            private void Poll_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+            {
+                for (int i = 1; i < LogoControler.LOGOConnection.Length; i++)
+                {
+                    var conStatus = LogoControler.LOGOConnection[i].connectionStatusLOGO;
+                    var enabled = XmlController.IsLogoEnabled(i);
+
+                    if ( enabled && conStatus != Connection.Status.Connected)
+                    {
+                        AddMessageForUser_Warning(message + i);
+                    }
+                    else
+                    {
+                        RemoveMessageForUser_Warning(message +i);
+                    }
+                }
+            }
         }
     }
 

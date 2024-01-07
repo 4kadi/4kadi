@@ -26,17 +26,19 @@ namespace KontrolaKadi
 
         }
 
-        private string displayName;
+        private string _displayName;
 
         public string DisplayName
         {
-            get { return displayName; }
+            get { return _displayName; }
             set 
             { 
-                displayName = value;
+                _displayName = value;
                 displayNameChanged.Invoke(null, null);
             }
         }
+
+        Label lblNextMove = new Label();
 
         public EventHandler displayNameChanged;
 
@@ -50,6 +52,10 @@ namespace KontrolaKadi
         bool designMode;
 
         InfoPanel infoIconPanel = new InfoPanel();
+               
+        public KadSubmenu submenu;
+
+        public Urnik Urnik; // just reference from submenu
 
         public Kad():base()
         {
@@ -67,17 +73,54 @@ namespace KontrolaKadi
                 return;
             }
                         
-            manageInfoIconsPanel();
+            manageInfoIconsPanel();            
 
             Paint += Kad_Paint;
-
+            
             XmlController.XmlChanged += RefreshFromXml;
+
+            this.Load += Kad_Load;           
+
+        }
+
+        private void BackImage_Click(object sender, EventArgs e)
+        {            
+            submenu.Show();
+            submenu.BringToFront();
+        }
+
+        private void Kad_Load(object sender, EventArgs e)
+        {
+            RefreshFromXml(null, null);
+
+            submenu = new KadSubmenu()
+            {
+                ID = id,
+                Width = 1500,
+                Height = 900,
+            };
+            submenu.Show(); submenu.Hide(); //triggers the load of subsequent components
+
+            Urnik = submenu.Urnik;
+            backImage.Click += BackImage_Click;
 
         }
 
         void RefreshFromXml(object sender, EventArgs e)
-        {            
-            displayName = XmlController.GetImeKadi(ID);
+        {
+            try
+            {
+                var m = new MethodInvoker(delegate 
+                { 
+                    DisplayName = XmlController.GetImeKadi(ID); 
+                });
+                FormControl.Gui.Invoke(m);
+                
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Internal error inside event RefreshFromXml. Error details: " + ex.Message);
+            }                         
         }
 
         void manageInfoIconsPanel()
@@ -113,7 +156,7 @@ namespace KontrolaKadi
 
         void DrawOutlineOnMouseOver(PaintEventArgs e)
         {
-            outline = new Rectangle(new Point(backImage.Left, backImage.Top), new Size(backImage.Width, backImage.Height));
+            outline = new Rectangle(new Point(backImage.Left, backImage.Top), new Size(backImage.Width, backImage.Height));            
             outline.Inflate(2,2);
             e.Graphics.DrawRectangle(outlinePen, outline);
         }
@@ -163,13 +206,17 @@ namespace KontrolaKadi
             backImage.Controls.Add(rectBarvaKadi);            
             rectBarvaKadi.Controls.Add(lblKadNaslov);        
             this.Paint += EnojnaKad_Paint;
-            base.displayNameChanged += displayName;
+            base.displayNameChanged += displayName;               
 
         }
 
         void displayName(object sender, EventArgs e)
         {
-            lblKadNaslov.Text = base.DisplayName;
+            MethodInvoker m = new MethodInvoker(delegate 
+            {
+                lblKadNaslov.Text = base.DisplayName;
+            });
+            m.Invoke();
         }
         
         private void EnojnaKad_Paint(object sender, PaintEventArgs e)

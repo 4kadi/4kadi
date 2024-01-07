@@ -64,10 +64,7 @@ namespace KontrolaKadi
             }
 
             try
-            {
-                settingsXML = Linq.XDocument.Load(textBoxPathXML.Text);
-                var root = settingsXML.Element("root");
-
+            {       
                 if (InvokeRequired)
                 {
                     this.Invoke(new MethodInvoker(delegate 
@@ -82,7 +79,7 @@ namespace KontrolaKadi
                     textBoxPathLOG.Text = Val.PathLogFIle;
                     textBoxPathUALOG.Text = Val.PathUserActions;
                 }
-                settingsXML.Save(textBoxPathXML.Text);
+              
             }
             catch (Exception ex)
             {

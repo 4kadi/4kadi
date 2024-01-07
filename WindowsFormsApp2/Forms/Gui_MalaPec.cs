@@ -32,21 +32,7 @@ namespace KontrolaKadi
             SetupForm();
             Load += Gui_MalaPec_Load;            
         }
-
  
-
-        void addMessageConnectionLost(bool _add )
-        {
-            if (!_add)
-            {
-                WarningManager.AddMessageForUser_Warning(WarningManager.NoConnWarningPLC1);
-            }
-            else
-            {
-                WarningManager.RemoveMessageForUser_Warning(WarningManager.NoConnWarningPLC1);
-            }
-        }
-
         private void Gui_MalaPec_Load(object sender, EventArgs e)
         {           
             registerEvents();
@@ -118,6 +104,11 @@ namespace KontrolaKadi
         }
 
         private void Gui_MalaPec_Load_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void enojnaKad1_Load(object sender, EventArgs e)
         {
 
         }

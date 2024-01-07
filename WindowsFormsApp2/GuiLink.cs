@@ -20,8 +20,12 @@ namespace KontrolaKadi
             t.Start();
         }
 
+
+
         void thread()
         {
+            var warnmng = (WarningManager)findControl("warningManager1");    
+
             //
             var kad1 = (EnojnaKad)findControl("enojnaKad1");
          
@@ -39,6 +43,28 @@ namespace KontrolaKadi
             stopWatch1.Paused = p.stopwatchPaused;
             stopWatch1.Prisotnost = p.prisotnost;
             stopWatch1.Autostart = p.AutostartStopwatch;
+
+            var enojnaKad1 = (Kad)findControl("enojnaKad1");
+            enojnaKad1.Urnik.UrnikAktiven = p.UrnikAktiven;
+            enojnaKad1.Urnik.currentTime = p.LogoClock;
+            enojnaKad1.Urnik.DayOfTheWeek1 = p.weekday1;
+            enojnaKad1.Urnik.DayOfTheWeek2 = p.weekday2;
+            enojnaKad1.Urnik.DayOfTheWeek3 = p.weekday3;
+            enojnaKad1.Urnik.StartTime1 = p.ontime1;
+            enojnaKad1.Urnik.StartTime2 = p.ontime2;
+            enojnaKad1.Urnik.StartTime3 = p.ontime3;
+            enojnaKad1.Urnik.EndTime1 = p.offtime1;
+            enojnaKad1.Urnik.EndTime2 = p.offtime2;
+            enojnaKad1.Urnik.EndTime3 = p.offtime3;
+            enojnaKad1.Urnik.DayOfTheWeek4 = p.weekday4;
+            enojnaKad1.Urnik.DayOfTheWeek5 = p.weekday5;
+            enojnaKad1.Urnik.DayOfTheWeek6 = p.weekday6;
+            enojnaKad1.Urnik.StartTime4 = p.ontime4;
+            enojnaKad1.Urnik.StartTime5 = p.ontime5;
+            enojnaKad1.Urnik.StartTime6 = p.ontime6;
+            enojnaKad1.Urnik.EndTime4 = p.offtime4;
+            enojnaKad1.Urnik.EndTime5 = p.offtime5;
+            enojnaKad1.Urnik.EndTime6 = p.offtime6;
 
         }
 

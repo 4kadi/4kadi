@@ -13,6 +13,8 @@ namespace KontrolaKadi
     {
         public int ID { get; set; } = 0;
 
+        System.Timers.Timer updater = new System.Timers.Timer();
+
         void IDerrHandler()
         {
             if (ID == 0)
@@ -62,16 +64,29 @@ namespace KontrolaKadi
             }
 
             // object own status retriever
-            Thread updater = new Thread(new ThreadStart(Updater))
+
+            this.ParentChanged += ConnectedButton_ParentChanged;
+
+        }
+
+        private void ConnectedButton_ParentChanged(object sender, EventArgs e)
+        {
+            var form = this.FindForm();
+            if (form != null)
             {
-                IsBackground = true,
-                Name = "Updater Thread"
-            };
+                form.Load += ConnectedButton_Load;
+            }
+            
+        }
 
-            updater.Start();
+        private void ConnectedButton_Load(object sender, EventArgs e)
+        {
+            IDerrHandler();
             this.Click += Clicked;
-           
 
+            updater.Interval = Settings.UpdateValuesPCms;
+            updater.Elapsed += Updater;
+            updater.Start();
         }
 
         private void ConnectedButton_TextChanged(object sender, EventArgs e)
@@ -186,7 +201,7 @@ namespace KontrolaKadi
 
         }
 
-        public void Updater()
+        public void Updater(object sender, System.Timers.ElapsedEventArgs e)
         {            
             while (true)
             {
@@ -194,14 +209,11 @@ namespace KontrolaKadi
                 {
                     UpdateConnectionStatus();
                     Thread.Sleep(RefreshOriginalVal);
-                    IDerrHandler();
-
-                    RetrieveConnectionStatus();                                      
-                    
+                    RetrieveConnectionStatus();       
                 }
                 catch 
                 {
-                    Thread.Sleep(3000);
+                    Thread.Sleep(Settings.UpdateValuesPCms);
                 }                
             }
             

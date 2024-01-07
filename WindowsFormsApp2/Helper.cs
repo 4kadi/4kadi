@@ -23,7 +23,7 @@ namespace KontrolaKadi
             {
                 if (Val.logocontroler.Prop1 != null)
                 {
-                    var p1 = Val.logocontroler.Prop1.LogoClock.Value;
+                    var p1 = Val.logocontroler.Prop1.LogoClock.Value_string;
                     if (p1 != PropComm.NA)
                     {
                         return p1;
@@ -32,7 +32,7 @@ namespace KontrolaKadi
 
                 if (Val.logocontroler.Prop2 != null)
                 {
-                    var p2 = Val.logocontroler.Prop2.LogoClock.Value;
+                    var p2 = Val.logocontroler.Prop2.LogoClock.Value_string;
                     if (p2 != PropComm.NA)
                     {
                         return p2;

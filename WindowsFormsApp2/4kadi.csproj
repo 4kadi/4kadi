@@ -80,6 +80,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forms\KadSubmenu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\KadSubmenu.Designer.cs">
+      <DependentUpon>KadSubmenu.cs</DependentUpon>
+    </Compile>
     <Compile Include="GuiLink.cs" />
     <Compile Include="SmartComponents\MyDateTimePicker.cs">
       <SubType>Component</SubType>
@@ -106,6 +112,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="SmartComponents\StopWatch.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="SmartComponents\Urnik.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="SPanel.cs">

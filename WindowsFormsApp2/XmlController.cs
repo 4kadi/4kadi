@@ -120,6 +120,11 @@ namespace KontrolaKadi
             }
         }
 
+        private static XDocument LoadNotEncriptedXML()
+        {
+            return LoadNotEncriptedXML(XmlNotEncriptedPath);
+        }
+
         private static XDocument LoadAndDecriptXml()
         {
             try
@@ -308,62 +313,93 @@ namespace KontrolaKadi
 
         static void Refresher_Thread()
         {
-            DateTime dt1;
-            XDocument newXml;
-
+            var dt1 = DateTime.Now;
 
             while (true)
             {
-                try
+                TrackChangesFromEncryptedXml();
+                TrackChangesFromUnencryptedXml();
+
+                // Manage loopTime
+                while (DateTime.Now < (dt1 + TimeSpan.FromMilliseconds(Settings.XmlRefreshrate))) // wait for some time
                 {
-                    dt1 = DateTime.Now;
+                    System.Threading.Thread.Sleep(Settings.defaultCheckTimingInterval);
 
-                    if (!savingFilePleaseWait)
+                    if (forceRefresh)  // periodically check for force refresh flag (immediately refreshes)
                     {
-                        try
-                        {
-                            newXml = LoadAndDecriptXml();
-                        }
-                        catch (Exception ex)
-                        {
-                            throw new Exception("Error loading XML file: " + ex.Message);
-                        }
-
-
-                        if (newXml.Element("root").Value != XmlFile.Element("root").Value)
-                        {
-                            RefreshCache(newXml); // refresh if different
-                            XmlChanged.Invoke(null, null);
-                        }
-
-                        forceRefresh = false;  // reset flag (notifies other methods that fresh copy was aquired)
+                        break;
                     }
-
-
-                    while (DateTime.Now < (dt1 + TimeSpan.FromMilliseconds(Settings.XmlRefreshrate))) // wait for some time
-                    {
-                        System.Threading.Thread.Sleep(Settings.defaultCheckTimingInterval);
-
-                        if (forceRefresh)  // periodically check for force refresh flag (immediately refreshes)
-                        {
-                            break;
-                        }
-                    }
-
-                    XmlControllerInitialized = true;
-                    System.Threading.Thread.Sleep(100); // mandatory wait
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception("Error while refreshing data from xml file. Please check XML path and data. More info: location of error - Refresher_Thread() method - Error message: " + ex.Message);
                 }
 
+                forceRefresh = false;  // reset flag (notifies other methods that fresh copy was aquired)
+                XmlControllerInitialized = true;
+                dt1 = DateTime.Now;
+                System.Threading.Thread.Sleep(100); // mandatory wait              
             }
         }
 
         static void TrackChangesFromEncryptedXml()
         {
+            try
+            {                
+                XDocument newXml;
 
+                if (!savingFilePleaseWait)
+                {
+                    try
+                    {
+                        newXml = LoadAndDecriptXml();
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception("Error loading XML file: " + ex.Message);
+                    }
+
+
+                    if (newXml.Element("root").Value != XmlFile.Element("root").Value)
+                    {
+                        // Write changes to encrypted xml - that will trigger on change event later on
+                        SaveXML(XmlFile.ToString(), true);
+                    }                    
+                }               
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error while refreshing data from xml file. Please check XML path and data. More info: location of error - TrackChangesFromEncryptedXml(). - Error message: " + ex.Message);
+            }
+        }
+
+        static void TrackChangesFromUnencryptedXml()
+        {
+            try
+            {
+                XDocument newXml;
+
+                if (!savingFilePleaseWait)
+                {
+                    try
+                    {
+                        newXml = LoadNotEncriptedXML();
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception("Error loading XML file: " + ex.Message);
+                    }
+
+
+                    if (newXml.Element("root").Value != XmlFile.Element("root").Value)
+                    {
+                        RefreshCache(newXml); // refresh if different
+                        XmlChanged.Invoke(null, null);
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error while refreshing data from xml file. Please check XML path and data. More info: location of error - TrackChangesFromUnencryptedXml(). - Error message: " + ex.Message);
+            }
         }
 
         static void RefreshCache(XDocument FreshLoadedXML)
@@ -690,7 +726,7 @@ namespace KontrolaKadi
         {
             try
             {
-                var buff = XmlKadi.Element("Kad" + kadIndex).Value;
+                var buff = XmlKadi.Element("Kad" + kadIndex).Element("Ime").Value;
                 return buff;
             }
             catch (Exception ex)
