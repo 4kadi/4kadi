@@ -40,14 +40,14 @@ namespace KontrolaKadi
                 #region find duplicates
                 List<string> IPs = new List<string>();
 
-                if (CheckBoxLOGO_EN1.Checked) { if (textBoxDeviceIPLOGO1.Text != "") { IPs.Add(textBoxDeviceIPLOGO1.Text); } }
-                if (CheckBoxLOGO_EN2.Checked) { if (textBoxDeviceIPLOGO2.Text != "") { IPs.Add(textBoxDeviceIPLOGO2.Text); } }
-                if (CheckBoxLOGO_EN3.Checked) { if (textBoxDeviceIPLOGO3.Text != "") { IPs.Add(textBoxDeviceIPLOGO3.Text); } }
-                if (CheckBoxLOGO_EN4.Checked) { if (textBoxDeviceIPLOGO4.Text != "") { IPs.Add(textBoxDeviceIPLOGO4.Text); } }
-                if (CheckBoxLOGO_EN5.Checked) { if (textBoxDeviceIPLOGO5.Text != "") { IPs.Add(textBoxDeviceIPLOGO5.Text); } }
-                if (CheckBoxLOGO_EN6.Checked) { if (textBoxDeviceIPLOGO6.Text != "") { IPs.Add(textBoxDeviceIPLOGO6.Text); } }
-                if (CheckBoxLOGO_EN7.Checked) { if (textBoxDeviceIPLOGO7.Text != "") { IPs.Add(textBoxDeviceIPLOGO7.Text); } }
-                if (CheckBoxLOGO_EN8.Checked) { if (textBoxDeviceIPLOGO8.Text != "") { IPs.Add(textBoxDeviceIPLOGO8.Text); } }
+                IPs.Add(textBoxDeviceIPLOGO1.Text); 
+                IPs.Add(textBoxDeviceIPLOGO2.Text); 
+                IPs.Add(textBoxDeviceIPLOGO3.Text); 
+                IPs.Add(textBoxDeviceIPLOGO4.Text); 
+                IPs.Add(textBoxDeviceIPLOGO5.Text); 
+                IPs.Add(textBoxDeviceIPLOGO6.Text); 
+                IPs.Add(textBoxDeviceIPLOGO7.Text); 
+                IPs.Add(textBoxDeviceIPLOGO8.Text); 
                
 
                 if (HasDuplicates(IPs))
@@ -91,8 +91,6 @@ namespace KontrolaKadi
 
         private void UpdateFieldsLOGO1(Linq.XElement config)
         {
-            CheckBoxLOGO_EN1.Checked = Convert.ToBoolean(config.Element("enabled").Value.Replace("\"", ""));
-
             textBoxDeviceIPLOGO1.Text = config.Element("serverIP").Value.Replace("\"", "");            
 
             textBoxLocalTSAPLOGO1.Text = config.Element("localTSAP").Value.Replace("\"", "");            
@@ -107,8 +105,6 @@ namespace KontrolaKadi
 
         private void UpdateFieldsLOGO2(Linq.XElement config)
         {
-            CheckBoxLOGO_EN2.Checked = Convert.ToBoolean(config.Element("enabled").Value.Replace("\"", ""));
-
             textBoxDeviceIPLOGO2.Text = config.Element("serverIP").Value.Replace("\"", "");
             
             textBoxLocalTSAPLOGO2.Text = config.Element("localTSAP").Value.Replace("\"", "");
@@ -123,8 +119,6 @@ namespace KontrolaKadi
 
         private void UpdateFieldsLOGO3(Linq.XElement config)
         {
-            CheckBoxLOGO_EN3.Checked = Convert.ToBoolean(config.Element("enabled").Value.Replace("\"", ""));
-
             textBoxDeviceIPLOGO3.Text = config.Element("serverIP").Value.Replace("\"", "");
            
             textBoxLocalTSAPLOGO3.Text = config.Element("localTSAP").Value.Replace("\"", "");
@@ -139,8 +133,6 @@ namespace KontrolaKadi
 
         private void UpdateFieldsLOGO4(Linq.XElement config)
         {
-            CheckBoxLOGO_EN4.Checked = Convert.ToBoolean(config.Element("enabled").Value.Replace("\"", ""));
-
             textBoxDeviceIPLOGO4.Text = config.Element("serverIP").Value.Replace("\"", "");
             
             textBoxLocalTSAPLOGO4.Text = config.Element("localTSAP").Value.Replace("\"", "");
@@ -155,7 +147,6 @@ namespace KontrolaKadi
 
         private void UpdateFieldsLOGO5(Linq.XElement config)
         {
-            CheckBoxLOGO_EN5.Checked = Convert.ToBoolean(config.Element("enabled").Value.Replace("\"", ""));
 
             textBoxDeviceIPLOGO5.Text = config.Element("serverIP").Value.Replace("\"", "");
             
@@ -171,10 +162,6 @@ namespace KontrolaKadi
 
         private void UpdateFieldsLOGO6(Linq.XElement config)
         {
-            CheckBoxLOGO_EN6.Checked = Convert.ToBoolean(config.Element("enabled").Value.Replace("\"", ""));
-
-            CheckBoxLOGO_EN6.Checked = Convert.ToBoolean(config.Element("enabled").Value.Replace("\"", ""));
-
             textBoxDeviceIPLOGO6.Text = config.Element("serverIP").Value.Replace("\"", "");
             
             textBoxLocalTSAPLOGO6.Text = config.Element("localTSAP").Value.Replace("\"", "");
@@ -189,10 +176,6 @@ namespace KontrolaKadi
 
         private void UpdateFieldsLOGO7(Linq.XElement config)
         {
-            CheckBoxLOGO_EN7.Checked = Convert.ToBoolean(config.Element("enabled").Value.Replace("\"", ""));
-
-            CheckBoxLOGO_EN7.Checked = Convert.ToBoolean(config.Element("enabled").Value.Replace("\"", ""));
-
             textBoxDeviceIPLOGO7.Text = config.Element("serverIP").Value.Replace("\"", "");
            
             textBoxLocalTSAPLOGO7.Text = config.Element("localTSAP").Value.Replace("\"", "");
@@ -207,8 +190,6 @@ namespace KontrolaKadi
 
         private void UpdateFieldsLOGO8(Linq.XElement config)
         {
-            CheckBoxLOGO_EN8.Checked = Convert.ToBoolean(config.Element("enabled").Value.Replace("\"", ""));
-
             textBoxDeviceIPLOGO8.Text = config.Element("serverIP").Value.Replace("\"", "");
            
             textBoxLocalTSAPLOGO8.Text = config.Element("localTSAP").Value.Replace("\"", "");

@@ -376,14 +376,14 @@ namespace KontrolaKadi
             // show devices
             try
             {
-                if (XmlController.IsLogoEnabled(1)) { tabControl1.TabPages.Remove(tabPageLOGO1); CheckBoxLOGO_EN1.Hide(); }
-                if (XmlController.IsLogoEnabled(2)) { tabControl1.TabPages.Remove(tabPageLOGO2); CheckBoxLOGO_EN2.Hide(); }
-                if (XmlController.IsLogoEnabled(3)) { tabControl1.TabPages.Remove(tabPageLOGO3); CheckBoxLOGO_EN3.Hide(); }
-                if (XmlController.IsLogoEnabled(4)) { tabControl1.TabPages.Remove(tabPageLOGO4); CheckBoxLOGO_EN4.Hide(); }
-                if (XmlController.IsLogoEnabled(5)) { tabControl1.TabPages.Remove(tabPageLOGO5); CheckBoxLOGO_EN5.Hide(); }
-                if (XmlController.IsLogoEnabled(6)) { tabControl1.TabPages.Remove(tabPageLOGO6); CheckBoxLOGO_EN6.Hide(); }
-                if (XmlController.IsLogoEnabled(7)) { tabControl1.TabPages.Remove(tabPageLOGO7); CheckBoxLOGO_EN7.Hide(); }
-                if (XmlController.IsLogoEnabled(8)) { tabControl1.TabPages.Remove(tabPageLOGO8); CheckBoxLOGO_EN8.Hide(); }
+                if (!XmlController.IsLogoEnabled(1)) { tabControl1.TabPages.Remove(tabPageLOGO1); }
+                if (!XmlController.IsLogoEnabled(2)) { tabControl1.TabPages.Remove(tabPageLOGO2); }
+                if (!XmlController.IsLogoEnabled(3)) { tabControl1.TabPages.Remove(tabPageLOGO3); }
+                if (!XmlController.IsLogoEnabled(4)) { tabControl1.TabPages.Remove(tabPageLOGO4); }
+                if (!XmlController.IsLogoEnabled(5)) { tabControl1.TabPages.Remove(tabPageLOGO5); }
+                if (!XmlController.IsLogoEnabled(6)) { tabControl1.TabPages.Remove(tabPageLOGO6); }
+                if (!XmlController.IsLogoEnabled(7)) { tabControl1.TabPages.Remove(tabPageLOGO7); }
+                if (!XmlController.IsLogoEnabled(8)) { tabControl1.TabPages.Remove(tabPageLOGO8); }
 
 
                 WL("GUI was loaded successfully", 0);
@@ -444,8 +444,12 @@ namespace KontrolaKadi
             {
                 if (d1.ShowDialog() == DialogResult.OK)
                 {
-                    this.Invoke(new MethodInvoker(delegate { textBoxPathXML.Text = d1.FileName; ; })); ;
-                    this.Invoke(new MethodInvoker(delegate { UpdateFieldsXML(); })); ;
+                    this.Invoke(new MethodInvoker(delegate 
+                    { 
+                        textBoxPathXML.Text = d1.FileName; ;
+                        UpdateFieldsXML();
+                    })); ;
+                  
                     WL("Browse for XML file finished", 0);
                 }
                 else

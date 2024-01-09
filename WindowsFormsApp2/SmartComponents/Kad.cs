@@ -38,9 +38,11 @@ namespace KontrolaKadi
             }
         }
 
-        Label lblNextMove = new Label();
+        public CenteredLabel lblNextMove = new CenteredLabel();
 
         public EventHandler displayNameChanged;
+
+        System.Timers.Timer updater;
 
         public SPanel backImage = new SPanel();  
         public readonly int backImageHeight = 137;
@@ -73,7 +75,8 @@ namespace KontrolaKadi
                 return;
             }
                         
-            manageInfoIconsPanel();            
+            manageInfoIconsPanel();
+            manageNextMoveLable();
 
             Paint += Kad_Paint;
             
@@ -83,6 +86,16 @@ namespace KontrolaKadi
 
         }
 
+        private void manageNextMoveLable()
+        {
+            lblNextMove.Dock = DockStyle.None;
+            lblNextMove.Top = 270;
+            lblNextMove.Left = 25;
+            lblNextMove.Width = 200;
+            lblNextMove.Height = 25;
+            lblNextMove.Text = "";
+            Controls.Add(lblNextMove);
+        }
         private void BackImage_Click(object sender, EventArgs e)
         {            
             submenu.Show();
@@ -103,7 +116,19 @@ namespace KontrolaKadi
 
             Urnik = submenu.Urnik;
             backImage.Click += BackImage_Click;
+            updater = new System.Timers.Timer(Settings.UpdateValuesPCms);
+            updater.Elapsed += Updater_Elapsed;
+            updater.Start();
 
+        }
+
+        private void Updater_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            var m = new MethodInvoker(delegate 
+            {
+                lblNextMove.Text = Urnik.NextEventDescription;
+            });
+            Invoke(m);
         }
 
         void RefreshFromXml(object sender, EventArgs e)

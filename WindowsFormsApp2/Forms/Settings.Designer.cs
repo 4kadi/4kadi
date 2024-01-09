@@ -198,15 +198,6 @@
             this.buttonOpenXML = new System.Windows.Forms.Button();
             this.label86 = new System.Windows.Forms.Label();
             this.textBoxPathXML = new System.Windows.Forms.TextBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.CheckBoxLOGO_EN7 = new System.Windows.Forms.CheckBox();
-            this.CheckBoxLOGO_EN3 = new System.Windows.Forms.CheckBox();
-            this.CheckBoxLOGO_EN2 = new System.Windows.Forms.CheckBox();
-            this.CheckBoxLOGO_EN6 = new System.Windows.Forms.CheckBox();
-            this.CheckBoxLOGO_EN8 = new System.Windows.Forms.CheckBox();
-            this.CheckBoxLOGO_EN5 = new System.Windows.Forms.CheckBox();
-            this.CheckBoxLOGO_EN4 = new System.Windows.Forms.CheckBox();
-            this.CheckBoxLOGO_EN1 = new System.Windows.Forms.CheckBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPageTools = new System.Windows.Forms.TabPage();
             this.groupBox19 = new System.Windows.Forms.GroupBox();
@@ -276,7 +267,6 @@
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox140.SuspendLayout();
-            this.groupBox2.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPageTools.SuspendLayout();
             this.groupBox19.SuspendLayout();
@@ -1707,7 +1697,6 @@
             this.tabPageMaster.Controls.Add(this.groupBox3);
             this.tabPageMaster.Controls.Add(this.groupBox4);
             this.tabPageMaster.Controls.Add(this.groupBox140);
-            this.tabPageMaster.Controls.Add(this.groupBox2);
             this.tabPageMaster.Location = new System.Drawing.Point(4, 22);
             this.tabPageMaster.Name = "tabPageMaster";
             this.tabPageMaster.Padding = new System.Windows.Forms.Padding(3);
@@ -1721,7 +1710,7 @@
             this.groupBox20.Controls.Add(this.button2);
             this.groupBox20.Controls.Add(this.label11);
             this.groupBox20.Controls.Add(this.textBoxPathTemperatureLog);
-            this.groupBox20.Location = new System.Drawing.Point(174, 358);
+            this.groupBox20.Location = new System.Drawing.Point(6, 358);
             this.groupBox20.Name = "groupBox20";
             this.groupBox20.Size = new System.Drawing.Size(550, 90);
             this.groupBox20.TabIndex = 25;
@@ -1760,7 +1749,7 @@
             this.groupBox12.Controls.Add(this.buttonOpenUALOG);
             this.groupBox12.Controls.Add(this.label4);
             this.groupBox12.Controls.Add(this.textBoxPathUALOG);
-            this.groupBox12.Location = new System.Drawing.Point(174, 262);
+            this.groupBox12.Location = new System.Drawing.Point(6, 262);
             this.groupBox12.Name = "groupBox12";
             this.groupBox12.Size = new System.Drawing.Size(550, 90);
             this.groupBox12.TabIndex = 24;
@@ -1797,7 +1786,7 @@
             // openGUI
             // 
             this.openGUI.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.openGUI.Location = new System.Drawing.Point(174, 451);
+            this.openGUI.Location = new System.Drawing.Point(6, 451);
             this.openGUI.Name = "openGUI";
             this.openGUI.Size = new System.Drawing.Size(550, 41);
             this.openGUI.TabIndex = 25;
@@ -1810,7 +1799,7 @@
             this.groupBox11.Controls.Add(this.checkBoxAutoconnect);
             this.groupBox11.Controls.Add(this.button1);
             this.groupBox11.Controls.Add(this.buttonConnectALL);
-            this.groupBox11.Location = new System.Drawing.Point(174, 6);
+            this.groupBox11.Location = new System.Drawing.Point(6, 6);
             this.groupBox11.Name = "groupBox11";
             this.groupBox11.Size = new System.Drawing.Size(550, 61);
             this.groupBox11.TabIndex = 24;
@@ -1852,7 +1841,7 @@
             this.groupBox3.Controls.Add(this.buttonOpenLOG);
             this.groupBox3.Controls.Add(this.label1);
             this.groupBox3.Controls.Add(this.textBoxPathLOG);
-            this.groupBox3.Location = new System.Drawing.Point(174, 166);
+            this.groupBox3.Location = new System.Drawing.Point(6, 166);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(550, 90);
             this.groupBox3.TabIndex = 23;
@@ -1890,7 +1879,7 @@
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.debug);
-            this.groupBox4.Location = new System.Drawing.Point(730, 6);
+            this.groupBox4.Location = new System.Drawing.Point(562, 6);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(558, 486);
             this.groupBox4.TabIndex = 22;
@@ -1903,7 +1892,7 @@
             this.debug.Multiline = true;
             this.debug.Name = "debug";
             this.debug.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.debug.Size = new System.Drawing.Size(533, 461);
+            this.debug.Size = new System.Drawing.Size(729, 461);
             this.debug.TabIndex = 5;
             // 
             // groupBox140
@@ -1913,7 +1902,7 @@
             this.groupBox140.Controls.Add(this.buttonOpenXML);
             this.groupBox140.Controls.Add(this.label86);
             this.groupBox140.Controls.Add(this.textBoxPathXML);
-            this.groupBox140.Location = new System.Drawing.Point(174, 71);
+            this.groupBox140.Location = new System.Drawing.Point(6, 71);
             this.groupBox140.Name = "groupBox140";
             this.groupBox140.Size = new System.Drawing.Size(550, 90);
             this.groupBox140.TabIndex = 21;
@@ -1965,111 +1954,6 @@
             this.textBoxPathXML.ReadOnly = true;
             this.textBoxPathXML.Size = new System.Drawing.Size(538, 20);
             this.textBoxPathXML.TabIndex = 5;
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.CheckBoxLOGO_EN7);
-            this.groupBox2.Controls.Add(this.CheckBoxLOGO_EN3);
-            this.groupBox2.Controls.Add(this.CheckBoxLOGO_EN2);
-            this.groupBox2.Controls.Add(this.CheckBoxLOGO_EN6);
-            this.groupBox2.Controls.Add(this.CheckBoxLOGO_EN8);
-            this.groupBox2.Controls.Add(this.CheckBoxLOGO_EN5);
-            this.groupBox2.Controls.Add(this.CheckBoxLOGO_EN4);
-            this.groupBox2.Controls.Add(this.CheckBoxLOGO_EN1);
-            this.groupBox2.Location = new System.Drawing.Point(6, 6);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(162, 486);
-            this.groupBox2.TabIndex = 1;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Enabled connections";
-            // 
-            // CheckBoxLOGO_EN7
-            // 
-            this.CheckBoxLOGO_EN7.AutoSize = true;
-            this.CheckBoxLOGO_EN7.Enabled = false;
-            this.CheckBoxLOGO_EN7.Location = new System.Drawing.Point(6, 157);
-            this.CheckBoxLOGO_EN7.Name = "CheckBoxLOGO_EN7";
-            this.CheckBoxLOGO_EN7.Size = new System.Drawing.Size(62, 17);
-            this.CheckBoxLOGO_EN7.TabIndex = 2;
-            this.CheckBoxLOGO_EN7.Text = "LOGO7";
-            this.CheckBoxLOGO_EN7.UseVisualStyleBackColor = true;
-            // 
-            // CheckBoxLOGO_EN3
-            // 
-            this.CheckBoxLOGO_EN3.AutoSize = true;
-            this.CheckBoxLOGO_EN3.Enabled = false;
-            this.CheckBoxLOGO_EN3.Location = new System.Drawing.Point(6, 65);
-            this.CheckBoxLOGO_EN3.Name = "CheckBoxLOGO_EN3";
-            this.CheckBoxLOGO_EN3.Size = new System.Drawing.Size(62, 17);
-            this.CheckBoxLOGO_EN3.TabIndex = 2;
-            this.CheckBoxLOGO_EN3.Text = "LOGO3";
-            this.CheckBoxLOGO_EN3.UseVisualStyleBackColor = true;
-            // 
-            // CheckBoxLOGO_EN2
-            // 
-            this.CheckBoxLOGO_EN2.AutoSize = true;
-            this.CheckBoxLOGO_EN2.Enabled = false;
-            this.CheckBoxLOGO_EN2.Location = new System.Drawing.Point(6, 42);
-            this.CheckBoxLOGO_EN2.Name = "CheckBoxLOGO_EN2";
-            this.CheckBoxLOGO_EN2.Size = new System.Drawing.Size(62, 17);
-            this.CheckBoxLOGO_EN2.TabIndex = 1;
-            this.CheckBoxLOGO_EN2.Text = "LOGO2";
-            this.CheckBoxLOGO_EN2.UseVisualStyleBackColor = true;
-            // 
-            // CheckBoxLOGO_EN6
-            // 
-            this.CheckBoxLOGO_EN6.AutoSize = true;
-            this.CheckBoxLOGO_EN6.Enabled = false;
-            this.CheckBoxLOGO_EN6.Location = new System.Drawing.Point(6, 134);
-            this.CheckBoxLOGO_EN6.Name = "CheckBoxLOGO_EN6";
-            this.CheckBoxLOGO_EN6.Size = new System.Drawing.Size(62, 17);
-            this.CheckBoxLOGO_EN6.TabIndex = 0;
-            this.CheckBoxLOGO_EN6.Text = "LOGO6";
-            this.CheckBoxLOGO_EN6.UseVisualStyleBackColor = true;            
-            // 
-            // CheckBoxLOGO_EN8
-            // 
-            this.CheckBoxLOGO_EN8.AutoSize = true;
-            this.CheckBoxLOGO_EN8.Enabled = false;
-            this.CheckBoxLOGO_EN8.Location = new System.Drawing.Point(6, 180);
-            this.CheckBoxLOGO_EN8.Name = "CheckBoxLOGO_EN8";
-            this.CheckBoxLOGO_EN8.Size = new System.Drawing.Size(62, 17);
-            this.CheckBoxLOGO_EN8.TabIndex = 0;
-            this.CheckBoxLOGO_EN8.Text = "LOGO8";
-            this.CheckBoxLOGO_EN8.UseVisualStyleBackColor = true;           
-            // 
-            // CheckBoxLOGO_EN5
-            // 
-            this.CheckBoxLOGO_EN5.AutoSize = true;
-            this.CheckBoxLOGO_EN5.Enabled = false;
-            this.CheckBoxLOGO_EN5.Location = new System.Drawing.Point(6, 111);
-            this.CheckBoxLOGO_EN5.Name = "CheckBoxLOGO_EN5";
-            this.CheckBoxLOGO_EN5.Size = new System.Drawing.Size(62, 17);
-            this.CheckBoxLOGO_EN5.TabIndex = 0;
-            this.CheckBoxLOGO_EN5.Text = "LOGO5";
-            this.CheckBoxLOGO_EN5.UseVisualStyleBackColor = true;            
-            // 
-            // CheckBoxLOGO_EN4
-            // 
-            this.CheckBoxLOGO_EN4.AutoSize = true;
-            this.CheckBoxLOGO_EN4.Enabled = false;
-            this.CheckBoxLOGO_EN4.Location = new System.Drawing.Point(6, 88);
-            this.CheckBoxLOGO_EN4.Name = "CheckBoxLOGO_EN4";
-            this.CheckBoxLOGO_EN4.Size = new System.Drawing.Size(62, 17);
-            this.CheckBoxLOGO_EN4.TabIndex = 0;
-            this.CheckBoxLOGO_EN4.Text = "LOGO4";
-            this.CheckBoxLOGO_EN4.UseVisualStyleBackColor = true;
-            // 
-            // CheckBoxLOGO_EN1
-            // 
-            this.CheckBoxLOGO_EN1.AutoSize = true;
-            this.CheckBoxLOGO_EN1.Enabled = false;
-            this.CheckBoxLOGO_EN1.Location = new System.Drawing.Point(6, 19);
-            this.CheckBoxLOGO_EN1.Name = "CheckBoxLOGO_EN1";
-            this.CheckBoxLOGO_EN1.Size = new System.Drawing.Size(62, 17);
-            this.CheckBoxLOGO_EN1.TabIndex = 0;
-            this.CheckBoxLOGO_EN1.Text = "LOGO1";
-            this.CheckBoxLOGO_EN1.UseVisualStyleBackColor = true;
             // 
             // tabControl1
             // 
@@ -2257,8 +2141,6 @@
             this.groupBox4.PerformLayout();
             this.groupBox140.ResumeLayout(false);
             this.groupBox140.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
             this.tabControl1.ResumeLayout(false);
             this.tabPageTools.ResumeLayout(false);
             this.groupBox19.ResumeLayout(false);
@@ -2422,15 +2304,6 @@
         private System.Windows.Forms.Button buttonOpenXML;
         private System.Windows.Forms.Label label86;
         public System.Windows.Forms.TextBox textBoxPathXML;
-        private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.CheckBox CheckBoxLOGO_EN7;
-        private System.Windows.Forms.CheckBox CheckBoxLOGO_EN3;
-        private System.Windows.Forms.CheckBox CheckBoxLOGO_EN2;
-        private System.Windows.Forms.CheckBox CheckBoxLOGO_EN6;
-        private System.Windows.Forms.CheckBox CheckBoxLOGO_EN8;
-        private System.Windows.Forms.CheckBox CheckBoxLOGO_EN5;
-        private System.Windows.Forms.CheckBox CheckBoxLOGO_EN4;
-        private System.Windows.Forms.CheckBox CheckBoxLOGO_EN1;
         public System.Windows.Forms.Button BtnDisconnectLOGO4;
         public System.Windows.Forms.Button BtnConnectLOGO4;
         public System.Windows.Forms.Button BtnDisconnectLOGO3;

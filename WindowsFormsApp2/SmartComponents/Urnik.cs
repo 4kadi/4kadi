@@ -15,7 +15,7 @@ namespace KontrolaKadi
         public bool ClassInitializedProperly 
         { 
             get { return classInitializedProperly; }
-            private set { classInitializedProperly = value; if (classInitializedProperly) { updateFields(); } } 
+            private set { classInitializedProperly = value; if (classInitializedProperly) { ValueChanged(null, null); } } 
         }
 
         UrnikSection section1, section2, section3, section4, section5, section6;
@@ -44,9 +44,13 @@ namespace KontrolaKadi
         PlcVars.Word _StartTime6;
         PlcVars.Word _EndTime6;
 
-        List<WeektimerEvent> weektimerEvents = new List<WeektimerEvent>();
-
         Label nextEventDescription = new Label();
+        public string NextEventDescription
+        {
+            get { return nextEventDescription.Text; }
+            private set { nextEventDescription.Text = value; }
+        }
+        
 
         public PlcVars.LogoClock currentTime;
 
@@ -211,11 +215,11 @@ namespace KontrolaKadi
                 {
                     if (ne != null)
                     {
-                        nextEventDescription.Text = GetNextEventDescription(ne);
+                        NextEventDescription = GetNextEventDescription(ne);
                     }
                     else
                     {
-                        nextEventDescription.Text = "Urnik je izključen.";
+                        NextEventDescription = "Urnik je izključen.";
                     }
                 }
                 catch (Exception ex)
@@ -229,167 +233,142 @@ namespace KontrolaKadi
             nextEventDescription.Invoke(m);
         }
 
-        public string GetNextEventDescription(WeektimerEventPart eventPart)
+        public string GetNextEventDescription(OneDaysEvent eventPart)
         {
-            string msg = " Naslednji dogodek: ";
-            if (eventPart.turningOnOrOff)
+            if (eventPart == null)
             {
-                msg += "VKLOP";
-            }
-            else
-            {
-                msg += "IZKLOP";
+                return "Urnik je izključen";
             }
 
-            msg += " - ";
-            msg += eventPart.dayOfWeek.ToString();
-            msg += " ob ";
-            msg += eventPart.Time.ToString();
+            string msg = eventPart.CurrentlyActive ? "VKLOP" : "IZKLOP";
+          
+            int hours = eventPart.EventTime.Hours;
+            int minutes = eventPart.EventTime.Minutes;
+            
+            msg += $" - {eventPart.DayOfWeek.ToString()} ob {hours:00}:{minutes:00}";
 
             return msg;
-        }                      
-        private WeektimerEventPart getNextEvent()
-        {
-            getAllEvents();
-
-            var startTimes = GetEventsOfTheWeekSortedByStartTime();
-            var endTimes = GetEventsOfTheWeekSortedByEndTime();
-
-            if (startTimes.Count == 0 && endTimes.Count == 0)
-            {
-                return null;
-            }
-
-            var nextTurnOn = startTimes[0];
-            var nextTurnOff = endTimes[0];
-            WeektimerEventPart nextEventPart;
-
-            if (!UrnikAktiven.Value_bool) 
-            {
-                // if urnik is currently turned off (PLC value) - display event that turns it off
-                var nextEvent = nextTurnOn;
-                nextEventPart = new WeektimerEventPart(true, (CustomDayOfWeek)nextEvent.GetNextActiveDay((TimeSpan)currentTime.Value_TimeSpan), nextEvent.StartTime); 
-            }
-            else
-            {
-                // if urnik is currently turned on (PLC value) - display event that turns it off
-                var nextEvent = nextTurnOff;
-                nextEventPart = new WeektimerEventPart(false, (CustomDayOfWeek)nextEvent.GetNextActiveDay((TimeSpan)currentTime.Value_TimeSpan), nextEvent.EndTime);
-            }
-
-            return nextEventPart;
         }
 
-        private void getAllEvents()
+
+
+        private List<OneDaysEvent> SortEventsOneWeekFromNow(List<OneDaysEvent> events)
+        {
+            var now = DateTime.Now;
+            // Assuming CustomDayOfWeek enum starts from 1 for Sunday
+            var currentDayOfWeek = (CustomDayOfWeek)((int)now.DayOfWeek + 1); // +1 to align with your enum
+
+            var pastEvents = new List<OneDaysEvent>();
+            var futureEvents = new List<OneDaysEvent>();
+
+            foreach (var eventItem in events)
+            {
+                // Calculate day difference
+                int daysUntilEvent = (int)eventItem.DayOfWeek - (int)currentDayOfWeek;
+
+                // Adjust for rollover
+                if (daysUntilEvent < 0)
+                {
+                    daysUntilEvent += 7; // Total days in a week
+                }
+
+                // Check if the event is in the past
+                bool isPastEvent = daysUntilEvent == 0 && eventItem.EventTime < now.TimeOfDay;
+
+                if (isPastEvent)
+                {
+                    pastEvents.Add(eventItem);
+                }
+                else
+                {
+                    futureEvents.Add(eventItem);
+                }
+            }
+
+            // Add past events to the end of the list
+            futureEvents.AddRange(pastEvents);
+
+            return futureEvents;
+        }
+
+
+
+        private OneDaysEvent getNextEvent()
+        {
+            var allEvents = getAllEvents();
+            var FolowingEventsSorted = SortEventsOneWeekFromNow(allEvents);
+            OneDaysEvent nextEvent;
+            if (FolowingEventsSorted.Count > 0)
+            {
+                return FolowingEventsSorted[0];
+            }
+
+            return null;
+        }
+
+
+
+
+        private List<WeektimerEvent> getAllWeektimerEvents()
         {
             List<WeektimerEvent> buff = new List<WeektimerEvent>();
+
             var wte1 = new WeektimerEvent(StartTime1, EndTime1, DayOfTheWeek1); buff.Add(wte1);
             var wte2 = new WeektimerEvent(StartTime2, EndTime2, DayOfTheWeek2); buff.Add(wte2);
             var wte3 = new WeektimerEvent(StartTime3, EndTime3, DayOfTheWeek3); buff.Add(wte3);
             var wte4 = new WeektimerEvent(StartTime4, EndTime4, DayOfTheWeek4); buff.Add(wte4);
             var wte5 = new WeektimerEvent(StartTime5, EndTime5, DayOfTheWeek5); buff.Add(wte5);
             var wte6 = new WeektimerEvent(StartTime6, EndTime6, DayOfTheWeek6); buff.Add(wte6);
-            weektimerEvents = buff;
+
+            return buff;
         }
 
-        //
-        private List<WeektimerEvent> GetEventsOfTheWeekSortedByStartTime()
+        private List<OneDaysEvent> getAllEvents()
         {
-            var now = DateTime.Now; 
-            var currentDay = now.DayOfWeek;
-            var eventsWithRelativeTime = new List<Tuple<WeektimerEvent, TimeSpan>>();
+            List<WeektimerEvent> weektimerEvents = getAllWeektimerEvents();
+            var AllWeekEvents = new List<OneDaysEvent>();
 
-            foreach (var evnt in weektimerEvents)
+            foreach (var weektimerEvent in weektimerEvents)
             {
-                if (evnt.IsItActiveOnAnyDay())
+                if (weektimerEvent.Monday)
                 {
-                    var daysUntilEvent = DaysUntilEvent(currentDay, evnt);
-                     var eventTime = evnt.StartTime;
-                    var timeUntilEvent = (daysUntilEvent * 24 * 60) + ((eventTime - (TimeSpan)currentTime.Value_TimeSpan).TotalMinutes);
-                    if (timeUntilEvent < 0)
-                    {
-                        timeUntilEvent += 7 * 24 * 60; // Adjust for past events in the current week
-                    }
-
-                    eventsWithRelativeTime.Add(new Tuple<WeektimerEvent, TimeSpan>(evnt, TimeSpan.FromMinutes(timeUntilEvent)));
+                    AllWeekEvents.Add(new OneDaysEvent(CustomDayOfWeek.Ponedeljek, weektimerEvent.StartTime, true)) ;
+                    AllWeekEvents.Add(new OneDaysEvent(CustomDayOfWeek.Ponedeljek, weektimerEvent.EndTime, false));
+                }
+                if (weektimerEvent.Tuesday)
+                {
+                    AllWeekEvents.Add(new OneDaysEvent(CustomDayOfWeek.Torek, weektimerEvent.StartTime, true));
+                    AllWeekEvents.Add(new OneDaysEvent(CustomDayOfWeek.Torek, weektimerEvent.EndTime, false));
+                }
+                if (weektimerEvent.Wednesday)
+                {
+                    AllWeekEvents.Add(new OneDaysEvent(CustomDayOfWeek.Sreda, weektimerEvent.StartTime, true));
+                    AllWeekEvents.Add(new OneDaysEvent(CustomDayOfWeek.Sreda, weektimerEvent.EndTime, false));
+                }
+                if (weektimerEvent.Thursday)
+                {
+                    AllWeekEvents.Add(new OneDaysEvent(CustomDayOfWeek.Četrtek, weektimerEvent.StartTime, true));
+                    AllWeekEvents.Add(new OneDaysEvent(CustomDayOfWeek.Četrtek, weektimerEvent.EndTime, false));
+                }
+                if (weektimerEvent.Friday)
+                {
+                    AllWeekEvents.Add(new OneDaysEvent(CustomDayOfWeek.Petek, weektimerEvent.StartTime, true));
+                    AllWeekEvents.Add(new OneDaysEvent(CustomDayOfWeek.Petek, weektimerEvent.EndTime, false));
+                }
+                if (weektimerEvent.Saturday)
+                {
+                    AllWeekEvents.Add(new OneDaysEvent(CustomDayOfWeek.Sobota, weektimerEvent.StartTime, true));
+                    AllWeekEvents.Add(new OneDaysEvent(CustomDayOfWeek.Sobota, weektimerEvent.EndTime, false));
+                }
+                if (weektimerEvent.Sunday)
+                {
+                    AllWeekEvents.Add(new OneDaysEvent(CustomDayOfWeek.Nedelja, weektimerEvent.StartTime, true));
+                    AllWeekEvents.Add(new OneDaysEvent(CustomDayOfWeek.Nedelja, weektimerEvent.EndTime, false));
                 }
             }
-
-            return eventsWithRelativeTime.OrderBy(t => t.Item2).Select(t => t.Item1).ToList();
+            return AllWeekEvents;
         }
 
-        private List<WeektimerEvent> GetEventsOfTheWeekSortedByEndTime()
-        {
-            var now = DateTime.Now; // Assuming this represents the current time
-            var currentDay = now.DayOfWeek;
-            var eventsWithRelativeTime = new List<Tuple<WeektimerEvent, TimeSpan>>();
-
-            foreach (var evnt in weektimerEvents)
-            {
-                if (evnt.IsItActiveOnAnyDay())
-                {
-                    var daysUntilEvent = DaysUntilEvent(currentDay, evnt);
-                    var eventTime = evnt.EndTime;
-                    var timeUntilEvent = (daysUntilEvent * 24 * 60) + ((eventTime - (TimeSpan)currentTime.Value_TimeSpan).TotalMinutes);
-                    if (timeUntilEvent < 0)
-                    {
-                        timeUntilEvent += 7 * 24 * 60; // Adjust for past events in the current week
-                    }
-
-                    eventsWithRelativeTime.Add(new Tuple<WeektimerEvent, TimeSpan>(evnt, TimeSpan.FromMinutes(timeUntilEvent)));
-                }
-            }
-
-            return eventsWithRelativeTime.OrderBy(t => t.Item2).Select(t => t.Item1).ToList();
-        }
-
-        private int DaysUntilEvent(DayOfWeek currentDay, WeektimerEvent evnt)
-        {
-            int currentDayIndex = (int)currentDay;
-            int eventDayIndex = (int)evnt.GetNextActiveDay((TimeSpan)currentTime.Value_TimeSpan); // Assuming this returns the DayOfWeek value
-            int daysUntilEvent;
-
-            if (eventDayIndex >= currentDayIndex)
-            {
-                // If the event day is in the same week and after or on the current day
-                daysUntilEvent = eventDayIndex - currentDayIndex;
-            }
-            else
-            {
-                // If the event day is in the next week
-                daysUntilEvent = 7 - (currentDayIndex - eventDayIndex);
-            }
-
-            return daysUntilEvent;
-        }
-
-        private int DaysUntilEvent1(DayOfWeek currentDay, WeektimerEvent evnt)
-        {
-            int currentDayIndex = (int)currentDay;
-            int daysUntilEvent = 0;
-
-            for (int i = 0; i < 7; i++) // Check for the next 7 days
-            {
-                int checkedDayIndex = (currentDayIndex + i) % 7;
-                if (evnt.IsItActiveOnDay((CustomDayOfWeek)checkedDayIndex))
-                {
-                    daysUntilEvent = i;
-                    break;
-                }
-            }
-
-            return daysUntilEvent;
-        }
-
-        void updateFields()
-        {
-            Task.Run(()=> 
-            {
-                Thread.Sleep(5000);
-                ValueChanged(null, null);
-            });
-        }
-        
     }
 
     public class WeektimerEvent
@@ -417,7 +396,7 @@ namespace KontrolaKadi
             Saturday = LogoTimeEncoder.WeekDay.IsItSaturday(WeekDay);
             Sunday = LogoTimeEncoder.WeekDay.IsItSunday(WeekDay);
         }
-
+                
         public CustomDayOfWeek? GetNextActiveDay(TimeSpan currentTime)
         {
             var today = DateTime.Now.DayOfWeek;
@@ -445,25 +424,7 @@ namespace KontrolaKadi
 
             return CustomDayOfWeek.Izključen; // No active day found
         }
-
-
-
-        public CustomDayOfWeek? GetNextActiveDay1()
-        {
-            var today = DateTime.Now.DayOfWeek;
-
-            for (int i = 1; i < 8; i++)
-            {
-                var nextDay = (CustomDayOfWeek)(((int)today + i) % 8);
-                if (IsItActiveOnDay(nextDay))
-                {
-                    return nextDay;
-                }
-            }
-
-            return CustomDayOfWeek.Izključen; // No active day found
-        }
-
+        
         public bool IsItActiveOnAnyDay()
         {
             if (Monday || Tuesday || Wednesday || Thursday || Friday || Saturday || Sunday)
@@ -494,7 +455,15 @@ namespace KontrolaKadi
                 default:
                     return false;
             }
-        }                      
+        }
+
+        public bool IsItActiveToday()
+        {
+            var weekDay = (int)DateTime.Now.DayOfWeek + 1; // offset because type mismatch
+            var todaysCustomDayOfWeek = (CustomDayOfWeek)weekDay;
+
+            return IsItActiveOnDay(todaysCustomDayOfWeek);
+        }
     }
 
     public class WeektimerEventPart
@@ -1224,6 +1193,68 @@ namespace KontrolaKadi
             }
         }
     }
+
+    public class OneDaysEvent
+    {
+        public CustomDayOfWeek DayOfWeek { get; private set; }
+        public TimeSpan EventTime { get; private set; }
+        public bool CurrentlyActive { get; private set; } // true = Event is starting, false = Event is ending
+
+        // Constructor
+        public OneDaysEvent(CustomDayOfWeek dayOfWeek, TimeSpan eventTime, bool currentlyActive)
+        {
+            DayOfWeek = dayOfWeek;
+            EventTime = eventTime;
+            CurrentlyActive = currentlyActive;
+        }
+
+        public bool IsEventTodayAndActive(TimeSpan currentTime)
+        {
+            var today = DateTime.Now.DayOfWeek;
+            CustomDayOfWeek todayCustomDay = (CustomDayOfWeek)((int)today + 1); // +1 to align with enum where 1 is Sunday
+
+            if (todayCustomDay == DayOfWeek)
+            {
+                if (CurrentlyActive && currentTime >= EventTime) // Event is starting and current time is past the start time
+                {
+                    return true;
+                }
+                else if (!CurrentlyActive && currentTime <= EventTime) // Event is ending and current time is before the end time
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public bool IsEventTodayAndOver(TimeSpan currentTime)
+        {
+            var today = DateTime.Now.DayOfWeek;
+            CustomDayOfWeek todayCustomDay = (CustomDayOfWeek)((int)today + 1); // +1 to align with enum where 1 is Sunday
+
+            if (todayCustomDay == DayOfWeek && !CurrentlyActive && currentTime > EventTime) // Event is over today
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool IsEventUpcoming(TimeSpan currentTime)
+        {
+            var today = DateTime.Now.DayOfWeek;
+            CustomDayOfWeek todayCustomDay = (CustomDayOfWeek)((int)today + 1); // +1 to align with enum where 1 is Sunday
+
+            if (todayCustomDay == DayOfWeek && CurrentlyActive && currentTime < EventTime) // Event is starting soon
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
 
     public enum CustomDayOfWeek
     {

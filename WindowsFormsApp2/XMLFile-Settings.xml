@@ -23,7 +23,7 @@
 	  </LOGO1>//
 	  //
 	  <LOGO2>//		
-		<enabled>true</enabled>//
+		<enabled>false</enabled>//
 		<showname>LOGO2</showname>//
 		<serverIP>10.199.197.42</serverIP>//
 		<localTSAP>"02.00"</localTSAP>//
