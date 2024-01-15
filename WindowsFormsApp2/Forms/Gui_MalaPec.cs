@@ -15,13 +15,8 @@ namespace KontrolaKadi
 {
     public partial class Gui_MalaPec : Form
     {
-        Prop1 p1 = Val.logocontroler.Prop1; 
-        Prop2 p2 = Val.logocontroler.Prop2;
-
-        Prop1 prop = Val.logocontroler.Prop1;
-
-        GuiLink guiLink;
-       
+        GuiLink guiLink;    
+        
 
         public Gui_MalaPec()
         {

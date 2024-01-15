@@ -80,6 +80,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomControls\GrelnikPowerSet.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomControls\CrpalkaPowerSet.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomControls\PowerSet.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomControls\PVSelector.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomControls\SGgroupbox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Forms\KadSubmenu.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -87,10 +102,16 @@
       <DependentUpon>KadSubmenu.cs</DependentUpon>
     </Compile>
     <Compile Include="GuiLink.cs" />
-    <Compile Include="SmartComponents\MyDateTimePicker.cs">
+    <Compile Include="CustomControls\AutoManSwitch.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="SmartComponents\CenteredLabel.cs">
+    <Compile Include="CustomControls\AutoManSwitch.Designer.cs">
+      <DependentUpon>AutoManSwitch.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\MyDateTimePicker.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomControls\CenteredLabel.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Datalogger.cs" />
@@ -99,25 +120,28 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="SmartComponents\InfoPanel.cs">
+    <Compile Include="CustomControls\InfoPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="SmartComponents\Kad.cs">
+    <Compile Include="CustomControls\Kad.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="SmartComponents\Schedule.cs">
+    <Compile Include="CustomControls\Schedule.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="SmartComponents\SmartChart.cs">
+    <Compile Include="CustomControls\SmartChart.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="SmartComponents\StopWatch.cs">
+    <Compile Include="CustomControls\StopWatch.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="SmartComponents\Urnik.cs">
+    <Compile Include="CustomControls\Switch3point.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="SPanel.cs">
+    <Compile Include="CustomControls\Urnik.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomControls\SPanel.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="TextboxShow.cs">
@@ -161,19 +185,15 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
-    <Compile Include="SmartComponents\ConnectedButton.cs">
+    <Compile Include="CustomControls\ConnectedButton.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="SysLog.cs" />
     <Compile Include="Update fields.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TimeSelector.cs" />
-    <Compile Include="SmartComponents\UrnikControl.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Val.cs" />
-    <Compile Include="SmartComponents\WarningManager.cs">
+    <Compile Include="CustomControls\WarningManager.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="WinApi.cs" />
@@ -311,5 +331,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

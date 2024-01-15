@@ -19,7 +19,7 @@
 		<remoteTSAP>"20.00"</remoteTSAP>			// format must be ##.## (00.03) TSAP is used for comunication between PLCs
 		<watchdogEN>true</watchdogEN>				// value must be "true" or "false" .. enable or disable watchdog - watchdog is used for detecting comunication problems	
 		<watchdogAddress>2</watchdogAddress>  		// value must be number DOUBLE WORD format. Watchdog is used for detecting comunication problems. For example "100" if watchdog value is DOUBLE WORD on address 100
-		<ReadWriteCycle>200</ReadWriteCycle>		// value in miliseconds - frequency at which data aquisition is preformed - read, action, write, delay. (watchdog is also bound at this frequency)
+		<ReadWriteCycle>50</ReadWriteCycle>		// value in miliseconds - frequency at which data aquisition is preformed - read, action, write, delay. (watchdog is also bound at this frequency)
 	  </LOGO1>//
 	  //
 	  <LOGO2>//		

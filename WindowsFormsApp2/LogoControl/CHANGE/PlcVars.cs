@@ -1255,8 +1255,7 @@ namespace KontrolaKadi
                 _Client = Client;
                 _TypeAndAdress = TypeAndAdress;
                 _IsWritable = IsWritable;
-
-                ValueChanged = new ValueChangedDelegate(delegate { });
+               
             }
 
 
@@ -1326,7 +1325,7 @@ namespace KontrolaKadi
                             }
                             if (previousPLCval != PLCval)
                             {
-                                previousPLCval = PLCval;
+                                previousPLCval = PLCval;                                
                                 ValueChanged?.BeginInvoke(this, null, null, null);
                             }
 
@@ -1466,9 +1465,7 @@ namespace KontrolaKadi
                 PLCval = null;
                 _Client = Client;
                 _TypeAndAdress = new WordAddress(988);
-                base.SyncEvery_X_Time = 5;
-
-                ValueChanged = new ValueChangedDelegate(delegate { });
+                base.SyncEvery_X_Time = 5;               
             }
     
             public TimeSpan? ConvertStringToTimeSpan()

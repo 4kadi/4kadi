@@ -20,8 +20,6 @@ namespace KontrolaKadi
             t.Start();
         }
 
-
-
         void thread()
         {
             var warnmng = (WarningManager)findControl("warningManager1");    
@@ -39,10 +37,15 @@ namespace KontrolaKadi
             stopWatch1.ReminderTime = p.stopwatchReminder;
             stopWatch1.PauseTime = p.stopwatchPauseTime;
             stopWatch1.TimeLeft = p.stopwatchTimeLeft;
+            stopWatch1.PauseLeft = p.stopwatchPauseLeft;
             stopWatch1.Finished = p.stopwatchFinished;
             stopWatch1.Paused = p.stopwatchPaused;
-            stopWatch1.Prisotnost = p.prisotnost;
-            stopWatch1.Autostart = p.AutostartStopwatch;
+            stopWatch1.InProgress = p.stopwatchInProgress;
+            stopWatch1.Prisotnost = p.Prisotnost_CurrentState;
+            stopWatch1.UpostevajPrisotnost = p.AutostartStopwatch;
+            stopWatch1.BtnReset = p.stopwatchResetPulse;
+            stopWatch1.BtnStart = p.stopwatchStartPulse;
+            stopWatch1.BtnStop = p.stopwatchStopPulse;
 
             var enojnaKad1 = (Kad)findControl("enojnaKad1");
             enojnaKad1.Urnik.UrnikAktiven = p.UrnikAktiven;
@@ -64,7 +67,71 @@ namespace KontrolaKadi
             enojnaKad1.Urnik.StartTime6 = p.ontime6;
             enojnaKad1.Urnik.EndTime4 = p.offtime4;
             enojnaKad1.Urnik.EndTime5 = p.offtime5;
-            enojnaKad1.Urnik.EndTime6 = p.offtime6;
+            enojnaKad1.Urnik.EndTime6 = p.offtime6;        
+
+            enojnaKad1.SwitchesGroupbox.Prisotnost.Value_SwitchSetting = p.Prisotnost_AutoManSwitch;
+            enojnaKad1.SwitchesGroupbox.Prisotnost.Value_CurrentState_PLC = p.Prisotnost_CurrentState;
+
+            enojnaKad1.SwitchesGroupbox.Grelec1.Value_SwitchSetting = p.Grelec1_AutoManSwitch;
+            enojnaKad1.SwitchesGroupbox.Grelec1.Value_CurrentState_PLC = p.Grelec1_CurrentState;
+
+            enojnaKad1.SwitchesGroupbox.Grelec2.Value_SwitchSetting = p.Grelec2_AutoManSwitch;
+            enojnaKad1.SwitchesGroupbox.Grelec2.Value_CurrentState_PLC = p.Grelec2_CurrentState;
+
+            enojnaKad1.SwitchesGroupbox.ČrpalkaNivo.Value_SwitchSetting = p.ČrpalkaNivo_AutoManSwitch;
+            enojnaKad1.SwitchesGroupbox.ČrpalkaNivo.Value_CurrentState_PLC = p.ČrpalkaNivo_CurrentState;
+
+            enojnaKad1.SwitchesGroupbox.ČrpalkaFilter.Value_SwitchSetting = p.ČrpalkaFilter_AutoManSwitch;
+            enojnaKad1.SwitchesGroupbox.ČrpalkaFilter.Value_CurrentState_PLC = p.ČrpalkaFilter_CurrentState;
+
+            enojnaKad1.SwitchesGroupbox.ČrpalkaČasovnoDolivanje.Value_SwitchSetting = p.ČrpalkaČasovnoDolivanje_AutoManSwitch;
+            enojnaKad1.SwitchesGroupbox.ČrpalkaČasovnoDolivanje.Value_CurrentState_PLC = p.ČrpalkaČasovnoDolivanje_CurrentState;
+
+            enojnaKad1.SwitchesGroupbox.ČrpalkaHlajenje.Value_SwitchSetting = p.ČrpalkaHlajenje_AutoManSwitch;
+            enojnaKad1.SwitchesGroupbox.ČrpalkaHlajenje.Value_CurrentState_PLC = p.ČrpalkaHlajenje_CurrentState;
+
+            enojnaKad1.SwitchesGroupbox.TlačniSezorFiltra.Value_SwitchSetting = p.TlačniSezorFiltra_AutoManSwitch;
+            enojnaKad1.SwitchesGroupbox.TlačniSezorFiltra.Value_CurrentState_PLC = p.TlačniSezorFiltra_CurrentState;
+
+            enojnaKad1.SwitchesGroupbox.MixVentilPlus.Value_SwitchSetting = p.MixVentilPlus_AutoManSwitch;
+            enojnaKad1.SwitchesGroupbox.MixVentilPlus.Value_CurrentState_PLC = p.MixVentilPlus_CurrentState;
+
+            enojnaKad1.SwitchesGroupbox.MixVentilMinus.Value_SwitchSetting = p.MixVentilMinus_AutoManSwitch;
+            enojnaKad1.SwitchesGroupbox.MixVentilMinus.Value_CurrentState_PLC = p.MixVentilMinus_CurrentState;
+
+            enojnaKad1.SwitchesGroupbox.NivoVisok.Value_SwitchSetting = p.NivoVisok_AutoManSwitch;
+            enojnaKad1.SwitchesGroupbox.NivoVisok.Value_CurrentState_PLC = p.NivoVisok_CurrentState;
+
+            enojnaKad1.SwitchesGroupbox.NivoNizek.Value_SwitchSetting = p.NivoNizek_AutoManSwitch;
+            enojnaKad1.SwitchesGroupbox.NivoNizek.Value_CurrentState_PLC = p.NivoNizek_CurrentState;
+
+            enojnaKad1.SwitchesGroupbox.VentilZrak.Value_SwitchSetting = p.VentilZrak_AutoManSwitch;
+            enojnaKad1.SwitchesGroupbox.VentilZrak.Value_CurrentState_PLC = p.VentilZrak_CurrentState;
+
+            enojnaKad1.SwitchesGroupbox.VentilPokrov.Value_SwitchSetting = p.VentilPokrov_AutoManSwitch;
+            enojnaKad1.SwitchesGroupbox.VentilPokrov.Value_CurrentState_PLC = p.VentilPokrov_CurrentState;
+
+            enojnaKad1.SwitchesGroupbox.VentilVoda.Value_SwitchSetting = p.VentilVoda_AutoManSwitch;
+            enojnaKad1.SwitchesGroupbox.VentilVoda.Value_CurrentState_PLC = p.VentilVoda_CurrentState;
+
+            enojnaKad1.SwitchesGroupbox.FlowSwitch.Value_SwitchSetting = p.FlowSwitch_AutoManSwitch;
+            enojnaKad1.SwitchesGroupbox.FlowSwitch.Value_CurrentState_PLC = p.FlowSwitch_CurrentState;
+
+            enojnaKad1.PowerSetGroupbox.PowerSetGrelnik1.ValuePowerset = p.Grelec1_Moc;
+            enojnaKad1.PowerSetGroupbox.PowerSetGrelnik2.ValuePowerset = p.Grelec2_Moc;
+            enojnaKad1.PowerSetGroupbox.PowerSetCrpalkaNivo.ValuePowerset = p.ČrpalkaNivo_Moc;
+            enojnaKad1.PowerSetGroupbox.PowerSetCrpalkaFilter.ValuePowerset = p.ČrpalkaFilter_Moc;
+            enojnaKad1.PowerSetGroupbox.PowerSetCrpalkaCasovna.ValuePowerset = p.ČrpalkaČasovnoDolivanje_Moc;
+            enojnaKad1.PowerSetGroupbox.PowerSetCrpalkaHlajenje.ValuePowerset = p.ČrpalkaHlajenje_Moc;
+            enojnaKad1.PowerSetGroupbox.PowerSetRezerva.ValuePowerset = p.Rezerva_Moc;
+            enojnaKad1.PowerMonitorGroupbox.PorabaSkupna.ValuePowerset = p.PorabaCelotnegaSistema;
+            enojnaKad1.PowerMonitorGroupbox.PorabaTeKadi.ValuePowerset = p.TrenutnaKad_Poraba;
+            enojnaKad1.PowerMonitorGroupbox.OmejitevPorabaSkupna.ValuePowerset = p.OmejitevPorabeCelotnegaSistema;
+
+            enojnaKad1.PvSelector.T1 = p.Temperatura1;
+            enojnaKad1.PvSelector.T2 = p.Temperatura2;
+            enojnaKad1.PvSelector.PV = p.ProcesnaTemperatura;
+            enojnaKad1.PvSelector.Function = p.IzbiraProcesneTemperature;
 
         }
 
@@ -73,8 +140,11 @@ namespace KontrolaKadi
             try
             {
                 var arr = form.Controls.Find(name, true);
-                var rtrn = arr[0];
-                return rtrn;
+                if (arr.Length > 0)
+                {                  
+                    return arr[0];
+                }
+                throw new Exception("Control with a name " + name + " could not be found. ");
             }
             catch (Exception ex)
             {

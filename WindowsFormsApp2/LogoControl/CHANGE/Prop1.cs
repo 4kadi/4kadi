@@ -13,12 +13,11 @@ namespace KontrolaKadi
         public PlcVars.Word PCWD;
 
         public PlcVars.DWord stopwatchCurrentTime;
-        public PlcVars.Word stopwatchTimeLeft;
+        public PlcVars.Word stopwatchTimeLeft, stopwatchPauseLeft;
         public PlcVars.DWord stopwatchReminder, stopwatchPauseTime;
 
-        public PlcVars.Bit stopwatchStartPulse, stopwatchStopPulse, stopwatchResetPulse, stopwatchFinished, stopwatchPaused;
-
-        public PlcVars.Bit prisotnost;
+        public PlcVars.Bit stopwatchStartPulse, stopwatchStopPulse, stopwatchResetPulse, stopwatchFinished, stopwatchPaused, stopwatchInProgress;
+     
         public PlcVars.Word AutostartStopwatch;
 
         public PlcVars.Byte weekday1, weekday2, weekday3, weekday4, weekday5, weekday6;        
@@ -26,8 +25,56 @@ namespace KontrolaKadi
         public PlcVars.Word offtime1, offtime2, offtime3, offtime4, offtime5, offtime6;
         public PlcVars.Bit UrnikAktiven;
 
-        public PlcVars.Word test;
+        public PlcVars.Word Prisotnost_AutoManSwitch;
+        public PlcVars.Bit Prisotnost_CurrentState;
 
+        public PlcVars.Word Grelec1_AutoManSwitch, Grelec2_AutoManSwitch;
+        public PlcVars.Bit Grelec1_CurrentState, Grelec2_CurrentState;
+
+
+        public PlcVars.Word ČrpalkaNivo_AutoManSwitch;
+        public PlcVars.Bit ČrpalkaNivo_CurrentState;
+
+        public PlcVars.Word ČrpalkaFilter_AutoManSwitch;
+        public PlcVars.Bit ČrpalkaFilter_CurrentState;
+
+        public PlcVars.Word ČrpalkaČasovnoDolivanje_AutoManSwitch;
+        public PlcVars.Bit ČrpalkaČasovnoDolivanje_CurrentState;
+
+        public PlcVars.Word ČrpalkaHlajenje_AutoManSwitch;
+        public PlcVars.Bit ČrpalkaHlajenje_CurrentState;
+
+        public PlcVars.Word TlačniSezorFiltra_AutoManSwitch;
+        public PlcVars.Bit TlačniSezorFiltra_CurrentState;
+
+        public PlcVars.Word MixVentilPlus_AutoManSwitch;
+        public PlcVars.Bit MixVentilPlus_CurrentState;
+
+        public PlcVars.Word MixVentilMinus_AutoManSwitch;
+        public PlcVars.Bit MixVentilMinus_CurrentState;
+
+        public PlcVars.Word NivoVisok_AutoManSwitch;
+        public PlcVars.Bit NivoVisok_CurrentState;
+
+        public PlcVars.Word NivoNizek_AutoManSwitch;
+        public PlcVars.Bit NivoNizek_CurrentState;
+
+        public PlcVars.Word VentilZrak_AutoManSwitch;
+        public PlcVars.Bit VentilZrak_CurrentState;
+
+        public PlcVars.Word VentilPokrov_AutoManSwitch;
+        public PlcVars.Bit VentilPokrov_CurrentState;
+
+        public PlcVars.Word VentilVoda_AutoManSwitch;
+        public PlcVars.Bit VentilVoda_CurrentState;
+
+        public PlcVars.Word FlowSwitch_AutoManSwitch;
+        public PlcVars.Bit FlowSwitch_CurrentState;
+
+        public PlcVars.Word PrejšnjaKad_Poraba, Grelec1_Moc, Grelec2_Moc, ČrpalkaNivo_Moc, ČrpalkaFilter_Moc, ČrpalkaČasovnoDolivanje_Moc, ČrpalkaHlajenje_Moc, Rezerva_Moc, TrenutnaKad_Poraba, SestevekPorabe;
+        public PlcVars.Word OmejitevPorabeCelotnegaSistema, PorabaCelotnegaSistema;
+
+        public PlcVars.Word IzbiraProcesneTemperature, Temperatura1, Temperatura2, ProcesnaTemperatura, TemperaturaHr, Ph, Prevodnost, Rezerva;
 
         public Prop1(Sharp7.S7Client client) : base(client)
         {
@@ -35,18 +82,18 @@ namespace KontrolaKadi
             PCWD = new PlcVars.Word(this, new PlcVars.WordAddress(XmlController.GetPCWD_Address()), false); //PC Watchdog
 
             stopwatchCurrentTime = new PlcVars.DWord(this, new PlcVars.DoubleWordAddress(10), false);
-            stopwatchTimeLeft = new PlcVars.Word(this, new PlcVars.WordAddress(14), false);
-            stopwatchReminder = new PlcVars.DWord(this, new PlcVars.DoubleWordAddress(16), true);
-            stopwatchPauseTime = new PlcVars.DWord(this, new PlcVars.DoubleWordAddress(20), true);
+            stopwatchReminder = new PlcVars.DWord(this, new PlcVars.DoubleWordAddress(14), true);
+            stopwatchPauseTime = new PlcVars.DWord(this, new PlcVars.DoubleWordAddress(18), true);
+            AutostartStopwatch = new PlcVars.Word(this, new PlcVars.WordAddress(22), true);
+            stopwatchTimeLeft = new PlcVars.Word(this, new PlcVars.WordAddress(24), false);
+            stopwatchPauseLeft = new PlcVars.Word(this, new PlcVars.WordAddress(26), false);
 
-            stopwatchStartPulse = new PlcVars.Bit(this, new PlcVars.BitAddress(21, 0), true);
-            stopwatchStopPulse = new PlcVars.Bit(this, new PlcVars.BitAddress(22, 0), true);
-            stopwatchResetPulse = new PlcVars.Bit(this, new PlcVars.BitAddress(23,0), true);
-            stopwatchFinished = new PlcVars.Bit(this, new PlcVars.BitAddress(24, 0), false);
-            stopwatchPaused = new PlcVars.Bit(this, new PlcVars.BitAddress(25, 0), false);            
-
-            prisotnost = new PlcVars.Bit(this, new PlcVars.BitAddress(30, 0), false);
-            AutostartStopwatch = new PlcVars.Word(this, new PlcVars.WordAddress(32), true);
+            stopwatchStartPulse = new PlcVars.Bit(this, new PlcVars.BitAddress(28, 0), true);
+            stopwatchStopPulse = new PlcVars.Bit(this, new PlcVars.BitAddress(29, 0), true);
+            stopwatchResetPulse = new PlcVars.Bit(this, new PlcVars.BitAddress(30,0), true);
+            stopwatchFinished = new PlcVars.Bit(this, new PlcVars.BitAddress(31, 0), false);
+            stopwatchPaused = new PlcVars.Bit(this, new PlcVars.BitAddress(31, 1), false);
+            stopwatchInProgress = new PlcVars.Bit(this, new PlcVars.BitAddress(31, 2), false);            
 
             weekday1 = new PlcVars.Byte(this, new PlcVars.ByteAddress(40), true);
             ontime1 = new PlcVars.Word(this, new PlcVars.WordAddress(41), true);
@@ -68,9 +115,75 @@ namespace KontrolaKadi
             offtime6 = new PlcVars.Word(this, new PlcVars.WordAddress(68), true);
             UrnikAktiven = new PlcVars.Bit(this, new PlcVars.BitAddress(70, 0), true);
 
-            test = new PlcVars.Word(this, new PlcVars.WordAddress(38), false);
+            Prisotnost_AutoManSwitch = new PlcVars.Word(this, new PlcVars.WordAddress(76), true);
+            Prisotnost_CurrentState = new PlcVars.Bit(this, new PlcVars.BitAddress(78, 0), false);
+
+            Grelec1_AutoManSwitch = new PlcVars.Word(this, new PlcVars.WordAddress(80), true);
+            Grelec1_CurrentState = new PlcVars.Bit(this, new PlcVars.BitAddress(82, 0), false);
+            Grelec2_AutoManSwitch = new PlcVars.Word(this, new PlcVars.WordAddress(86), true);
+            Grelec2_CurrentState = new PlcVars.Bit(this, new PlcVars.BitAddress(88, 0), false);
+
+            ČrpalkaNivo_AutoManSwitch = new PlcVars.Word(this, new PlcVars.WordAddress(90), true);
+            ČrpalkaNivo_CurrentState = new PlcVars.Bit(this, new PlcVars.BitAddress(92, 0), false);
+
+            ČrpalkaFilter_AutoManSwitch = new PlcVars.Word(this, new PlcVars.WordAddress(93), true);
+            ČrpalkaFilter_CurrentState = new PlcVars.Bit(this, new PlcVars.BitAddress(95, 0), false);
+
+            ČrpalkaČasovnoDolivanje_AutoManSwitch = new PlcVars.Word(this, new PlcVars.WordAddress(96), true);
+            ČrpalkaČasovnoDolivanje_CurrentState = new PlcVars.Bit(this, new PlcVars.BitAddress(98, 0), false);
+
+            ČrpalkaHlajenje_AutoManSwitch = new PlcVars.Word(this, new PlcVars.WordAddress(99), true);
+            ČrpalkaHlajenje_CurrentState = new PlcVars.Bit(this, new PlcVars.BitAddress(101, 0), false);
+
+            TlačniSezorFiltra_AutoManSwitch = new PlcVars.Word(this, new PlcVars.WordAddress(102), true);
+            TlačniSezorFiltra_CurrentState = new PlcVars.Bit(this, new PlcVars.BitAddress(104, 0), false);
+
+            MixVentilPlus_AutoManSwitch = new PlcVars.Word(this, new PlcVars.WordAddress(105), true);
+            MixVentilPlus_CurrentState = new PlcVars.Bit(this, new PlcVars.BitAddress(107, 0), false);
+
+            MixVentilMinus_AutoManSwitch = new PlcVars.Word(this, new PlcVars.WordAddress(108), true);
+            MixVentilMinus_CurrentState = new PlcVars.Bit(this, new PlcVars.BitAddress(110, 0), false);
+
+            NivoVisok_AutoManSwitch = new PlcVars.Word(this, new PlcVars.WordAddress(111), true);
+            NivoVisok_CurrentState = new PlcVars.Bit(this, new PlcVars.BitAddress(113, 0), false);
+
+            NivoNizek_AutoManSwitch = new PlcVars.Word(this, new PlcVars.WordAddress(114), true);
+            NivoNizek_CurrentState = new PlcVars.Bit(this, new PlcVars.BitAddress(116, 0), false);
+
+            VentilZrak_AutoManSwitch = new PlcVars.Word(this, new PlcVars.WordAddress(117), true);
+            VentilZrak_CurrentState = new PlcVars.Bit(this, new PlcVars.BitAddress(119, 0), false);
+
+            VentilPokrov_AutoManSwitch = new PlcVars.Word(this, new PlcVars.WordAddress(120), true);
+            VentilPokrov_CurrentState = new PlcVars.Bit(this, new PlcVars.BitAddress(122, 0), false);
+
+            VentilVoda_AutoManSwitch = new PlcVars.Word(this, new PlcVars.WordAddress(123), true);
+            VentilVoda_CurrentState = new PlcVars.Bit(this, new PlcVars.BitAddress(125, 0), false);
+
+            FlowSwitch_AutoManSwitch = new PlcVars.Word(this, new PlcVars.WordAddress(126), true);
+            FlowSwitch_CurrentState = new PlcVars.Bit(this, new PlcVars.BitAddress(128, 0), false);
+
+            PrejšnjaKad_Poraba = new PlcVars.Word(this, new PlcVars.WordAddress(130), false);
+            Grelec1_Moc = new PlcVars.Word(this, new PlcVars.WordAddress(132), true);
+            Grelec2_Moc = new PlcVars.Word(this, new PlcVars.WordAddress(134), true);
+            ČrpalkaNivo_Moc = new PlcVars.Word(this, new PlcVars.WordAddress(136), true);
+            ČrpalkaFilter_Moc = new PlcVars.Word(this, new PlcVars.WordAddress(138), true);
+            ČrpalkaČasovnoDolivanje_Moc = new PlcVars.Word(this, new PlcVars.WordAddress(140), true);
+            ČrpalkaHlajenje_Moc = new PlcVars.Word(this, new PlcVars.WordAddress(142), true);
+            Rezerva_Moc = new PlcVars.Word(this, new PlcVars.WordAddress(144), true);
+            TrenutnaKad_Poraba = new PlcVars.Word(this, new PlcVars.WordAddress(146), false);
+            SestevekPorabe = new PlcVars.Word(this, new PlcVars.WordAddress(148), false);
+            OmejitevPorabeCelotnegaSistema = new PlcVars.Word(this, new PlcVars.WordAddress(150), false);
+            PorabaCelotnegaSistema = new PlcVars.Word(this, new PlcVars.WordAddress(152), false);
+
+            IzbiraProcesneTemperature = new PlcVars.Word(this, new PlcVars.WordAddress(168), true);
+            Temperatura1 = new PlcVars.Word(this, new PlcVars.WordAddress(170), false);
+            Temperatura2 = new PlcVars.Word(this, new PlcVars.WordAddress(172), false);
+            ProcesnaTemperatura = new PlcVars.Word(this, new PlcVars.WordAddress(174), false);
+            TemperaturaHr = new PlcVars.Word(this, new PlcVars.WordAddress(176), false);
+            Ph = new PlcVars.Word(this, new PlcVars.WordAddress(178), false);
+            Prevodnost = new PlcVars.Word(this, new PlcVars.WordAddress(180), false);
+            Rezerva = new PlcVars.Word(this, new PlcVars.WordAddress(182), false);
 
         }
-
     }
 }

@@ -278,14 +278,7 @@ namespace KontrolaKadi
 
         private void closeSplash()
         {
-            Thread.Sleep(100);
-            System.Windows.Forms.Application.DoEvents();
-            Thread.Sleep(100);
-           
-            System.Windows.Forms.Application.DoEvents();
-            Thread.Sleep(500);
-            Invoke(new MethodInvoker(delegate { this.Hide(); }));// Hide spalshscrreen               
-
+            Invoke(new MethodInvoker(delegate { this.Hide(); }));// Hide spalshscrreen        
         }
 
         private void FormControl_FormClosed(object sender, FormClosedEventArgs e)
