@@ -17,7 +17,7 @@ namespace KontrolaKadi
 
         public static readonly int XmlRefreshrate = 5000;                                // scans for changes in xml file (should be very high number - 60000)
 
-        public static readonly bool EnableHighPerformanceSync = true;           // Enables tcp comunication without delay (disable if CPU usage is to high)
+        public static readonly bool EnableHighPerformanceSync = false;           // Enables tcp comunication without delay (disable if CPU usage is to high)
         
         public static readonly string XmlDeclaration = "<?xml version=\"1.0\" encoding=\"utf-8\"?>"; // used to recreate xml config file        
         

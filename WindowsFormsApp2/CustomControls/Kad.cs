@@ -40,9 +40,7 @@ namespace KontrolaKadi
 
         public CenteredLabel lblNextMove = new CenteredLabel();
 
-        public EventHandler displayNameChanged;
-
-        System.Timers.Timer updater;
+        public EventHandler displayNameChanged;      
 
         public SPanel backImage = new SPanel();  
         public readonly int backImageHeight = 137;
@@ -127,19 +125,25 @@ namespace KontrolaKadi
             PvSelector = submenu.PVSelector;
 
             backImage.Click += BackImage_Click;
-            updater = new System.Timers.Timer(Settings.UpdateValuesPCms);
-            updater.Elapsed += Updater_Elapsed;
-            updater.Start();
+            Urnik.NextEventDescription_Changed += Urnik_NextEventDescription_Changed;
 
         }
 
-        private void Updater_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        private void Urnik_NextEventDescription_Changed(object sender, EventArgs e)
         {
-            var m = new MethodInvoker(delegate 
+            Urnik_NextEventDescription_Changed();
+        }
+
+        void Urnik_NextEventDescription_Changed()
+        {
+            if (InvokeRequired)
             {
-                lblNextMove.Text = Urnik.NextEventDescription;
-            });
-            Invoke(m);
+                var m = new MethodInvoker(Urnik_NextEventDescription_Changed);
+                Invoke(m);
+                return;
+            }
+
+            lblNextMove.Text = Urnik.NextEventDescription;
         }
 
         void RefreshFromXml(object sender, EventArgs e)

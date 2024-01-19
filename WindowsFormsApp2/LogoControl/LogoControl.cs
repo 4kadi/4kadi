@@ -56,9 +56,7 @@ namespace KontrolaKadi
             Prop3 = new Prop3(LOGO[3]);
             Prop4 = new Prop4(LOGO[4]);
             Prop5 = new Prop5(LOGO[5]);
-
-            
-            Helper.LogoControllerInitialized = true;
+        
         }
 
         public LogoControler()

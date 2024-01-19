@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-
-
+using System.Threading.Tasks;
 
 namespace KontrolaKadi
 {
@@ -104,8 +103,6 @@ namespace KontrolaKadi
                 get { return _syncEvery_X_Time; }
                 set { Chk_SyncEvery_X_Time_Val(value); }
             }
-
-            public ushort skipNextLoop = 1; // alghoritem syncs variable only if this value is 1;
 
             public PlcType(PropComm this_prop)
             {
@@ -261,12 +258,12 @@ namespace KontrolaKadi
                         {
                             if (buffRead != PLCval)
                             {
-                                PLCval = buffRead; buffRead = null;                         
+                                PLCval = buffRead; buffRead = null;
                             }
                             if (previousPLCval != PLCval)
                             {
                                 previousPLCval = PLCval;
-                                ValueChanged?.BeginInvoke(this, null, null, null);
+                                Task.Run(InvokeOnValueChangeEvent);                                
                             }
                         }
                         else
@@ -275,6 +272,11 @@ namespace KontrolaKadi
                         }
                     }
                 }
+            }
+
+            void InvokeOnValueChangeEvent()
+            {
+                ValueChanged?.Invoke(this, EventArgs.Empty);
             }
 
             private void WriteToPLCFromBuffer()
@@ -377,7 +379,7 @@ namespace KontrolaKadi
                 }
             }
 
-            public byte? Value_short
+            public byte Value_byte
             {
                 get
                 {
@@ -391,11 +393,8 @@ namespace KontrolaKadi
                     }
                 }
                 set
-                {
-                    if (value != null)
-                    {
-                        ReadFromPCtoBuffer(value);
-                    }
+                {                
+                    ReadFromPCtoBuffer(value);                    
                 }
             }
 
@@ -480,7 +479,7 @@ namespace KontrolaKadi
                             if (previousPLCval != PLCval)
                             {
                                 previousPLCval = PLCval;
-                                ValueChanged?.BeginInvoke(this, null, null, null);                                
+                                Task.Run(InvokeOnValueChangeEvent);
                             }                            
                         }
                         else
@@ -489,6 +488,11 @@ namespace KontrolaKadi
                         }
                     }
                 }
+            }
+
+            void InvokeOnValueChangeEvent()
+            {
+                ValueChanged?.Invoke(this, EventArgs.Empty);
             }
 
             private void WriteToPLCFromBuffer()
@@ -696,7 +700,7 @@ namespace KontrolaKadi
                             if (previousPLCval != PLCval)
                             {
                                 previousPLCval = PLCval;
-                                ValueChanged?.BeginInvoke(this, null, null, null);
+                                Task.Run(InvokeOnValueChangeEvent);
                             }
                             
                         }
@@ -706,6 +710,11 @@ namespace KontrolaKadi
                         }
                     }
                 }
+            }
+
+            void InvokeOnValueChangeEvent()
+            {
+                ValueChanged?.Invoke(this, EventArgs.Empty);
             }
 
             private void WriteToPLCFromBuffer()
@@ -854,7 +863,7 @@ namespace KontrolaKadi
                         if (previousPLCval != PLCval)
                         {
                             previousPLCval = PLCval;
-                            ValueChanged?.BeginInvoke(this, null, null, null);
+                            Task.Run(InvokeOnValueChangeEvent);
                         }
                     }
                     else
@@ -862,6 +871,11 @@ namespace KontrolaKadi
                         ReportError_throwException("Read from PLC failed.", null, forceRead);
                     }
                 }
+            }
+
+            void InvokeOnValueChangeEvent()
+            {
+                ValueChanged?.Invoke(this, EventArgs.Empty);
             }
 
             private void WriteToPLCFromBuffer()
@@ -1090,7 +1104,7 @@ namespace KontrolaKadi
                         if (previousPLCval != PLCval)
                         {
                             previousPLCval = PLCval;
-                            ValueChanged?.BeginInvoke(this, null, null, null);
+                            Task.Run(InvokeOnValueChangeEvent);
                         }
                         else
                         {
@@ -1098,6 +1112,11 @@ namespace KontrolaKadi
                         }
                     }
                 }
+            }
+
+            void InvokeOnValueChangeEvent()
+            {
+                ValueChanged?.Invoke(this, EventArgs.Empty);
             }
 
             private void WriteToPLCFromBuffer()
@@ -1325,8 +1344,8 @@ namespace KontrolaKadi
                             }
                             if (previousPLCval != PLCval)
                             {
-                                previousPLCval = PLCval;                                
-                                ValueChanged?.BeginInvoke(this, null, null, null);
+                                previousPLCval = PLCval;
+                                Task.Run(InvokeOnValueChangeEvent);
                             }
 
                             buffRead = null;
@@ -1337,6 +1356,11 @@ namespace KontrolaKadi
                         }
                     }
                 }
+            }
+
+            void InvokeOnValueChangeEvent()
+            {
+                ValueChanged?.Invoke(this, EventArgs.Empty);
             }
 
             private void WriteToPLCFromBuffer(bool forceWrite)
@@ -1425,7 +1449,64 @@ namespace KontrolaKadi
                     "Flags: " + Flags);
             }
 
-        }       
+        }
+
+        protected class LogoDate_Day : Byte
+        {
+            public LogoDate_Day(PropComm prop) : base(prop, new ByteAddress(987), "", "", true)
+            {
+
+            }
+        }
+
+        protected class LogoDate_Month : Byte
+        {
+            public LogoDate_Month(PropComm prop) : base(prop, new ByteAddress(986), "", "", true)
+            {
+
+            }
+        }
+
+        protected class LogoDate_Year : Byte
+        {
+            public LogoDate_Year(PropComm prop) : base(prop, new ByteAddress(985), "", "", true)
+            {
+
+            }
+        }
+
+        public class LogoDateTime
+        {         
+            LogoClock clock;
+            LogoDate_Year Y;
+            LogoDate_Month M;
+            LogoDate_Day D;
+
+            public DateTime Datetime { get; set; }
+            public TimeSpan TodaysTime { get; private set; }
+
+            public event EventHandler ValueChanged;
+
+            public LogoDateTime(PropComm prop)
+            {              
+                clock = new LogoClock(prop);
+                Y = new LogoDate_Year(prop);
+                M = new LogoDate_Month(prop);
+                D = new LogoDate_Day(prop);
+                clock.ValueChanged += Clock_ValueChanged;
+            }
+
+            private void Clock_ValueChanged(object sender, EventArgs e)
+            {
+                var ts = (TimeSpan)clock.Value_TimeSpan;                
+                Datetime = new DateTime(Y.Value_byte,M.Value_byte, D.Value_byte, ts.Hours,ts.Minutes, ts.Seconds);
+                if (ValueChanged != null)
+                {
+                    TodaysTime = TimeSpan.FromHours(Datetime.Hour) + TimeSpan.FromMinutes(Datetime.Minute) + TimeSpan.FromSeconds(Datetime.Second);
+                    ValueChanged.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
 
         public class LogoClock : PlcType
         {
@@ -1516,7 +1597,7 @@ namespace KontrolaKadi
                         if (previousPLCval != PLCval)
                         {
                             previousPLCval = PLCval;
-                            ValueChanged?.BeginInvoke(this, null, null, null);
+                            Task.Run(InvokeOnValueChangeEvent);
                         }
                     }
                 }
@@ -1524,6 +1605,11 @@ namespace KontrolaKadi
                 {
                     ReportError_throwException("Reading Clock / Time from PLC failed.");
                 }
+            }
+
+            void InvokeOnValueChangeEvent()
+            {
+                ValueChanged?.Invoke(this, EventArgs.Empty);
             }
 
             public void ReportError_throwException(string Message)

@@ -455,7 +455,7 @@ namespace Sharp7
 
                     if (!KontrolaKadi.Settings.EnableHighPerformanceSync)
                     {
-                        Thread.Sleep(1);  // COMMENT THIS LINE IF YOU WANT TO DO HIGH PERFORMANCE!  --- use winapi to lower time resolution for sleep 
+                        Thread.Sleep(1); // use winapi to lower time resolution for sleep 
                     }
                     
                 }

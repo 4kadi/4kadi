@@ -60,7 +60,7 @@ namespace KontrolaKadi
             }
         }
 
-        TemperatureShow tbT1, tbT2, tbPV;
+        TbTemperatureShow tbT1, tbT2, tbPV;
         Label lblT1, lblT2, lblPV, lblCb;
         CB_PVselector cbSelector;
 
@@ -70,14 +70,14 @@ namespace KontrolaKadi
         {
             Font = new Font("arial", 15, FontStyle.Bold);
 
-            tbT1 = new TemperatureShow()
+            tbT1 = new TbTemperatureShow()
             {
                 Top = 35,
                 Left = 50
             };
             Controls.Add(tbT1);
 
-            tbT2 = new TemperatureShow()
+            tbT2 = new TbTemperatureShow()
             {
                 Top = tbT1.Bottom + 15,
                 Left = tbT1.Left
@@ -91,7 +91,7 @@ namespace KontrolaKadi
             };
             Controls.Add(cbSelector);
 
-            tbPV = new TemperatureShow()
+            tbPV = new TbTemperatureShow()
             {
                 Top = tbT2.Top,
                 Left = cbSelector.Left
@@ -150,24 +150,30 @@ namespace KontrolaKadi
 
         private void Any_ValueChanged(object sender, EventArgs e)
         {
+            Any_ValueChanged();
+        }
+
+        void Any_ValueChanged()
+        {
             InitializeIfPossible();
 
             if (!initialized)
-            {                
+            {
                 return;
             }
 
-            var m = new MethodInvoker(delegate 
+            if (InvokeRequired)
             {
-                tbT1.Text = T1.Value_short.ToString();
-                tbT2.Text = T2.Value_short.ToString();
-                tbPV.Text = PV.Value_short.ToString();
+                var m = new MethodInvoker(Any_ValueChanged);
+                Invoke(m);
+                return;
+            }
 
-                cbSelector.SelectedValue = Function.Value_short;
-            });
+            tbT1.Text = T1.Value_short.ToString();
+            tbT2.Text = T2.Value_short.ToString();
+            tbPV.Text = PV.Value_short.ToString();
 
-            Invoke(m);
-            
+            cbSelector.SelectedValue = Function.Value_short;
         }
 
 
@@ -190,15 +196,16 @@ namespace KontrolaKadi
                 initialized = true;
             }
         }
-        class TemperatureShow : TextBox
+
+        class TbTemperatureShow : TextBox
         {
             string Unit = "°C";
-            override public string Text 
+            override public string Text
             {
                 get { return base.Text.Replace(Unit, ""); }
                 set { UpdateText(value); }
             }
-            public TemperatureShow()
+            public TbTemperatureShow()
             {
                 ReadOnly = true;
                 Width = 80;
@@ -207,7 +214,7 @@ namespace KontrolaKadi
 
             void UpdateText(string text)
             {
-                var m = new MethodInvoker(delegate 
+                var m = new MethodInvoker(delegate
                 {
                     var n = Convert.ToDouble(text);
                     n = n / 10;

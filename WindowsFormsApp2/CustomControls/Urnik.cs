@@ -15,12 +15,17 @@ namespace KontrolaKadi
         public bool ClassInitializedProperly 
         { 
             get { return classInitializedProperly; }
-            private set { classInitializedProperly = value; if (classInitializedProperly) { ValueChanged(null, null); } } 
+            private set 
+            { 
+                classInitializedProperly = value; 
+                if (classInitializedProperly) 
+                { ValueChanged(this, EventArgs.Empty); } 
+            } 
         }
 
         UrnikSection section1, section2, section3, section4, section5, section6;
 
-        PlcVars.LogoClock _currentTime;
+        PlcVars.LogoDateTime _currentTime;
 
         PlcVars.Byte _DayOfTheWeek1;
         PlcVars.Word _StartTime1;
@@ -50,14 +55,23 @@ namespace KontrolaKadi
 
         Form ParentForm;
 
+        public event EventHandler NextEventDescription_Changed;
+
         public string NextEventDescription
         {
             get { return nextEventDescription.Text; }
-            private set { nextEventDescription.Text = value; }
+            private set 
+            { 
+                nextEventDescription.Text = value;
+                if (NextEventDescription != null)
+                {
+                    NextEventDescription_Changed.Invoke(this, EventArgs.Empty);
+                }
+            }
         }
 
 
-        public PlcVars.LogoClock currentTime 
+        public PlcVars.LogoDateTime currentTime 
         {
             get 
             {
@@ -68,8 +82,9 @@ namespace KontrolaKadi
                 _currentTime = value;  registerEvent(value);
                 section1.CurrentTime = value; section2.CurrentTime = value; section3.CurrentTime = value; section4.CurrentTime = value; section5.CurrentTime = value; section6.CurrentTime = value;
             } 
-        }
-
+        }   
+        
+           
         public PlcVars.Bit UrnikAktiven;
 
         public PlcVars.Byte DayOfTheWeek1 { get { return _DayOfTheWeek1; } set { _DayOfTheWeek1 = value; section1.DayOfTheWeek = value; registerEvent(value); } }
@@ -194,7 +209,7 @@ namespace KontrolaKadi
             val.ValueChanged += ValueChanged;
         }
 
-        void registerEvent(PlcVars.LogoClock val)
+        void registerEvent(PlcVars.LogoDateTime val)
         {
             isClassInitializedProperly();
             val.ValueChanged += ValueChanged;
@@ -231,6 +246,11 @@ namespace KontrolaKadi
 
         private void ValueChanged(object sender, EventArgs e)
         {
+            ValueChanged();
+        }
+
+        private void ValueChanged()
+        {
             if (!ClassInitializedProperly)
             {
                 return;
@@ -238,32 +258,32 @@ namespace KontrolaKadi
 
             var ne = getNextEvent();
 
-            MethodInvoker m = new MethodInvoker(delegate 
+            if (InvokeRequired)
             {
-                try
-                {
-                    if (ne != null)
-                    {
-                        NextEventDescription = GetNextEventDescription(ne);
-                    }
-                    else
-                    {
-                        NextEventDescription = "Urnik je izključen.";                        
-                    }
-                    updateControls();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("");
-                    throw;
-                }
-                
-            });
+                MethodInvoker m = new MethodInvoker(ValueChanged);
+                Invoke(m);
+                return;
+            }
 
-            nextEventDescription.Invoke(m);
+            try
+            {
+                if (ne != null)
+                {
+                    NextEventDescription = GetNextEventDescription(ne);
+                }
+                else
+                {
+                    NextEventDescription = "Urnik je izključen.";
+                }
+                updateControls();
+            }
+            catch 
+            {            
+               
+            }
         }
 
-        public string GetNextEventDescription(OneDaysEvent eventPart)
+            public string GetNextEventDescription(OneDaysEvent eventPart)
         {
             if (eventPart == null)
             {
@@ -327,12 +347,11 @@ namespace KontrolaKadi
 
         private List<OneDaysEvent> getAllEvents()
         {
-            if (currentTime.Value_TimeSpan == null)
+            if (currentTime == null)
             {
                 return new List<OneDaysEvent>();
             }
-
-            var now = (TimeSpan)currentTime.Value_TimeSpan;
+           
             List<WeektimerEvent> weektimerEvents = getAllWeektimerEvents();
             var AllWeekEvents = new List<OneDaysEvent>();
 
@@ -340,38 +359,38 @@ namespace KontrolaKadi
             {
                 if (weektimerEvent.Monday)
                 {
-                    AllWeekEvents.Add(new OneDaysEvent(now, CustomDayOfWeek.Ponedeljek, weektimerEvent.StartTime, true)) ;
-                    AllWeekEvents.Add(new OneDaysEvent(now, CustomDayOfWeek.Ponedeljek, weektimerEvent.EndTime, false));
+                    AllWeekEvents.Add(new OneDaysEvent(currentTime, CustomDayOfWeek.Ponedeljek, weektimerEvent.StartTime, true)) ;
+                    AllWeekEvents.Add(new OneDaysEvent(currentTime, CustomDayOfWeek.Ponedeljek, weektimerEvent.EndTime, false));
                 }
                 if (weektimerEvent.Tuesday)
                 {
-                    AllWeekEvents.Add(new OneDaysEvent(now, CustomDayOfWeek.Torek, weektimerEvent.StartTime, true));
-                    AllWeekEvents.Add(new OneDaysEvent(now, CustomDayOfWeek.Torek, weektimerEvent.EndTime, false));
+                    AllWeekEvents.Add(new OneDaysEvent(currentTime, CustomDayOfWeek.Torek, weektimerEvent.StartTime, true));
+                    AllWeekEvents.Add(new OneDaysEvent(currentTime, CustomDayOfWeek.Torek, weektimerEvent.EndTime, false));
                 }
                 if (weektimerEvent.Wednesday)
                 {
-                    AllWeekEvents.Add(new OneDaysEvent(now, CustomDayOfWeek.Sreda, weektimerEvent.StartTime, true));
-                    AllWeekEvents.Add(new OneDaysEvent(now, CustomDayOfWeek.Sreda, weektimerEvent.EndTime, false));
+                    AllWeekEvents.Add(new OneDaysEvent(currentTime, CustomDayOfWeek.Sreda, weektimerEvent.StartTime, true));
+                    AllWeekEvents.Add(new OneDaysEvent(currentTime, CustomDayOfWeek.Sreda, weektimerEvent.EndTime, false));
                 }
                 if (weektimerEvent.Thursday)
                 {
-                    AllWeekEvents.Add(new OneDaysEvent(now, CustomDayOfWeek.Četrtek, weektimerEvent.StartTime, true));
-                    AllWeekEvents.Add(new OneDaysEvent(now, CustomDayOfWeek.Četrtek, weektimerEvent.EndTime, false));
+                    AllWeekEvents.Add(new OneDaysEvent(currentTime, CustomDayOfWeek.Četrtek, weektimerEvent.StartTime, true));
+                    AllWeekEvents.Add(new OneDaysEvent(currentTime, CustomDayOfWeek.Četrtek, weektimerEvent.EndTime, false));
                 }
                 if (weektimerEvent.Friday)
                 {
-                    AllWeekEvents.Add(new OneDaysEvent(now, CustomDayOfWeek.Petek, weektimerEvent.StartTime, true));
-                    AllWeekEvents.Add(new OneDaysEvent(now, CustomDayOfWeek.Petek, weektimerEvent.EndTime, false));
+                    AllWeekEvents.Add(new OneDaysEvent(currentTime, CustomDayOfWeek.Petek, weektimerEvent.StartTime, true));
+                    AllWeekEvents.Add(new OneDaysEvent(currentTime, CustomDayOfWeek.Petek, weektimerEvent.EndTime, false));
                 }
                 if (weektimerEvent.Saturday)
                 {
-                    AllWeekEvents.Add(new OneDaysEvent(now, CustomDayOfWeek.Sobota, weektimerEvent.StartTime, true));
-                    AllWeekEvents.Add(new OneDaysEvent(now, CustomDayOfWeek.Sobota, weektimerEvent.EndTime, false));
+                    AllWeekEvents.Add(new OneDaysEvent(currentTime, CustomDayOfWeek.Sobota, weektimerEvent.StartTime, true));
+                    AllWeekEvents.Add(new OneDaysEvent(currentTime, CustomDayOfWeek.Sobota, weektimerEvent.EndTime, false));
                 }
                 if (weektimerEvent.Sunday)
                 {
-                    AllWeekEvents.Add(new OneDaysEvent(now, CustomDayOfWeek.Nedelja, weektimerEvent.StartTime, true));
-                    AllWeekEvents.Add(new OneDaysEvent(now, CustomDayOfWeek.Nedelja, weektimerEvent.EndTime, false));
+                    AllWeekEvents.Add(new OneDaysEvent(currentTime, CustomDayOfWeek.Nedelja, weektimerEvent.StartTime, true));
+                    AllWeekEvents.Add(new OneDaysEvent(currentTime, CustomDayOfWeek.Nedelja, weektimerEvent.EndTime, false));
                 }
             }
             return AllWeekEvents;
@@ -407,6 +426,7 @@ namespace KontrolaKadi
                 
         public CustomDayOfWeek? GetNextActiveDay(TimeSpan currentTime)
         {
+
             var today = DateTime.Now.DayOfWeek;
             int todayIndex = (int)today; // DayOfWeek enum starts from 0 (Sunday) to 6 (Saturday)
             int nextDayIndex;
@@ -497,28 +517,54 @@ namespace KontrolaKadi
         Label izklop;
         Label I1, I2;
 
-        PlcVars.LogoClock _currentTime;
-        public PlcVars.LogoClock CurrentTime
+        PlcVars.LogoDateTime _currentTime;
+        public PlcVars.LogoDateTime CurrentTime
         {
             get { return _currentTime; }
             set
             {
                 _currentTime = value;               
             }
+        }        
+
+        public PlcVars.Byte _DayOfTheWeek;
+        public PlcVars.Word _StartTime;
+        public PlcVars.Word _EndTime;
+
+        public PlcVars.Byte DayOfTheWeek
+        {
+            get { return _DayOfTheWeek; }
+            set 
+            { 
+                _DayOfTheWeek = value;
+                initializeIfPossible();
+            }
         }
 
-        System.Windows.Forms.Timer updater = new System.Windows.Forms.Timer();
+        public PlcVars.Word StartTime
+        {
+            get { return _StartTime; }
+            set 
+            {
+                _StartTime = value;
+                initializeIfPossible();
+            }
+        }
 
-        public PlcVars.Byte DayOfTheWeek;
-        public PlcVars.Word StartTime;
-        public PlcVars.Word EndTime;
+        public PlcVars.Word EndTime
+        {
+            get { return _EndTime; }
+            set 
+            {
+                _EndTime = value;
+                initializeIfPossible();
+            }
+        }
 
 
         Color todaysColor = Color.Yellow;
         Color checkedColor = Color.LightGreen;
         Color uncheckedColor;
-
-        bool Initialized = false;
 
         public UrnikSection()
         {
@@ -676,9 +722,6 @@ namespace KontrolaKadi
             Height = 90;          
             //
 
-            updater.Interval = 100;
-            updater.Tick += Updater_Tick;
-            updater.Start();
         }
 
         bool IsItInitialized()
@@ -688,6 +731,31 @@ namespace KontrolaKadi
                 return true;
             }
             return false;
+        }
+
+        void initializeIfPossible()
+        {
+            if (IsItInitialized())
+            {
+                StartTime.ValueChanged += StartTime_ValueChanged;
+                EndTime.ValueChanged += EndTime_ValueChanged;
+                CurrentTime.ValueChanged += CurrentTime_ValueChanged;
+            }            
+        }
+
+        private void CurrentTime_ValueChanged(object sender, EventArgs e)
+        {
+            UpdateControls();
+        }
+
+        private void EndTime_ValueChanged(object sender, EventArgs e)
+        {
+            UpdateControls();
+        }
+
+        private void StartTime_ValueChanged(object sender, EventArgs e)
+        {
+            UpdateControls();
         }
 
         private void CbMinOff_DropDownClosed(object sender, EventArgs e)
@@ -709,6 +777,8 @@ namespace KontrolaKadi
         {
             updateStartTime();
         }
+
+     
         void updateEndTime()
         {
             var m = cbMinOff.SelectedItem.ToString();
@@ -718,7 +788,7 @@ namespace KontrolaKadi
 
             var a = LogoTimeEncoder.Time.ConvertToShort(hh, mm);
             EndTime.Value_short = a;
-            Thread.Sleep(Settings.UpdateValuesPCms); // mandatory for stable update of value
+  
         }
         void updateStartTime()
         {
@@ -729,21 +799,28 @@ namespace KontrolaKadi
 
             var a = LogoTimeEncoder.Time.ConvertToShort(hh, mm);
             StartTime.Value_short = a;
-            Thread.Sleep(Settings.UpdateValuesPCms); // mandatory for stable update of value
+      
         }
 
         public void UpdateControls()
-        {     
-          updateColors();                     
-        }
-
-        void updateColors()
         {
             if (!IsItInitialized())
             {
                 return;
             }
 
+            if (InvokeRequired)
+            {
+                var m = new MethodInvoker(UpdateControls);
+                Invoke(m);
+                return;
+            }
+                UpdateValues();
+                UpdateColors();             
+        }
+
+        void UpdateColors()
+        {
             ChkBox a = mon1;
             a.BackColor = a.Checked ? checkedColor : uncheckedColor;
 
@@ -765,13 +842,11 @@ namespace KontrolaKadi
             a = sun1;
             a.BackColor = a.Checked ? checkedColor : uncheckedColor;
 
-
-
-            var todaysDayOfTheWeek = DateTime.Now.DayOfWeek; // offset because sunday is 1;
+            var todaysDayOfTheWeek = CurrentTime.Datetime.DayOfWeek;
 
             var startTime = LogoTimeEncoder.Time.GetTimespan(StartTime);
             var endTime = LogoTimeEncoder.Time.GetTimespan(EndTime);
-            var currentTime = CurrentTime.Value_TimeSpan;
+            var currentTime = CurrentTime.TodaysTime;
             bool active = currentTime >= startTime && currentTime < endTime;
 
             switch (todaysDayOfTheWeek)
@@ -827,122 +902,121 @@ namespace KontrolaKadi
         {
             var a = (ChkBox)sender;
             var chkd = a.Checked;
-
+            a.Checked = !chkd; // prevents visual update of the control (control is updated only when PLC value changes)
             if (chkd)
             {
-                DayOfTheWeek.Value_short += 1;                
+                DayOfTheWeek.Value_byte += 1;                
             }
             else
             {
-                DayOfTheWeek.Value_short -= 1;               
+                DayOfTheWeek.Value_byte -= 1;               
             }
-            updateColors();
-            Thread.Sleep(Settings.UpdateValuesPCms);
+            UpdateColors();            
         }
 
         private void Sat1_Click(object sender, EventArgs e)
         {
             var a = (ChkBox)sender;
             var chkd = a.Checked;
-
+            a.Checked = !chkd;
             if (chkd)
             {
-                DayOfTheWeek.Value_short += 64;
+                DayOfTheWeek.Value_byte += 64;
             }
             else
             {
-                DayOfTheWeek.Value_short -= 64;
+                DayOfTheWeek.Value_byte -= 64;
             }
-            updateColors();
-            Thread.Sleep(Settings.UpdateValuesPCms);
+            UpdateColors();
+            
         }
 
         private void Fri1_Click(object sender, EventArgs e)
         {
             var a = (ChkBox)sender;
             var chkd = a.Checked;
-
+            a.Checked = !chkd;
             if (chkd)
             {
-                DayOfTheWeek.Value_short += 32;
+                DayOfTheWeek.Value_byte += 32;
             }
             else
             {
-                DayOfTheWeek.Value_short -= 32;
+                DayOfTheWeek.Value_byte -= 32;
             }
-            updateColors();
-            Thread.Sleep(Settings.UpdateValuesPCms);
+            UpdateColors();
+            
         }
 
         private void Thu1_Click(object sender, EventArgs e)
         {
             var a = (ChkBox)sender;
             var chkd = a.Checked;
-
+            a.Checked = !chkd;
             if (chkd)
             {
-                DayOfTheWeek.Value_short += 16;
+                DayOfTheWeek.Value_byte += 16;
             }
             else
             {
-                DayOfTheWeek.Value_short -= 16;
+                DayOfTheWeek.Value_byte -= 16;
             }
-            updateColors();
-            Thread.Sleep(Settings.UpdateValuesPCms);
+            UpdateColors();
+           
         }
 
         private void Wed1_Click(object sender, EventArgs e)
         {
             var a = (ChkBox)sender;
             var chkd = a.Checked;
-
+            a.Checked = !chkd;
             if (chkd)
             {
-                DayOfTheWeek.Value_short += 8;
+                DayOfTheWeek.Value_byte += 8;
             }
             else
             {
-                DayOfTheWeek.Value_short -= 8;
+                DayOfTheWeek.Value_byte -= 8;
             }
-            updateColors();
-            Thread.Sleep(Settings.UpdateValuesPCms);
+            UpdateColors();
+            
         }
 
         private void Tue1_Click(object sender, EventArgs e)
         {
             var a = (ChkBox)sender;
             var chkd = a.Checked;
-
+            a.Checked = !chkd;
             if (chkd)
             {
-                DayOfTheWeek.Value_short += 4;
+                DayOfTheWeek.Value_byte += 4;
             }
             else
             {
-                DayOfTheWeek.Value_short -= 4;
+                DayOfTheWeek.Value_byte -= 4;
             }
-            updateColors();
-            Thread.Sleep(Settings.UpdateValuesPCms);
+            UpdateColors();
+           
         }
 
         private void Mon1_Click(object sender, EventArgs e)
         {
             var a = (ChkBox)sender;
             var chkd = a.Checked;
-
+            a.Checked = !chkd;
             if (chkd)
             {
-                DayOfTheWeek.Value_short += 2;
+                DayOfTheWeek.Value_byte += 2;
             }
             else
             {
-                DayOfTheWeek.Value_short -= 2;                
+                DayOfTheWeek.Value_byte -= 2;                
             }
-            updateColors();
-            Thread.Sleep(Settings.UpdateValuesPCms);
+            UpdateColors();
+            
         }
 
-        private void Updater_Tick(object sender, EventArgs e)
+        private void UpdateValues()
         {      
             if (DayOfTheWeek != null)
             {                
@@ -1049,7 +1123,7 @@ namespace KontrolaKadi
         {
             public static bool IsItMonday(PlcVars.Byte weekday)
             {
-                var a = weekday.Value_short;
+                var a = weekday.Value_byte;
 
 
                 if (a >= 64) // saturday
@@ -1084,7 +1158,7 @@ namespace KontrolaKadi
 
             public static bool IsItTuesday(PlcVars.Byte weekday)
             {
-                var a = weekday.Value_short;
+                var a = weekday.Value_byte;
 
 
                 if (a >= 64) // saturday
@@ -1115,7 +1189,7 @@ namespace KontrolaKadi
 
             public static bool IsItWednesday(PlcVars.Byte weekday)
             {
-                var a = weekday.Value_short;
+                var a = weekday.Value_byte;
 
 
                 if (a >= 64) // saturday
@@ -1142,7 +1216,7 @@ namespace KontrolaKadi
 
             public static bool IsItThursday(PlcVars.Byte weekday)
             {
-                var a = weekday.Value_short;
+                var a = weekday.Value_byte;
 
 
                 if (a >= 64) // saturday
@@ -1165,7 +1239,7 @@ namespace KontrolaKadi
 
             public static bool IsItFriday(PlcVars.Byte weekday)
             {
-                var a = weekday.Value_short;
+                var a = weekday.Value_byte;
 
 
                 if (a >= 64) // saturday
@@ -1184,7 +1258,7 @@ namespace KontrolaKadi
 
             public static bool IsItSaturday(PlcVars.Byte weekday)
             {
-                var a = weekday.Value_short;
+                var a = weekday.Value_byte;
 
 
                 if (a >= 64) // saturday
@@ -1199,7 +1273,7 @@ namespace KontrolaKadi
 
             public static bool IsItSunday(PlcVars.Byte weekday)
             {
-                var a = weekday.Value_short;
+                var a = weekday.Value_byte;
 
 
                 if (a >= 64) // saturday
@@ -1336,20 +1410,19 @@ namespace KontrolaKadi
         public TimeSpan TimeUntilEvent { get; private set; }
 
         // Constructor
-        public OneDaysEvent(TimeSpan CurrentTime, CustomDayOfWeek dayOfWeek, TimeSpan eventTime, bool currentlyActive)
+        public OneDaysEvent(PlcVars.LogoDateTime CurrentTimeOnPlc, CustomDayOfWeek dayOfWeek, TimeSpan eventTime, bool currentlyActive)
         {
             DayOfWeek = dayOfWeek;
             EventTime = eventTime;
-            CurrentlyActive = currentlyActive;
+            CurrentlyActive = currentlyActive;            
 
-            var now = DateTime.Now;
-            var currentDayOfWeek = (CustomDayOfWeek)((int)now.DayOfWeek + 1); // +1 to align with your enum
+            var currentDayOfWeek = (CustomDayOfWeek)((int)CurrentTimeOnPlc.Datetime.DayOfWeek + 1); // +1 to align with your enum
             int daysUntilEvent = (int)DayOfWeek - (int)currentDayOfWeek;
             bool isPastEvent = false;
 
             if (daysUntilEvent == 0)
             {
-                if (CurrentTime > EventTime)
+                if (CurrentTimeOnPlc.TodaysTime > EventTime)
                 {
                     isPastEvent = true;
                 }
@@ -1408,8 +1481,10 @@ namespace KontrolaKadi
             }
 
             return false;
-        }
+        }        
     }
+
+
 
 
     public enum CustomDayOfWeek

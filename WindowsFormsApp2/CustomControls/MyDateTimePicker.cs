@@ -89,12 +89,12 @@ namespace KontrolaKadi
         {
             if (directionIncrement)
             {
-                var m = new MethodInvoker(delegate { Increment(); });
+                var m = new MethodInvoker(Increment);
                 Parent.Invoke(m);
             }
             else
             {
-                var m = new MethodInvoker(delegate { Decrement(); });
+                var m = new MethodInvoker(Decrement);
                 Parent.Invoke(m);
             }
             pressedDuration++;

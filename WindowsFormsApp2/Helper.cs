@@ -13,39 +13,6 @@ namespace KontrolaKadi
 
     public class Helper
     {
-        public static bool LogoControllerInitialized = false;
-        public static bool GuiControllerInitialized = false;        
-                
-
-        public static string getClockValue()
-        {
-            if (Val.logocontroler != null)
-            {
-                if (Val.logocontroler.Prop1 != null)
-                {
-                    var p1 = Val.logocontroler.Prop1.LogoClock.Value_string;
-                    if (p1 != PropComm.NA)
-                    {
-                        return p1;
-                    }
-                }
-
-                if (Val.logocontroler.Prop2 != null)
-                {
-                    var p2 = Val.logocontroler.Prop2.LogoClock.Value_string;
-                    if (p2 != PropComm.NA)
-                    {
-                        return p2;
-                    }
-                }                
-            }
-
-            return "";
-        }
-
-        
- 
-
         public static string FloatToStringWeb(float f, string postFix)
         {
             return f.ToString("0.##").Replace(",", ".") + postFix;

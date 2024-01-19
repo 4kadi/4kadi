@@ -49,7 +49,7 @@ namespace KontrolaKadi
 
             var enojnaKad1 = (Kad)findControl("enojnaKad1");
             enojnaKad1.Urnik.UrnikAktiven = p.UrnikAktiven;
-            enojnaKad1.Urnik.currentTime = p.LogoClock;
+            enojnaKad1.Urnik.currentTime = p.LogoDatetime;
             enojnaKad1.Urnik.DayOfTheWeek1 = p.weekday1;
             enojnaKad1.Urnik.DayOfTheWeek2 = p.weekday2;
             enojnaKad1.Urnik.DayOfTheWeek3 = p.weekday3;
