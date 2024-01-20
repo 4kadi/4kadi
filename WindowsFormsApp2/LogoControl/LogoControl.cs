@@ -170,8 +170,7 @@ namespace KontrolaKadi
                         {
                             // 
                             LOGO[device].S7PLCbuffer.ReadPLCtoBuffer(); // READs WHOLE PLC TO BUFFER
-                                                                        //
-
+                                                                        //                          
                             switch (device)
                             {
                                 case 1: Prop1.SyncVars(); break;

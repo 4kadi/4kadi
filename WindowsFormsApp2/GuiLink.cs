@@ -67,7 +67,10 @@ namespace KontrolaKadi
             enojnaKad1.Urnik.StartTime6 = p.ontime6;
             enojnaKad1.Urnik.EndTime4 = p.offtime4;
             enojnaKad1.Urnik.EndTime5 = p.offtime5;
-            enojnaKad1.Urnik.EndTime6 = p.offtime6;        
+            enojnaKad1.Urnik.EndTime6 = p.offtime6;
+            enojnaKad1.Urnik.NapakaNastTemperatur = p.NapakaNastavitevTemperatur;
+            enojnaKad1.Urnik.TemperaturaAktivnegaUrnika = p.temperaturaAktivnegaUrnika;
+            enojnaKad1.Urnik.TemperaturaNektivnegaUrnika = p.temperaturaNeaktivnegaUrnika;
 
             enojnaKad1.SwitchesGroupbox.Prisotnost.Value_SwitchSetting = p.Prisotnost_AutoManSwitch;
             enojnaKad1.SwitchesGroupbox.Prisotnost.Value_CurrentState_PLC = p.Prisotnost_CurrentState;

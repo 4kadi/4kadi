@@ -25,6 +25,9 @@ namespace KontrolaKadi
         public PlcVars.Word offtime1, offtime2, offtime3, offtime4, offtime5, offtime6;
         public PlcVars.Bit UrnikAktiven;
 
+        public PlcVars.AlarmBit NapakaNastavitevTemperatur;
+        public PlcVars.Word temperaturaAktivnegaUrnika, temperaturaNeaktivnegaUrnika;
+
         public PlcVars.Word Prisotnost_AutoManSwitch;
         public PlcVars.Bit Prisotnost_CurrentState;
 
@@ -93,7 +96,7 @@ namespace KontrolaKadi
             stopwatchResetPulse = new PlcVars.Bit(this, new PlcVars.BitAddress(30,0), true);
             stopwatchFinished = new PlcVars.Bit(this, new PlcVars.BitAddress(31, 0), false);
             stopwatchPaused = new PlcVars.Bit(this, new PlcVars.BitAddress(31, 1), false);
-            stopwatchInProgress = new PlcVars.Bit(this, new PlcVars.BitAddress(31, 2), false);            
+            stopwatchInProgress = new PlcVars.Bit(this, new PlcVars.BitAddress(31, 2), false);
 
             weekday1 = new PlcVars.Byte(this, new PlcVars.ByteAddress(40), true);
             ontime1 = new PlcVars.Word(this, new PlcVars.WordAddress(41), true);
@@ -114,6 +117,10 @@ namespace KontrolaKadi
             ontime6 = new PlcVars.Word(this, new PlcVars.WordAddress(66), true);
             offtime6 = new PlcVars.Word(this, new PlcVars.WordAddress(68), true);
             UrnikAktiven = new PlcVars.Bit(this, new PlcVars.BitAddress(70, 0), true);
+
+            NapakaNastavitevTemperatur = new PlcVars.AlarmBit(this, new PlcVars.BitAddress(71, 0), "Napaka nastavitev željenih temperatur");
+            temperaturaAktivnegaUrnika = new PlcVars.Word(this, new PlcVars.WordAddress(72), true);
+            temperaturaNeaktivnegaUrnika = new PlcVars.Word(this, new PlcVars.WordAddress(74), true);
 
             Prisotnost_AutoManSwitch = new PlcVars.Word(this, new PlcVars.WordAddress(76), true);
             Prisotnost_CurrentState = new PlcVars.Bit(this, new PlcVars.BitAddress(78, 0), false);

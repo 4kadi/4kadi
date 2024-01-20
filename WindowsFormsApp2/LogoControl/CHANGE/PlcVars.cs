@@ -248,7 +248,7 @@ namespace KontrolaKadi
             }
 
             private void ReadFromPLCtoBuffer(bool forceRead)
-            {
+            {                
                 if (directionToPLC == false || forceRead)
                 {
                     if (Client != null)
@@ -258,10 +258,10 @@ namespace KontrolaKadi
                         {
                             if (buffRead != PLCval)
                             {
-                                PLCval = buffRead; buffRead = null;
+                                PLCval = buffRead; buffRead = null;                               
                             }
                             if (previousPLCval != PLCval)
-                            {
+                            {                                
                                 previousPLCval = PLCval;
                                 Task.Run(InvokeOnValueChangeEvent);                                
                             }
@@ -275,8 +275,8 @@ namespace KontrolaKadi
             }
 
             void InvokeOnValueChangeEvent()
-            {
-                ValueChanged?.Invoke(this, EventArgs.Empty);
+            {               
+                ValueChanged?.Invoke(this, EventArgs.Empty);                
             }
 
             private void WriteToPLCFromBuffer()

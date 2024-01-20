@@ -21,6 +21,8 @@ namespace KontrolaKadi
         public PowerMonitorGroupBox PowerMonitorGroupBox { get; private set; }
         public PVSelector PVSelector { get; private set; }
 
+        public PhReader Ph { get; private set; }
+
         public KadSubmenu()
         {
             bool designMode = (LicenseManager.UsageMode == LicenseUsageMode.Designtime);
@@ -37,6 +39,7 @@ namespace KontrolaKadi
             managePowerSetGroupbox();
             managePowerMonitorGroupbox();
             managePVSelectorGroupBox();
+            managePhGroupBox();
 
             Click += KadSubmenu_Click;
             LostFocus += KadSubmenu_LostFocus;
@@ -135,11 +138,22 @@ namespace KontrolaKadi
         {
             PVSelector = new PVSelector()
             {
-                Top = Urnik.Bottom + 20,
+                Top = Urnik.Bottom + 15,
                 Left = Urnik.Left, 
                 Text = "Procesna temperatura"
             };
             Controls.Add(PVSelector);
+        }
+
+        void managePhGroupBox()
+        {
+            Ph = new PhReader()
+            {
+                Top = PVSelector.Bottom + 15,
+                Left = Urnik.Left,
+                Text = "Ph"
+            };
+            Controls.Add(Ph);
         }
 
         void close()

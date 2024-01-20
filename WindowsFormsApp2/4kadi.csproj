@@ -80,16 +80,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ComboboxItem.cs" />
+    <Compile Include="CustomControls\OgrevenjeSet.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="CustomControls\GrelnikPowerSet.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="CustomControls\CrpalkaPowerSet.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="CustomControls\PhReader.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="CustomControls\PowerSet.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="CustomControls\PVSelector.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomControls\SetTempQuick.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="CustomControls\SGgroupbox.cs">

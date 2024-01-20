@@ -60,6 +60,7 @@ namespace KontrolaKadi
         public PowerSetGroupbox PowerSetGroupbox; // just reference from submenu
         public PowerMonitorGroupBox PowerMonitorGroupbox; // just reference from submenu
         public PVSelector PvSelector;    // just reference from submenu
+        public PhReader Ph;    // just reference from submenu
 
         public Kad():base()
         {
@@ -123,6 +124,7 @@ namespace KontrolaKadi
             PowerSetGroupbox = submenu.PowerSetGroupbox;
             PowerMonitorGroupbox = submenu.PowerMonitorGroupBox;
             PvSelector = submenu.PVSelector;
+            Ph = submenu.Ph;
 
             backImage.Click += BackImage_Click;
             Urnik.NextEventDescription_Changed += Urnik_NextEventDescription_Changed;

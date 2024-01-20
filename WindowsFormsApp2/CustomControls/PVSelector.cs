@@ -119,9 +119,9 @@ namespace KontrolaKadi
 
             lblPV = new Label()
             {
-                Font = new Font("arial", 10),
+                Font = new Font("arial", 10, FontStyle.Bold),
                 Top = tbPV.Top + lbloffsetY,
-                Left = tbPV.Left - 90,
+                Left = tbPV.Left - 99,
                 Text = "Upoštevano:"
             };
             Controls.Add(lblPV);
@@ -130,13 +130,13 @@ namespace KontrolaKadi
             {
                 Font = new Font("arial", 10),
                 Top = lblT1.Top + lbloffsetY -2,
-                Left = lblPV.Left +25,
+                Left = lblPV.Left +49,
                 Text = "Izbira:"
             };
             Controls.Add(lblCb);
 
             Width = 450;
-            Height = 150;
+            Height = 130;
         }
 
         private void CbSelector_DropDownClosed(object sender, EventArgs e)
@@ -251,33 +251,16 @@ namespace KontrolaKadi
 
             void values()
             {
-                var list = new List<CB_PVselector_Item>();
-                list.Add(new CB_PVselector_Item("Povprečje", 0));
-                list.Add(new CB_PVselector_Item("T1", 1));
-                list.Add(new CB_PVselector_Item("T2", 2));
-                list.Add(new CB_PVselector_Item("Manjša", 3));
-                list.Add(new CB_PVselector_Item("Večja", 4));
+                var list = new List<ComboboxItem>();
+                list.Add(new ComboboxItem("Povprečje", 0));
+                list.Add(new ComboboxItem("T1", 1));
+                list.Add(new ComboboxItem("T2", 2));
+                list.Add(new ComboboxItem("Manjša", 3));
+                list.Add(new ComboboxItem("Večja", 4));
                 this.DataSource = list;
                 DisplayMember = "Text";
                 ValueMember = "Value";
             }
-        }
-
-        class CB_PVselector_Item
-        {
-            public string Text { get; set; }
-            public short Value { get; set; }
-
-            public CB_PVselector_Item(string text, short value)
-            {
-                Text = text;
-                Value = value;                
-            }
-
-            public override string ToString()
-            {
-                return Text;
-            }
-        }
+        }        
     }
 }

@@ -12,19 +12,45 @@ namespace KontrolaKadi
     public class Urnik : GroupBox
     {
         bool classInitializedProperly;
-        public bool ClassInitializedProperly 
-        { 
+        public bool ClassInitializedProperly
+        {
             get { return classInitializedProperly; }
-            private set 
-            { 
-                classInitializedProperly = value; 
-                if (classInitializedProperly) 
-                { ValueChanged(this, EventArgs.Empty); } 
-            } 
+            private set
+            {
+                classInitializedProperly = value;
+                if (classInitializedProperly)
+                { ValueChanged(this, EventArgs.Empty); }
+            }
         }
 
-        UrnikSection section1, section2, section3, section4, section5, section6;
+        Label nextEventDescription = new Label();
 
+        SetTempQuick panelTempAktivnegaUrnika, panelTempNeaktivnegaUrnika;
+
+        Form ParentForm;
+
+        public event EventHandler NextEventDescription_Changed;
+
+        public string NextEventDescription
+        {
+            get { return nextEventDescription.Text; }
+            private set
+            {
+                nextEventDescription.Text = value;
+                if (NextEventDescription != null)
+                {
+                    NextEventDescription_Changed.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        Color ColorDefault;
+
+        UrnikSection section1, section2, section3, section4, section5, section6;
+        SGroupBox sectionTemperature;
+
+        PlcVars.Bit _UrnikAktiven;
+        PlcVars.AlarmBit _NapakaNastTemperatur;
         PlcVars.LogoDateTime _currentTime;
 
         PlcVars.Byte _DayOfTheWeek1;
@@ -51,41 +77,26 @@ namespace KontrolaKadi
         PlcVars.Word _StartTime6;
         PlcVars.Word _EndTime6;
 
-        Label nextEventDescription = new Label();
+        PlcVars.Word _TemperaturaAktivnegaUrnika;
+        PlcVars.Word _TemperaturaNektivnegaUrnika;
 
-        Form ParentForm;
 
-        public event EventHandler NextEventDescription_Changed;
-
-        public string NextEventDescription
+        public PlcVars.LogoDateTime currentTime
         {
-            get { return nextEventDescription.Text; }
-            private set 
-            { 
-                nextEventDescription.Text = value;
-                if (NextEventDescription != null)
-                {
-                    NextEventDescription_Changed.Invoke(this, EventArgs.Empty);
-                }
+            get
+            {
+                return _currentTime;
+            }
+            set
+            {
+                _currentTime = value; registerEvent(value);
+                section1.CurrentTime = value; section2.CurrentTime = value; section3.CurrentTime = value; section4.CurrentTime = value; section5.CurrentTime = value; section6.CurrentTime = value;
             }
         }
 
+        public PlcVars.Bit UrnikAktiven { get { return _UrnikAktiven; } set { _UrnikAktiven = value; registerEvent(value); } }
 
-        public PlcVars.LogoDateTime currentTime 
-        {
-            get 
-            {
-                return _currentTime; 
-            } 
-            set
-            {
-                _currentTime = value;  registerEvent(value);
-                section1.CurrentTime = value; section2.CurrentTime = value; section3.CurrentTime = value; section4.CurrentTime = value; section5.CurrentTime = value; section6.CurrentTime = value;
-            } 
-        }   
-        
-           
-        public PlcVars.Bit UrnikAktiven;
+        public PlcVars.AlarmBit NapakaNastTemperatur { get { return _NapakaNastTemperatur; } set { _NapakaNastTemperatur = value; registerEvent(value); } }
 
         public PlcVars.Byte DayOfTheWeek1 { get { return _DayOfTheWeek1; } set { _DayOfTheWeek1 = value; section1.DayOfTheWeek = value; registerEvent(value); } }
         public PlcVars.Word StartTime1 { get { return _StartTime1; } set { _StartTime1 = value; section1.StartTime = value; registerEvent(value); } }
@@ -111,6 +122,9 @@ namespace KontrolaKadi
         public PlcVars.Word StartTime6 { get { return _StartTime6; } set { _StartTime6 = value; section6.StartTime = value; registerEvent(value); } }
         public PlcVars.Word EndTime6 { get { return _EndTime6; } set { _EndTime6 = value; section6.EndTime = value; registerEvent(value); } }
 
+        public PlcVars.Word TemperaturaAktivnegaUrnika { get { return _TemperaturaAktivnegaUrnika; } set { _TemperaturaAktivnegaUrnika = value; panelTempAktivnegaUrnika.TemperaturaNastavljena = value; registerEvent(value); } }
+        public PlcVars.Word TemperaturaNektivnegaUrnika { get { return _TemperaturaNektivnegaUrnika; } set { _TemperaturaNektivnegaUrnika = value; panelTempNeaktivnegaUrnika.TemperaturaNastavljena = value; registerEvent(value); } }
+
 
 
         public Urnik()
@@ -120,7 +134,7 @@ namespace KontrolaKadi
             nextEventDescription.Top = 25;
             nextEventDescription.Left = 60;
             nextEventDescription.Width = 380;
-            nextEventDescription. BackColor = Color.LightBlue;
+            nextEventDescription.BackColor = Color.LightBlue;
             nextEventDescription.Text = PropComm.NA;
             nextEventDescription.Font = new Font("arial", 10, FontStyle.Bold);
             Controls.Add(nextEventDescription);
@@ -129,7 +143,7 @@ namespace KontrolaKadi
             section1.Top = 50;
             section1.Left = 20;
             section1.Name = "urnikSection1";
-            section1.Text = "Urnik 1";           
+            section1.Text = "Urnik 1";
             Controls.Add(section1);
 
             section2 = new UrnikSection();
@@ -161,17 +175,18 @@ namespace KontrolaKadi
             Controls.Add(section5);
 
             section6 = new UrnikSection();
-            section6.Top = section5.Bottom;
+            section6.Top = section5.Bottom + 5;
             section6.Left = 20;
             section6.Name = "urniksection6" + 5;
             section6.Text = "Urnik 6";
             Controls.Add(section6);
 
-            this.Height = section6.Bottom - section1.Top + 60;
+            manageTemperatureSection();
+
+            Height = sectionTemperature.Bottom - section1.Top + 60;
             Width = section1.Right - section1.Left + 40;
 
             HandleCreated += Urnik_HandleCreated;
-
         }
 
         private void Urnik_HandleCreated(object sender, EventArgs e)
@@ -187,37 +202,94 @@ namespace KontrolaKadi
 
         void registerEvent(PlcVars.Bit val)
         {
-            isClassInitializedProperly();
+            InitializeIfPossible();
             val.ValueChanged += ValueChanged;
         }
 
         void registerEvent(PlcVars.Byte val)
         {
-            isClassInitializedProperly();
+            InitializeIfPossible();
             val.ValueChanged += ValueChanged;
         }
 
         void registerEvent(PlcVars.Word val)
         {
-            isClassInitializedProperly();
+            InitializeIfPossible();
             val.ValueChanged += ValueChanged;
         }
 
         void registerEvent(PlcVars.DWord val)
         {
-            isClassInitializedProperly();
+            InitializeIfPossible();
+
             val.ValueChanged += ValueChanged;
         }
 
         void registerEvent(PlcVars.LogoDateTime val)
         {
-            isClassInitializedProperly();
+            InitializeIfPossible();
             val.ValueChanged += ValueChanged;
         }
 
-        private bool isClassInitializedProperly()
+        void registerOtherEvents()
         {
-            return this.ClassInitializedProperly = AreAllVariablesInitialized();
+            UrnikAktiven.ValueChanged += UrnikAktiven_ValueChanged;
+            NapakaNastTemperatur.ValueChanged += NapakaNastTemperatur_ValueChanged;
+            TemperaturaAktivnegaUrnika.ValueChanged += TemperaturaAktivnegaUrnika_ValueChanged;
+            TemperaturaNektivnegaUrnika.ValueChanged += TemperaturaNektivnegaUrnika_ValueChanged;
+        }
+
+        private void UrnikAktiven_ValueChanged(object sender, EventArgs e)
+        {
+            if (UrnikAktiven.Value_bool)
+            {
+                panelTempAktivnegaUrnika.Highlight();
+                panelTempNeaktivnegaUrnika.RemoveHighlight();
+            }
+            else
+            {
+                panelTempAktivnegaUrnika.RemoveHighlight();
+                panelTempNeaktivnegaUrnika.Highlight();
+            }
+        }
+
+        private void TemperaturaNektivnegaUrnika_ValueChanged(object sender, EventArgs e)
+        {
+            panelTempNeaktivnegaUrnika.Value = TemperaturaNektivnegaUrnika.Value_short;
+        }
+
+        private void TemperaturaAktivnegaUrnika_ValueChanged(object sender, EventArgs e)
+        {
+            panelTempAktivnegaUrnika.Value = TemperaturaAktivnegaUrnika.Value_short;
+        }
+
+        private void NapakaNastTemperatur_ValueChanged(object sender, EventArgs e)
+        {
+            var m = new MethodInvoker(delegate
+            {
+                if (NapakaNastTemperatur.Value_bool)
+                {
+                    sectionTemperature.BackColor = Color.Red;
+                }
+                else
+                {
+                    sectionTemperature.BackColor = ColorDefault;
+                }
+            });
+            Invoke(m);
+
+        }
+
+        private bool InitializeIfPossible()
+        {
+            var init = this.ClassInitializedProperly = AreAllVariablesInitialized();
+
+            if (init)
+            {
+                registerOtherEvents();
+            }
+
+            return init;
         }
         public bool AreAllVariablesInitialized()
         {
@@ -241,7 +313,10 @@ namespace KontrolaKadi
                    EndTime5 != null &&
                    DayOfTheWeek6 != null &&
                    StartTime6 != null &&
-                   EndTime6 != null;
+                   EndTime6 != null &&
+                   NapakaNastTemperatur != null &&
+                   TemperaturaAktivnegaUrnika != null &&
+                   TemperaturaNektivnegaUrnika != null;
         }
 
         private void ValueChanged(object sender, EventArgs e)
@@ -277,13 +352,13 @@ namespace KontrolaKadi
                 }
                 updateControls();
             }
-            catch 
-            {            
-               
+            catch
+            {
+
             }
         }
 
-            public string GetNextEventDescription(OneDaysEvent eventPart)
+        public string GetNextEventDescription(OneDaysEvent eventPart)
         {
             if (eventPart == null)
             {
@@ -291,10 +366,10 @@ namespace KontrolaKadi
             }
 
             string msg = eventPart.CurrentlyActive ? "VKLOP" : "IZKLOP";
-          
+
             int hours = eventPart.EventTime.Hours;
             int minutes = eventPart.EventTime.Minutes;
-            
+
             msg += $" - {eventPart.DayOfWeek.ToString()} ob {hours:00}:{minutes:00}";
 
             return msg;
@@ -308,12 +383,18 @@ namespace KontrolaKadi
             section4.UpdateControls();
             section5.UpdateControls();
             section6.UpdateControls();
-            
+            UpdateSectionTemperatureControls();
+
+        }
+
+        void UpdateSectionTemperatureControls()
+        {
+
         }
 
         private List<OneDaysEvent> SortEventsOneWeekFromNow(List<OneDaysEvent> events)
         {
-            events.Sort((x, y) => x.TimeUntilEvent.CompareTo(y.TimeUntilEvent));           
+            events.Sort((x, y) => x.TimeUntilEvent.CompareTo(y.TimeUntilEvent));
 
             return events;
         }
@@ -323,7 +404,7 @@ namespace KontrolaKadi
         private OneDaysEvent getNextEvent()
         {
             var allEvents = getAllEvents();
-            var FolowingEventsSorted = SortEventsOneWeekFromNow(allEvents);           
+            var FolowingEventsSorted = SortEventsOneWeekFromNow(allEvents);
             if (FolowingEventsSorted.Count > 0)
             {
                 return FolowingEventsSorted[0];
@@ -351,7 +432,7 @@ namespace KontrolaKadi
             {
                 return new List<OneDaysEvent>();
             }
-           
+
             List<WeektimerEvent> weektimerEvents = getAllWeektimerEvents();
             var AllWeekEvents = new List<OneDaysEvent>();
 
@@ -359,7 +440,7 @@ namespace KontrolaKadi
             {
                 if (weektimerEvent.Monday)
                 {
-                    AllWeekEvents.Add(new OneDaysEvent(currentTime, CustomDayOfWeek.Ponedeljek, weektimerEvent.StartTime, true)) ;
+                    AllWeekEvents.Add(new OneDaysEvent(currentTime, CustomDayOfWeek.Ponedeljek, weektimerEvent.StartTime, true));
                     AllWeekEvents.Add(new OneDaysEvent(currentTime, CustomDayOfWeek.Ponedeljek, weektimerEvent.EndTime, false));
                 }
                 if (weektimerEvent.Tuesday)
@@ -394,6 +475,41 @@ namespace KontrolaKadi
                 }
             }
             return AllWeekEvents;
+        }
+
+        void manageTemperatureSection()
+        {
+            sectionTemperature = new SGroupBox()
+            {
+                Top = section6.Bottom + 5,
+                Left = section6.Left
+            };
+
+            panelTempAktivnegaUrnika = new SetTempQuick()
+            {
+                Top = 20,
+                Left = 10,
+                Text = "Temp. Aktivnega urnika",
+                TemperaturaNastavljena = TemperaturaAktivnegaUrnika
+            };
+
+            sectionTemperature.Controls.Add(panelTempAktivnegaUrnika);
+
+            panelTempNeaktivnegaUrnika = new SetTempQuick()
+            {
+                Top = panelTempAktivnegaUrnika.Top,
+                Left = panelTempAktivnegaUrnika.Right + 10,
+                Text = "Temp. Neaktivnega urnika"
+            };
+
+            sectionTemperature.Controls.Add(panelTempNeaktivnegaUrnika);
+            Controls.Add(sectionTemperature);
+
+            sectionTemperature.Width = section6.Width;
+            sectionTemperature.Height = panelTempAktivnegaUrnika.Height + 30;
+
+            ColorDefault = sectionTemperature.BackColor;
+
         }
 
     }
@@ -1481,11 +1597,10 @@ namespace KontrolaKadi
             }
 
             return false;
-        }        
+        }
+
+        
     }
-
-
-
 
     public enum CustomDayOfWeek
     {
