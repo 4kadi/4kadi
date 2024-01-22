@@ -67,7 +67,8 @@ namespace KontrolaKadi
                 Left = minus.Right + 5,
                 Width = 60,
                 Top = title.Top - 2,
-                ReadOnly = true
+                ReadOnly = true,
+                TextAlign = HorizontalAlignment.Center
             };
             Controls.Add(tb);
 
@@ -85,17 +86,8 @@ namespace KontrolaKadi
         }
 
         private void PowerSet_Enter(object sender, EventArgs e)
-        {
-            try
-            {
-                var form = FindForm();
-                var arrayOfControls = form.Controls.Find("unfocus", true);
-                var tb = (TextBox)arrayOfControls[0];
-                tb.Focus();
-            }
-            catch 
-            {}
-        
+        {            
+            Helper.Unfocus(sender);
         }
 
         void readonlyValueUpdated()

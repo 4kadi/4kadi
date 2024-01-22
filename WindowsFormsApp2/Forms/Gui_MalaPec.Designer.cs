@@ -106,10 +106,23 @@ namespace KontrolaKadi
             // 
             // stopWatch1
             // 
+            this.stopWatch1.BtnReset = null;
+            this.stopWatch1.BtnStart = null;
+            this.stopWatch1.BtnStop = null;
+            this.stopWatch1.CurrentTime = null;
+            this.stopWatch1.Finished = null;
+            this.stopWatch1.InProgress = null;
             this.stopWatch1.Location = new System.Drawing.Point(333, 423);
             this.stopWatch1.Name = "stopWatch1";
+            this.stopWatch1.Paused = null;
+            this.stopWatch1.PauseLeft = null;
+            this.stopWatch1.PauseTime = null;
+            this.stopWatch1.Prisotnost = null;
+            this.stopWatch1.ReminderTime = null;
             this.stopWatch1.Size = new System.Drawing.Size(145, 255);
             this.stopWatch1.TabIndex = 6;
+            this.stopWatch1.TimeLeft = null;
+            this.stopWatch1.UpostevajPrisotnost = null;
             // 
             // Gui_MalaPec
             // 

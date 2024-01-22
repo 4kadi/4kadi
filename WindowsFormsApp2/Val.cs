@@ -13,6 +13,7 @@ namespace KontrolaKadi
         public static LogoControler logocontroler;       
         public static PC_WD PCWD;
         public static WarningManager WarningManager;
+        public static AutomaticPlcDateTimeUpdater PlcTimeUpdater;
 
         public static string PathLogFIle = "";
         public static string PathUserActions = "";
@@ -27,7 +28,9 @@ namespace KontrolaKadi
             XmlController.XmlControllerInitialize();  
             logocontroler = new LogoControler();                // in new thread
             PCWD = new PC_WD();                                 // in new thread
-  
+            PlcTimeUpdater = new AutomaticPlcDateTimeUpdater();
+
+
         }
 
        

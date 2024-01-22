@@ -60,11 +60,37 @@ namespace KontrolaKadi
             }
         }
 
+        private PlcVars.AlarmBit _SenFail_T1;
+
+        public PlcVars.AlarmBit SenFail_T1
+        {
+            get { return _SenFail_T1; }
+            set
+            {
+                _SenFail_T1 = value;
+                Any_ValueChanged(null, EventArgs.Empty);
+            }
+        }
+
+        private PlcVars.AlarmBit _SenFail_T2;
+        public PlcVars.AlarmBit SenFail_T2
+        {
+            get { return _SenFail_T2; }
+            set
+            {
+                _SenFail_T2 = value;
+                Any_ValueChanged(null, EventArgs.Empty);
+            }
+        }
+
+
         TbTemperatureShow tbT1, tbT2, tbPV;
         Label lblT1, lblT2, lblPV, lblCb;
         CB_PVselector cbSelector;
 
         const int lbloffsetY = 6;
+
+        Color DefaultColor;
 
         public PVSelector()
         {
@@ -137,6 +163,8 @@ namespace KontrolaKadi
 
             Width = 450;
             Height = 130;
+
+            DefaultColor = tbT1.BackColor;
         }
 
         private void CbSelector_DropDownClosed(object sender, EventArgs e)
@@ -184,17 +212,54 @@ namespace KontrolaKadi
                 return;
             }
 
-            if (T1 != null && T2 != null && PV != null && Function != null)
+            if (T1 != null && T2 != null && PV != null && Function != null && SenFail_T1 != null && SenFail_T2 != null)
             {
                 T1.ValueChanged += Any_ValueChanged;
                 T2.ValueChanged += Any_ValueChanged;
                 PV.ValueChanged += Any_ValueChanged;
                 Function.ValueChanged += Any_ValueChanged;
+                SenFail_T1.ValueChanged += SenFail_T1_ValueChanged;
+                SenFail_T2.ValueChanged += SenFail_T2_ValueChanged;
 
                 cbSelector.DropDownClosed += CbSelector_DropDownClosed;                
 
                 initialized = true;
             }
+        }
+
+        private void SenFail_T2_ValueChanged(object sender, EventArgs e)
+        {
+            var m = new MethodInvoker(delegate 
+            {
+                if (SenFail_T2.Value_bool)
+                {
+                    tbT2.BackColor = Color.Red;
+                }
+                else
+                {
+                    tbT2.BackColor = DefaultColor;
+                }
+            });
+
+            Invoke(m);
+        }
+
+        private void SenFail_T1_ValueChanged(object sender, EventArgs e)
+        {
+            var m = new MethodInvoker(delegate
+            {
+                if (SenFail_T1.Value_bool)
+            {
+                tbT1.BackColor = Color.Red;
+            }
+            else
+            {
+                tbT1.BackColor = DefaultColor;
+            }
+            });
+
+            Invoke(m);
+
         }
 
         class TbTemperatureShow : TextBox
@@ -210,6 +275,7 @@ namespace KontrolaKadi
                 ReadOnly = true;
                 Width = 80;
                 Enter += TemperatureShow_Enter;
+                TextAlign = HorizontalAlignment.Center;
             }
 
             void UpdateText(string text)
@@ -226,15 +292,7 @@ namespace KontrolaKadi
 
             private void TemperatureShow_Enter(object sender, EventArgs e)
             {
-                try
-                {
-                    var form = FindForm();
-                    var arrayOfControls = form.Controls.Find("unfocus", true);
-                    var tb = (TextBox)arrayOfControls[0];
-                    tb.Focus();
-                }
-                catch
-                { }
+                Helper.Unfocus(sender);
             }
         }
 
@@ -243,8 +301,7 @@ namespace KontrolaKadi
             public CB_PVselector()
             {
                 values();
-                this.DropDownStyle = ComboBoxStyle.DropDownList;
-
+                this.DropDownStyle = ComboBoxStyle.DropDownList;                
             }
 
 

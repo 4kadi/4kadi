@@ -9,9 +9,10 @@ using System.Threading;
 
 namespace KontrolaKadi
 {
-    public class Urnik : GroupBox
+    public class Urnik : SGroupBox
     {
         bool classInitializedProperly;
+        string originalTitle = "";
         public bool ClassInitializedProperly
         {
             get { return classInitializedProperly; }
@@ -23,9 +24,9 @@ namespace KontrolaKadi
             }
         }
 
-        Label nextEventDescription = new Label();
+        CenteredLabel nextEventDescription;
 
-        SetTempQuick panelTempAktivnegaUrnika, panelTempNeaktivnegaUrnika;
+        SetTempQuick_5_95 panelTempAktivnegaUrnika, panelTempNeaktivnegaUrnika;
 
         Form ParentForm;
 
@@ -90,7 +91,7 @@ namespace KontrolaKadi
             set
             {
                 _currentTime = value; registerEvent(value);
-                section1.CurrentTime = value; section2.CurrentTime = value; section3.CurrentTime = value; section4.CurrentTime = value; section5.CurrentTime = value; section6.CurrentTime = value;
+                section1.CurrentTime = value; section2.CurrentTime = value; section3.CurrentTime = value; section4.CurrentTime = value; section5.CurrentTime = value; section6.CurrentTime = value;               
             }
         }
 
@@ -122,14 +123,18 @@ namespace KontrolaKadi
         public PlcVars.Word StartTime6 { get { return _StartTime6; } set { _StartTime6 = value; section6.StartTime = value; registerEvent(value); } }
         public PlcVars.Word EndTime6 { get { return _EndTime6; } set { _EndTime6 = value; section6.EndTime = value; registerEvent(value); } }
 
-        public PlcVars.Word TemperaturaAktivnegaUrnika { get { return _TemperaturaAktivnegaUrnika; } set { _TemperaturaAktivnegaUrnika = value; panelTempAktivnegaUrnika.TemperaturaNastavljena = value; registerEvent(value); } }
-        public PlcVars.Word TemperaturaNektivnegaUrnika { get { return _TemperaturaNektivnegaUrnika; } set { _TemperaturaNektivnegaUrnika = value; panelTempNeaktivnegaUrnika.TemperaturaNastavljena = value; registerEvent(value); } }
+        public PlcVars.Word TemperaturaAktivnegaUrnika { get { return _TemperaturaAktivnegaUrnika; } set { _TemperaturaAktivnegaUrnika = value; panelTempAktivnegaUrnika.Value = value; registerEvent(value); } }
+        public PlcVars.Word TemperaturaNektivnegaUrnika { get { return _TemperaturaNektivnegaUrnika; } set { _TemperaturaNektivnegaUrnika = value; panelTempNeaktivnegaUrnika.Value = value; registerEvent(value); } }
 
 
 
         public Urnik()
         {
+            this.TextChanged += Urnik_TextChanged;
+
             Font = new Font("arial", 15, FontStyle.Bold);
+
+            nextEventDescription = new CenteredLabel();            
 
             nextEventDescription.Top = 25;
             nextEventDescription.Left = 60;
@@ -189,6 +194,15 @@ namespace KontrolaKadi
             HandleCreated += Urnik_HandleCreated;
         }
 
+        private void Urnik_TextChanged(object sender, EventArgs e)
+        {
+            if (originalTitle == "")
+            {
+                originalTitle = Text;
+            }
+            
+        }
+
         private void Urnik_HandleCreated(object sender, EventArgs e)
         {
             ParentForm = FindForm();
@@ -231,63 +245,9 @@ namespace KontrolaKadi
             val.ValueChanged += ValueChanged;
         }
 
-        void registerOtherEvents()
-        {
-            UrnikAktiven.ValueChanged += UrnikAktiven_ValueChanged;
-            NapakaNastTemperatur.ValueChanged += NapakaNastTemperatur_ValueChanged;
-            TemperaturaAktivnegaUrnika.ValueChanged += TemperaturaAktivnegaUrnika_ValueChanged;
-            TemperaturaNektivnegaUrnika.ValueChanged += TemperaturaNektivnegaUrnika_ValueChanged;
-        }
-
-        private void UrnikAktiven_ValueChanged(object sender, EventArgs e)
-        {
-            if (UrnikAktiven.Value_bool)
-            {
-                panelTempAktivnegaUrnika.Highlight();
-                panelTempNeaktivnegaUrnika.RemoveHighlight();
-            }
-            else
-            {
-                panelTempAktivnegaUrnika.RemoveHighlight();
-                panelTempNeaktivnegaUrnika.Highlight();
-            }
-        }
-
-        private void TemperaturaNektivnegaUrnika_ValueChanged(object sender, EventArgs e)
-        {
-            panelTempNeaktivnegaUrnika.Value = TemperaturaNektivnegaUrnika.Value_short;
-        }
-
-        private void TemperaturaAktivnegaUrnika_ValueChanged(object sender, EventArgs e)
-        {
-            panelTempAktivnegaUrnika.Value = TemperaturaAktivnegaUrnika.Value_short;
-        }
-
-        private void NapakaNastTemperatur_ValueChanged(object sender, EventArgs e)
-        {
-            var m = new MethodInvoker(delegate
-            {
-                if (NapakaNastTemperatur.Value_bool)
-                {
-                    sectionTemperature.BackColor = Color.Red;
-                }
-                else
-                {
-                    sectionTemperature.BackColor = ColorDefault;
-                }
-            });
-            Invoke(m);
-
-        }
-
         private bool InitializeIfPossible()
         {
             var init = this.ClassInitializedProperly = AreAllVariablesInitialized();
-
-            if (init)
-            {
-                registerOtherEvents();
-            }
 
             return init;
         }
@@ -320,7 +280,7 @@ namespace KontrolaKadi
         }
 
         private void ValueChanged(object sender, EventArgs e)
-        {
+        {            
             ValueChanged();
         }
 
@@ -331,30 +291,63 @@ namespace KontrolaKadi
                 return;
             }
 
+            MethodInvoker m = new MethodInvoker(delegate 
+            {
+                try
+                {
+                    UpdateNextEventDescription();
+                    updateControls();
+                    UpdateCurrentTime();
+
+                    panelTempNeaktivnegaUrnika.Value.Value_short = TemperaturaNektivnegaUrnika.Value_short;
+                    panelTempAktivnegaUrnika.Value.Value_short = TemperaturaAktivnegaUrnika.Value_short;
+
+                    if (NapakaNastTemperatur.Value_bool)
+                    {
+                        sectionTemperature.BackColor = Color.Red;
+                    }
+                    else
+                    {
+                        sectionTemperature.BackColor = ColorDefault;
+                    }
+
+                    if (UrnikAktiven.Value_bool)
+                    {
+                        panelTempAktivnegaUrnika.Highlight();
+                        panelTempNeaktivnegaUrnika.RemoveHighlight();
+                    }
+                    else
+                    {
+                        panelTempAktivnegaUrnika.RemoveHighlight();
+                        panelTempNeaktivnegaUrnika.Highlight();
+                    }
+
+                }
+                catch(Exception ex)
+                {
+                    // TODO - log exception
+                }
+            });
+
+            Invoke(m);
+
+        }
+
+        void UpdateCurrentTime()
+        {
+            Text = originalTitle + " [" + currentTime.Value_TodaysTime.ToString("hh\\:mm") + "]";
+        }
+
+        void UpdateNextEventDescription()
+        {
             var ne = getNextEvent();
-
-            if (InvokeRequired)
+            if (ne != null)
             {
-                MethodInvoker m = new MethodInvoker(ValueChanged);
-                Invoke(m);
-                return;
+                NextEventDescription = GetNextEventDescription(ne);
             }
-
-            try
+            else
             {
-                if (ne != null)
-                {
-                    NextEventDescription = GetNextEventDescription(ne);
-                }
-                else
-                {
-                    NextEventDescription = "Urnik je izključen.";
-                }
-                updateControls();
-            }
-            catch
-            {
-
+                NextEventDescription = "Urnik je izključen.";
             }
         }
 
@@ -485,28 +478,28 @@ namespace KontrolaKadi
                 Left = section6.Left
             };
 
-            panelTempAktivnegaUrnika = new SetTempQuick()
+            panelTempAktivnegaUrnika = new SetTempQuick_5_95()
             {
-                Top = 20,
+                Top = 17,
                 Left = 10,
                 Text = "Temp. Aktivnega urnika",
-                TemperaturaNastavljena = TemperaturaAktivnegaUrnika
+                Value = TemperaturaAktivnegaUrnika
             };
 
             sectionTemperature.Controls.Add(panelTempAktivnegaUrnika);
 
-            panelTempNeaktivnegaUrnika = new SetTempQuick()
+            panelTempNeaktivnegaUrnika = new SetTempQuick_5_95()
             {
                 Top = panelTempAktivnegaUrnika.Top,
                 Left = panelTempAktivnegaUrnika.Right + 10,
-                Text = "Temp. Neaktivnega urnika"
+                Text = "Temp. Neaktivn. urnika"
             };
 
             sectionTemperature.Controls.Add(panelTempNeaktivnegaUrnika);
             Controls.Add(sectionTemperature);
 
             sectionTemperature.Width = section6.Width;
-            sectionTemperature.Height = panelTempAktivnegaUrnika.Height + 30;
+            sectionTemperature.Height = panelTempAktivnegaUrnika.Height + 25;
 
             ColorDefault = sectionTemperature.BackColor;
 
@@ -624,7 +617,7 @@ namespace KontrolaKadi
         }
     }
     
-    class UrnikSection : GroupBox
+    class UrnikSection : SGroupBox
     {        
         ChkBox mon1, tue1, wed1, thu1, fri1, sat1, sun1;
         ComboBoxHour cbHourOn, cbHourOff;
@@ -678,9 +671,9 @@ namespace KontrolaKadi
         }
 
 
-        Color todaysColor = Color.Yellow;
-        Color checkedColor = Color.LightGreen;
-        Color uncheckedColor;
+        Color todaysColor = Color.LightGreen;
+        Color checkedColor = Color.LightYellow; 
+         Color uncheckedColor;
 
         public UrnikSection()
         {
@@ -958,11 +951,11 @@ namespace KontrolaKadi
             a = sun1;
             a.BackColor = a.Checked ? checkedColor : uncheckedColor;
 
-            var todaysDayOfTheWeek = CurrentTime.Datetime.DayOfWeek;
+            var todaysDayOfTheWeek = CurrentTime.Value_Datetime.DayOfWeek;
 
             var startTime = LogoTimeEncoder.Time.GetTimespan(StartTime);
             var endTime = LogoTimeEncoder.Time.GetTimespan(EndTime);
-            var currentTime = CurrentTime.TodaysTime;
+            var currentTime = CurrentTime.Value_TodaysTime;
             bool active = currentTime >= startTime && currentTime < endTime;
 
             switch (todaysDayOfTheWeek)
@@ -1532,13 +1525,13 @@ namespace KontrolaKadi
             EventTime = eventTime;
             CurrentlyActive = currentlyActive;            
 
-            var currentDayOfWeek = (CustomDayOfWeek)((int)CurrentTimeOnPlc.Datetime.DayOfWeek + 1); // +1 to align with your enum
+            var currentDayOfWeek = (CustomDayOfWeek)((int)CurrentTimeOnPlc.Value_Datetime.DayOfWeek + 1); // +1 to align with your enum
             int daysUntilEvent = (int)DayOfWeek - (int)currentDayOfWeek;
             bool isPastEvent = false;
 
             if (daysUntilEvent == 0)
             {
-                if (CurrentTimeOnPlc.TodaysTime > EventTime)
+                if (CurrentTimeOnPlc.Value_TodaysTime > EventTime)
                 {
                     isPastEvent = true;
                 }

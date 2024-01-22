@@ -12,6 +12,8 @@ namespace KontrolaKadi
         //PC Watchdog
         public PlcVars.Word PCWD;
 
+        public PlcVars.Bit AnyAlarm;
+
         public PlcVars.DWord stopwatchCurrentTime;
         public PlcVars.Word stopwatchTimeLeft, stopwatchPauseLeft;
         public PlcVars.DWord stopwatchReminder, stopwatchPauseTime;
@@ -48,7 +50,7 @@ namespace KontrolaKadi
         public PlcVars.Bit ČrpalkaHlajenje_CurrentState;
 
         public PlcVars.Word TlačniSezorFiltra_AutoManSwitch;
-        public PlcVars.Bit TlačniSezorFiltra_CurrentState;
+        public PlcVars.AlarmBit TlačniSezorFiltra_CurrentState;
 
         public PlcVars.Word MixVentilPlus_AutoManSwitch;
         public PlcVars.Bit MixVentilPlus_CurrentState;
@@ -57,10 +59,10 @@ namespace KontrolaKadi
         public PlcVars.Bit MixVentilMinus_CurrentState;
 
         public PlcVars.Word NivoVisok_AutoManSwitch;
-        public PlcVars.Bit NivoVisok_CurrentState;
+        public PlcVars.AlarmBit NivoVisok_CurrentState;
 
         public PlcVars.Word NivoNizek_AutoManSwitch;
-        public PlcVars.Bit NivoNizek_CurrentState;
+        public PlcVars.Bit AlarmNivoNizek_CurrentState;
 
         public PlcVars.Word VentilZrak_AutoManSwitch;
         public PlcVars.Bit VentilZrak_CurrentState;
@@ -77,12 +79,17 @@ namespace KontrolaKadi
         public PlcVars.Word PrejšnjaKad_Poraba, Grelec1_Moc, Grelec2_Moc, ČrpalkaNivo_Moc, ČrpalkaFilter_Moc, ČrpalkaČasovnoDolivanje_Moc, ČrpalkaHlajenje_Moc, Rezerva_Moc, TrenutnaKad_Poraba, SestevekPorabe;
         public PlcVars.Word OmejitevPorabeCelotnegaSistema, PorabaCelotnegaSistema;
 
-        public PlcVars.Word IzbiraProcesneTemperature, Temperatura1, Temperatura2, ProcesnaTemperatura, TemperaturaHr, Ph, Prevodnost, Rezerva;
+        public PlcVars.Word IzbiraProcesneTemperature, Temperatura1, Temperatura2, ProcesnaTemperatura, TemperaturaHr, PhReading, Prevodnost, Rezerva1, Rezerva2, Rezerva3;
+
+        public PlcVars.AlarmBit SenFailTemperatura1, SenFailTemperatura2, SenFailTemperaturaHr, SenFailPh, SenFailPrevodnost, SenFailRezerva1, SenFailRezerva2, SenFailRezerva3;
+
+        public PlcVars.Word PhSetpoint;
 
         public Prop1(Sharp7.S7Client client) : base(client)
         {
             
             PCWD = new PlcVars.Word(this, new PlcVars.WordAddress(XmlController.GetPCWD_Address()), false); //PC Watchdog
+            AnyAlarm = new PlcVars.Bit(this, new PlcVars.BitAddress(9, 0), false);
 
             stopwatchCurrentTime = new PlcVars.DWord(this, new PlcVars.DoubleWordAddress(10), false);
             stopwatchReminder = new PlcVars.DWord(this, new PlcVars.DoubleWordAddress(14), true);
@@ -143,7 +150,7 @@ namespace KontrolaKadi
             ČrpalkaHlajenje_CurrentState = new PlcVars.Bit(this, new PlcVars.BitAddress(101, 0), false);
 
             TlačniSezorFiltra_AutoManSwitch = new PlcVars.Word(this, new PlcVars.WordAddress(102), true);
-            TlačniSezorFiltra_CurrentState = new PlcVars.Bit(this, new PlcVars.BitAddress(104, 0), false);
+            TlačniSezorFiltra_CurrentState = new PlcVars.AlarmBit(this, new PlcVars.BitAddress(104, 0), "Potrebno čiščenje filtra");
 
             MixVentilPlus_AutoManSwitch = new PlcVars.Word(this, new PlcVars.WordAddress(105), true);
             MixVentilPlus_CurrentState = new PlcVars.Bit(this, new PlcVars.BitAddress(107, 0), false);
@@ -152,10 +159,10 @@ namespace KontrolaKadi
             MixVentilMinus_CurrentState = new PlcVars.Bit(this, new PlcVars.BitAddress(110, 0), false);
 
             NivoVisok_AutoManSwitch = new PlcVars.Word(this, new PlcVars.WordAddress(111), true);
-            NivoVisok_CurrentState = new PlcVars.Bit(this, new PlcVars.BitAddress(113, 0), false);
+            NivoVisok_CurrentState = new PlcVars.AlarmBit(this, new PlcVars.BitAddress(113, 0), "Nivo je previsok", true);
 
             NivoNizek_AutoManSwitch = new PlcVars.Word(this, new PlcVars.WordAddress(114), true);
-            NivoNizek_CurrentState = new PlcVars.Bit(this, new PlcVars.BitAddress(116, 0), false);
+            AlarmNivoNizek_CurrentState = new PlcVars.AlarmBit(this, new PlcVars.BitAddress(116, 0),  "Nivo je prenizek", true);
 
             VentilZrak_AutoManSwitch = new PlcVars.Word(this, new PlcVars.WordAddress(117), true);
             VentilZrak_CurrentState = new PlcVars.Bit(this, new PlcVars.BitAddress(119, 0), false);
@@ -187,10 +194,22 @@ namespace KontrolaKadi
             Temperatura2 = new PlcVars.Word(this, new PlcVars.WordAddress(172), false);
             ProcesnaTemperatura = new PlcVars.Word(this, new PlcVars.WordAddress(174), false);
             TemperaturaHr = new PlcVars.Word(this, new PlcVars.WordAddress(176), false);
-            Ph = new PlcVars.Word(this, new PlcVars.WordAddress(178), false);
+            PhReading = new PlcVars.Word(this, new PlcVars.WordAddress(178), false);
             Prevodnost = new PlcVars.Word(this, new PlcVars.WordAddress(180), false);
-            Rezerva = new PlcVars.Word(this, new PlcVars.WordAddress(182), false);
+            Rezerva1 = new PlcVars.Word(this, new PlcVars.WordAddress(182), false); 
+            Rezerva2 = new PlcVars.Word(this, new PlcVars.WordAddress(184), false);
+            Rezerva3 = new PlcVars.Word(this, new PlcVars.WordAddress(186), false);
 
+            SenFailTemperatura1 = new PlcVars.AlarmBit(this, new PlcVars.BitAddress(190,0), "Napaka temperaturnega tipala 1");
+            SenFailTemperatura2 = new PlcVars.AlarmBit(this, new PlcVars.BitAddress(190, 1), "Napaka temperaturnega tipala 2");
+            SenFailTemperaturaHr = new PlcVars.AlarmBit(this, new PlcVars.BitAddress(190, 2), "Napaka temperaturnega tipala hranilnika");
+            SenFailPh = new PlcVars.AlarmBit(this, new PlcVars.BitAddress(190, 3), "Napaka meritve Ph");
+            SenFailPrevodnost = new PlcVars.AlarmBit(this, new PlcVars.BitAddress(190, 4), "Napaka meritve prevodnosti");
+            SenFailRezerva1 = new PlcVars.AlarmBit(this, new PlcVars.BitAddress(190, 5), "Napaka meritve rezerva1", true);
+            SenFailRezerva2 = new PlcVars.AlarmBit(this, new PlcVars.BitAddress(190, 6), "Napaka meritve rezerva2", true);
+            SenFailRezerva3 = new PlcVars.AlarmBit(this, new PlcVars.BitAddress(190, 7), "Napaka meritve rezerva3", true);
+
+            PhSetpoint = new PlcVars.Word(this, new PlcVars.WordAddress(200), true);
         }
     }
 }

@@ -8,7 +8,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>KontrolaKadi</RootNamespace>
     <AssemblyName>Kontrola Male Peči</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
@@ -28,6 +28,7 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -80,6 +81,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutomaticPlcDateTimeUpdater.cs" />
     <Compile Include="ComboboxItem.cs" />
     <Compile Include="CustomControls\OgrevenjeSet.cs">
       <SubType>Component</SubType>
@@ -90,7 +92,7 @@
     <Compile Include="CustomControls\CrpalkaPowerSet.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CustomControls\PhReader.cs">
+    <Compile Include="CustomControls\PhControler.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="CustomControls\PowerSet.cs">
@@ -99,7 +101,7 @@
     <Compile Include="CustomControls\PVSelector.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CustomControls\SetTempQuick.cs">
+    <Compile Include="CustomControls\SetValueQuick.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="CustomControls\SGgroupbox.cs">
@@ -125,6 +127,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Datalogger.cs" />
+    <Compile Include="LogoControl\CHANGE\Prop8.cs" />
+    <Compile Include="LogoControl\CHANGE\Prop7.cs" />
+    <Compile Include="LogoControl\CHANGE\Prop6.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

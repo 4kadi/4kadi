@@ -106,7 +106,7 @@ namespace KontrolaKadi
             enojnaKad1.SwitchesGroupbox.NivoVisok.Value_CurrentState_PLC = p.NivoVisok_CurrentState;
 
             enojnaKad1.SwitchesGroupbox.NivoNizek.Value_SwitchSetting = p.NivoNizek_AutoManSwitch;
-            enojnaKad1.SwitchesGroupbox.NivoNizek.Value_CurrentState_PLC = p.NivoNizek_CurrentState;
+            enojnaKad1.SwitchesGroupbox.NivoNizek.Value_CurrentState_PLC = p.AlarmNivoNizek_CurrentState;
 
             enojnaKad1.SwitchesGroupbox.VentilZrak.Value_SwitchSetting = p.VentilZrak_AutoManSwitch;
             enojnaKad1.SwitchesGroupbox.VentilZrak.Value_CurrentState_PLC = p.VentilZrak_CurrentState;
@@ -135,6 +135,12 @@ namespace KontrolaKadi
             enojnaKad1.PvSelector.T2 = p.Temperatura2;
             enojnaKad1.PvSelector.PV = p.ProcesnaTemperatura;
             enojnaKad1.PvSelector.Function = p.IzbiraProcesneTemperature;
+            enojnaKad1.PvSelector.SenFail_T1 = p.SenFailTemperatura1;
+            enojnaKad1.PvSelector.SenFail_T2 = p.SenFailTemperatura2;
+
+            enojnaKad1.Ph.PhReading = p.PhReading;
+            enojnaKad1.Ph.PhSetPoint = p.PhSetpoint;
+            enojnaKad1.Ph.SenErr = p.SenFailPh;
 
         }
 

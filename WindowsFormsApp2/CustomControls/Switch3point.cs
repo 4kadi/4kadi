@@ -78,7 +78,6 @@ namespace KontrolaKadi
                 Top = switchYPosition,
                 Left = switchStartX + switchWidth + 5,
                 Width = 100,
-                Dock = DockStyle.None,
                 Text = CurrentStateFalseText,
                 Font = new Font("Arial", 11, FontStyle.Bold)
 

@@ -12,16 +12,14 @@ namespace KontrolaKadi
 {
     public partial class KadSubmenu : Form
     {
-        public int ID { get; set; } = 0;
-
-        public TextBox unfocus = new TextBox();
+        public int ID { get; set; } = 0;        
         public Urnik Urnik { get; private set; }
         public SwitchesGroupbox SwitchesGroupbox { get; private set; }
         public PowerSetGroupbox PowerSetGroupbox { get; private set; }
         public PowerMonitorGroupBox PowerMonitorGroupBox { get; private set; }
         public PVSelector PVSelector { get; private set; }
 
-        public PhReader Ph { get; private set; }
+        public PhControler PhControler { get; private set; }
 
         public KadSubmenu()
         {
@@ -33,7 +31,6 @@ namespace KontrolaKadi
                 return;
             }
 
-            CreateDummyControlToRedirectFocusTo();
             manageUrnik();
             manageSwitchesGroupbox();
             managePowerSetGroupbox();
@@ -45,16 +42,6 @@ namespace KontrolaKadi
             LostFocus += KadSubmenu_LostFocus;
             FormClosing += KadSubmenu_FormClosing;
             Load += KadSubmenu_Load;
-        }
-
-        void CreateDummyControlToRedirectFocusTo()
-        {
-            // workaround to prevent cursor in some controls
-            // we focus on this control if we dont want focus in textbox (do disable cursor)
-            unfocus.Height = 0;
-            unfocus.Width = 0;
-            Controls.Add(unfocus);      
-            unfocus.Name = "unfocus";
         }
 
         private void KadSubmenu_Load(object sender, EventArgs e)
@@ -147,13 +134,14 @@ namespace KontrolaKadi
 
         void managePhGroupBox()
         {
-            Ph = new PhReader()
+            PhControler = new PhControler()
             {
                 Top = PVSelector.Bottom + 15,
                 Left = Urnik.Left,
                 Text = "Ph"
             };
-            Controls.Add(Ph);
+            Controls.Add(PhControler);
+                                  
         }
 
         void close()

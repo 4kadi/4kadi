@@ -1451,6 +1451,30 @@ namespace KontrolaKadi
 
         }
 
+        protected class LogoDate_Second : Byte
+        {
+            public LogoDate_Second(PropComm prop) : base(prop, new ByteAddress(990), "", "", true)
+            {
+
+            }
+        }
+
+        protected class LogoDate_Minute : Byte
+        {
+            public LogoDate_Minute(PropComm prop) : base(prop, new ByteAddress(989), "", "", true)
+            {
+
+            }
+        }
+
+        protected class LogoDate_Hour : Byte
+        {
+            public LogoDate_Hour(PropComm prop) : base(prop, new ByteAddress(988), "", "", true)
+            {
+
+            }
+        }
+
         protected class LogoDate_Day : Byte
         {
             public LogoDate_Day(PropComm prop) : base(prop, new ByteAddress(987), "", "", true)
@@ -1476,177 +1500,76 @@ namespace KontrolaKadi
         }
 
         public class LogoDateTime
-        {         
-            LogoClock clock;
+        {
             LogoDate_Year Y;
             LogoDate_Month M;
             LogoDate_Day D;
+            LogoDate_Hour h;
+            LogoDate_Minute m;
+            LogoDate_Second s;
 
-            public DateTime Datetime { get; set; }
-            public TimeSpan TodaysTime { get; private set; }
+            DateTime _Datetime;
+            public DateTime Value_Datetime
+            {
+                get { return _Datetime; }
+                set
+                {
+                    SetDateTimeOnPLC(value);
+                }
+            }
+            public TimeSpan Value_TodaysTime { get; private set; }
 
             public event EventHandler ValueChanged;
 
             public LogoDateTime(PropComm prop)
-            {              
-                clock = new LogoClock(prop);
+            {
                 Y = new LogoDate_Year(prop);
                 M = new LogoDate_Month(prop);
                 D = new LogoDate_Day(prop);
-                clock.ValueChanged += Clock_ValueChanged;
+                h = new LogoDate_Hour(prop);
+                m = new LogoDate_Minute(prop);
+                s = new LogoDate_Second(prop);
+
+                s.ValueChanged += Clock_ValueChanged;
             }
 
             private void Clock_ValueChanged(object sender, EventArgs e)
             {
-                var ts = (TimeSpan)clock.Value_TimeSpan;                
-                Datetime = new DateTime(Y.Value_byte,M.Value_byte, D.Value_byte, ts.Hours,ts.Minutes, ts.Seconds);
+                _Datetime = new DateTime(Y.Value_byte + 2000, M.Value_byte, D.Value_byte).AddHours(h.Value_byte).AddMinutes(m.Value_byte).AddSeconds(s.Value_byte);
                 if (ValueChanged != null)
                 {
-                    TodaysTime = TimeSpan.FromHours(Datetime.Hour) + TimeSpan.FromMinutes(Datetime.Minute) + TimeSpan.FromSeconds(Datetime.Second);
+                    Value_TodaysTime = TimeSpan.FromHours(_Datetime.Hour) + TimeSpan.FromMinutes(_Datetime.Minute) + TimeSpan.FromSeconds(_Datetime.Second);
                     ValueChanged.Invoke(this, EventArgs.Empty);
                 }
             }
-        }
 
-        public class LogoClock : PlcType
-        {
-            public string Value_string
+            void SetDateTimeOnPLC(DateTime value)
             {
-                get
-                {
-                    if (PLCval != null)
-                    {
-                        if (PLCval != null)
-                        {
-                            return DecodeWordToTime((short)PLCval, 2).ToString();
-                        }
-                    }
-                    return PropComm.NA;
-
-                }
-            }
-
-            public TimeSpan? Value_TimeSpan
-            {
-                get { return ConvertStringToTimeSpan(); }                
-            }
-
-            private short? PLCval;
-            private short? previousPLCval;
-            private readonly WordAddress _TypeAndAdress;
-            private readonly Sharp7.S7Client _Client;
-            int ErrRead;
-            short? buffRead;
-
-            public delegate void ValueChangedDelegate(object sender, EventArgs e);
-            public event ValueChangedDelegate ValueChanged;
-
-            public LogoClock(PropComm prop) : base(prop)
-            {
-                PLCval = null;
-                _Client = Client;
-                _TypeAndAdress = new WordAddress(988);
-                base.SyncEvery_X_Time = 5;               
-            }
-    
-            public TimeSpan? ConvertStringToTimeSpan()
-            {
-                try
-                {
-                    var h = Value_string[0].ToString() + Value_string[1].ToString();
-                    var m = Value_string[3].ToString() + Value_string[4].ToString();
-
-                    var hh = Convert.ToInt32(h);
-                    var mm = Convert.ToInt32(m);
-
-                    TimeSpan t = new TimeSpan(hh, mm, 00);
-                    
-                    return t;
-                }
-                catch
-                {
-                    return null;
-                }
-                
-            }
-            
-
-            public override void SyncWithPLC()
-            {
-                try
-                {
-                    ReadFromPLCtoBuffer();
-                }
-                catch (Exception ex)
-                {
-                    ReportComunicationMessage(ex.Message);
-                }
-            }
-
-            private void ReadFromPLCtoBuffer()
-            {
-                if (_Client != null)
-                {
-                    buffRead = Connection.BufferRead(_Client, _TypeAndAdress, out ErrRead);
-                    if (ErrRead == 0 && buffRead != null) 
-                    {
-                        if (buffRead != PLCval)
-                        {
-                            PLCval = buffRead; buffRead = null;                            
-                        }
-                        if (previousPLCval != PLCval)
-                        {
-                            previousPLCval = PLCval;
-                            Task.Run(InvokeOnValueChangeEvent);
-                        }
-                    }
-                }
-                else
-                {
-                    ReportError_throwException("Reading Clock / Time from PLC failed.");
-                }
-            }
-
-            void InvokeOnValueChangeEvent()
-            {
-                ValueChanged?.Invoke(this, EventArgs.Empty);
-            }
-
-            public void ReportError_throwException(string Message)
-            {
-                string Address = _TypeAndAdress.GetStringRepresentation();
-                string ErrTyp_Read = _Client.ErrorText(ErrRead);
-                string Client = "Logo" + _Client.deviceID;
-
-                throw new Exception(
-                    Message + " " +
-                    "Address: " + Address + ", " +
-                    "Read Error type: " + ErrTyp_Read + ", " +
-                    "Client: " + Client + ". ");
-
+                Y.Value = (byte)(value.Year -2000); // convert to two digit format
+                M.Value = (byte)value.Month;
+                D.Value = (byte)value.Day;
+                h.Value = (byte)value.Hour;
+                m.Value = (byte)value.Minute;
+                s.Value = (byte)value.Second;
             }
         }
-
+     
         public class AlarmBit : Bit
         {
             public string Message { get; private set; }
             public bool InvertState = false;
-            public bool Emergency = false;
 
-
-            public AlarmBit(PropComm prop, BitAddress TypeAndAdress, string Message, bool invertState, bool Emergency, bool IsWritable) : base(prop, TypeAndAdress, IsWritable)
+            public AlarmBit(PropComm prop, BitAddress TypeAndAdress, string Message, bool invertState, bool IsWritable) : base(prop, TypeAndAdress, IsWritable)
             {
-                InvertState = invertState;
-                this.Emergency = Emergency;
+                InvertState = invertState;               
                 this.Message = Message;
                 AllAlarmMessageVars.Add(this);
                 AddMonitor();
             }
 
-            public AlarmBit(PropComm prop, BitAddress TypeAndAdress, string Message, bool invertState, bool Emergency) : base(prop, TypeAndAdress, false)
+            public AlarmBit(PropComm prop, BitAddress TypeAndAdress, string Message, bool invertState) : base(prop, TypeAndAdress, false)
             {
-                InvertState = invertState;
-                this.Emergency = Emergency;
+                InvertState = invertState;              
                 this.Message = Message;
                 AllAlarmMessageVars.Add(this);
                 AddMonitor();

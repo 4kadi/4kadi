@@ -25,8 +25,9 @@ namespace KontrolaKadi
         public Prop3 Prop3 { get; set; }
         public Prop4 Prop4 { get; set; }
         public Prop5 Prop5 { get; set; }
-
-        public static PropComm[] Props = new PropComm[Settings.Devices + 1];
+        public Prop6 Prop6 { get; set; }
+        public Prop7 Prop7 { get; set; }
+        public Prop8 Prop8 { get; set; }
 
         public static S7Client[] LOGO = new S7Client[Settings.Devices + 1];
 
@@ -56,7 +57,10 @@ namespace KontrolaKadi
             Prop3 = new Prop3(LOGO[3]);
             Prop4 = new Prop4(LOGO[4]);
             Prop5 = new Prop5(LOGO[5]);
-        
+            Prop6 = new Prop6(LOGO[6]);
+            Prop7 = new Prop7(LOGO[7]);
+            Prop8 = new Prop8(LOGO[8]);
+
         }
 
         public LogoControler()

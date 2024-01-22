@@ -13,7 +13,7 @@ namespace KontrolaKadi
 
         public static readonly int UpdateValuesPCms = 500;          // Frekvenca osveževanja vrednosti
 
-        public static readonly int Devices = 5;                      // how many devices supported (do not change)        
+        public static readonly int Devices = 8;                      // how many devices supported (do not change)        
 
         public static readonly int XmlRefreshrate = 5000;                                // scans for changes in xml file (should be very high number - 60000)
 

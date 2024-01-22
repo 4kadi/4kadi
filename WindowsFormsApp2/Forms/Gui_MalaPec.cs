@@ -31,7 +31,8 @@ namespace KontrolaKadi
         private void Gui_MalaPec_Load(object sender, EventArgs e)
         {           
             registerEvents();
-            guiLink = new GuiLink(this);            
+            guiLink = new GuiLink(this);     
+            
         }
 
 
