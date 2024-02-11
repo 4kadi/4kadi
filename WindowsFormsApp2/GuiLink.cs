@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Drawing;
 
 namespace KontrolaKadi
 {
@@ -21,14 +22,19 @@ namespace KontrolaKadi
         }
 
         void thread()
-        {
+        {         
             var warnmng = (WarningManager)findControl("warningManager1");    
 
             //
+
+            #region LOGO1
+            
             var kad1 = (EnojnaKad)findControl("enojnaKad1");
          
 
             var cb1 = (ConnectedButton)findControl("connectedButton1");
+            cb1.ID = 1;
+            cb1.Text = "LOGO1";
 
             var stopWatch1 = (StopWatch)findControl("stopWatch1");
             var p = Val.logocontroler.Prop1;
@@ -41,13 +47,15 @@ namespace KontrolaKadi
             stopWatch1.Finished = p.stopwatchFinished;
             stopWatch1.Paused = p.stopwatchPaused;
             stopWatch1.InProgress = p.stopwatchInProgress;
-            stopWatch1.Prisotnost = p.Prisotnost_CurrentState;
+            stopWatch1.Prisotnost = p.Prisotnost_CurrentState1;
             stopWatch1.UpostevajPrisotnost = p.AutostartStopwatch;
             stopWatch1.BtnReset = p.stopwatchResetPulse;
             stopWatch1.BtnStart = p.stopwatchStartPulse;
             stopWatch1.BtnStop = p.stopwatchStopPulse;
 
             var enojnaKad1 = (Kad)findControl("enojnaKad1");
+            enojnaKad1.NameOfKad = p.ImeKadi1;
+
             enojnaKad1.Urnik.UrnikAktiven = p.UrnikAktiven;
             enojnaKad1.Urnik.currentTime = p.LogoDatetime;
             enojnaKad1.Urnik.DayOfTheWeek1 = p.weekday1;
@@ -72,8 +80,8 @@ namespace KontrolaKadi
             enojnaKad1.Urnik.TemperaturaAktivnegaUrnika = p.temperaturaAktivnegaUrnika;
             enojnaKad1.Urnik.TemperaturaNektivnegaUrnika = p.temperaturaNeaktivnegaUrnika;
 
-            enojnaKad1.SwitchesGroupbox.Prisotnost.Value_SwitchSetting = p.Prisotnost_AutoManSwitch;
-            enojnaKad1.SwitchesGroupbox.Prisotnost.Value_CurrentState_PLC = p.Prisotnost_CurrentState;
+            enojnaKad1.SwitchesGroupbox.Prisotnost.Value_SwitchSetting = p.Prisotnost_AutoManSwitch1;
+            enojnaKad1.SwitchesGroupbox.Prisotnost.Value_CurrentState_PLC = p.Prisotnost_CurrentState1;
 
             enojnaKad1.SwitchesGroupbox.Grelec1.Value_SwitchSetting = p.Grelec1_AutoManSwitch;
             enojnaKad1.SwitchesGroupbox.Grelec1.Value_CurrentState_PLC = p.Grelec1_CurrentState;
@@ -91,7 +99,7 @@ namespace KontrolaKadi
             enojnaKad1.SwitchesGroupbox.ČrpalkaČasovnoDolivanje.Value_CurrentState_PLC = p.ČrpalkaČasovnoDolivanje_CurrentState;
 
             enojnaKad1.SwitchesGroupbox.ČrpalkaHlajenje.Value_SwitchSetting = p.ČrpalkaHlajenje_AutoManSwitch;
-            enojnaKad1.SwitchesGroupbox.ČrpalkaHlajenje.Value_CurrentState_PLC = p.ČrpalkaHlajenje_CurrentState;
+            enojnaKad1.SwitchesGroupbox.ČrpalkaHlajenje.Value_CurrentState_PLC = p.ČrpalkaHlajenje_CurrentState; // TODO this is null
 
             enojnaKad1.SwitchesGroupbox.TlačniSezorFiltra.Value_SwitchSetting = p.TlačniSezorFiltra_AutoManSwitch;
             enojnaKad1.SwitchesGroupbox.TlačniSezorFiltra.Value_CurrentState_PLC = p.TlačniSezorFiltra_CurrentState;
@@ -142,23 +150,42 @@ namespace KontrolaKadi
             enojnaKad1.Ph.PhSetPoint = p.PhSetpoint;
             enojnaKad1.Ph.SenErr = p.SenFailPh;
 
+            #endregion
+            
+            var cb2 = (ConnectedButton)findControl("connectedButton2");
+            cb2.ID = 2;
+            cb2.Text = "LOGO2";
+
+            var cb3 = (ConnectedButton)findControl("connectedButton3");
+            cb3.ID = 3;
+            cb3.Text = "LOGO3";
+
+            var cb4 = (ConnectedButton)findControl("connectedButton4");
+            cb4.ID = 4;
+            cb4.Text = "LOGO4";
+
+            var cb5 = (ConnectedButton)findControl("connectedButton5");
+            cb5.ID = 5;
+            cb5.Text = "LOGO5";
+
+            var cb6 = (ConnectedButton)findControl("connectedButton6");
+            cb6.ID = 6;
+            cb6.Text = "LOGO6";
+
+            var cb7 = (ConnectedButton)findControl("connectedButton7");
+            cb7.ID = 7;
+            cb7.Text = "LOGO7";
+
+            var cb8 = (ConnectedButton)findControl("connectedButton8");
+            cb8.ID = 8;
+            cb8.Text = "LOGO8";
+
+            
         }
 
         Control findControl(string name)
         {
-            try
-            {
-                var arr = form.Controls.Find(name, true);
-                if (arr.Length > 0)
-                {                  
-                    return arr[0];
-                }
-                throw new Exception("Control with a name " + name + " could not be found. ");
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            return Helper.findControl(name, form);
         }
     }
 }

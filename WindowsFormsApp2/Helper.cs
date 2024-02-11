@@ -13,6 +13,31 @@ namespace KontrolaKadi
 
     public class Helper
     {
+        public static List<Control> GetAllControls(Control control)
+        {
+            var controls = control.Controls.Cast<Control>();
+            return controls.SelectMany(ctrl => GetAllControls(ctrl)).Concat(controls).ToList();
+        }
+        public static Control findControl(string name, Form form)
+        {
+            try
+            {
+                var controls = GetAllControls(form);
+                var result = controls.FirstOrDefault(ctrl => ctrl.Name == name); 
+
+                if (result != null)
+                {
+                    return result;
+                }
+
+                throw new Exception("Control with a name " + name + " could not be found. ");
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
         public static void Unfocus(object sender)
         {
             try

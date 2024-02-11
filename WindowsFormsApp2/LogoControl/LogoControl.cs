@@ -182,6 +182,9 @@ namespace KontrolaKadi
                                 case 3: Prop3.SyncVars(); break;
                                 case 4: Prop4.SyncVars(); break;
                                 case 5: Prop5.SyncVars(); break;
+                                case 6: Prop6.SyncVars(); break;
+                                case 7: Prop7.SyncVars(); break;
+                                case 8: Prop8.SyncVars(); break;
 
                                 default:
                                     WL("Internal Error: Switch statement does not support this device", -2); LOGOConnection[device].connectionStatusLOGO = Connection.Status.Error; break;

@@ -66,7 +66,7 @@ namespace KontrolaKadi
 
         bool areAllPlcClocksCorrect()
         {
-            if (!isClockCorrect(p1))
+            if (DoesPlcClockNeedsCorrection(p1))
             {
                 return false;
             }
@@ -75,27 +75,154 @@ namespace KontrolaKadi
             // TODO the rest of PLCs
         }
 
-        bool isClockCorrect(PropComm prop)
+        bool DoesPlcClockNeedsCorrection(PropComm prop)
         {
+            DateTime plcTime;
+            DateTime pcTime = DateTime.Now;
+
             if (prop.GetType() == typeof(Prop1))
             {
-                var plcTime = p1.LogoDatetime.Value_Datetime;
-                var pcTime = DateTime.Now;
-
-                if (Math.Abs((plcTime - pcTime).TotalMinutes) > 1)
+                var isConnected = LogoControler.LOGOConnection[1].connectionStatusLOGO;
+                if (isConnected != Connection.Status.Connected)
                 {
                     return false;
                 }
-                return true;
+
+                plcTime = p1.LogoDatetime.Value_Datetime; 
+
+                if (Math.Abs((plcTime - pcTime).TotalMinutes) > 1)
+                {
+                    return true;
+                }             
             }
-            // TODO the rest of PLCs
-            return true;
+
+            else if (prop.GetType() == typeof(Prop2))
+            {
+                var isConnected = LogoControler.LOGOConnection[2].connectionStatusLOGO;
+                if (isConnected != Connection.Status.Connected)
+                {
+                    return false;
+                }
+
+                plcTime = p2.LogoDatetime.Value_Datetime;              
+
+                if (Math.Abs((plcTime - pcTime).TotalMinutes) > 1)
+                {
+                    return true;
+                }                
+            }
+
+            else if (prop.GetType() == typeof(Prop3))
+            {
+                var isConnected = LogoControler.LOGOConnection[3].connectionStatusLOGO;
+                if (isConnected != Connection.Status.Connected)
+                {
+                    return false;
+                }
+
+                 plcTime = p3.LogoDatetime.Value_Datetime;
+
+                if (Math.Abs((plcTime - pcTime).TotalMinutes) > 1)
+                {
+                    return true;
+                }                
+            }
+
+            else if (prop.GetType() == typeof(Prop4))
+            {
+                var isConnected = LogoControler.LOGOConnection[4].connectionStatusLOGO;
+                if (isConnected != Connection.Status.Connected)
+                {
+                    return false;
+                }
+
+                 plcTime = p4.LogoDatetime.Value_Datetime;
+
+                if (Math.Abs((plcTime - pcTime).TotalMinutes) > 1)
+                {
+                    return true;
+                }               
+            }
+
+            else if (prop.GetType() == typeof(Prop5))
+            {
+                var isConnected = LogoControler.LOGOConnection[5].connectionStatusLOGO;
+                if (isConnected != Connection.Status.Connected)
+                {
+                    return false;
+                }
+
+                 plcTime = p5.LogoDatetime.Value_Datetime;
+
+                if (Math.Abs((plcTime - pcTime).TotalMinutes) > 1)
+                {
+                    return true;
+                }                
+            }
+
+            else if (prop.GetType() == typeof(Prop6))
+            {
+                var isConnected = LogoControler.LOGOConnection[6].connectionStatusLOGO;
+                if (isConnected != Connection.Status.Connected)
+                {
+                    return false;
+                }
+
+                plcTime = p6.LogoDatetime.Value_Datetime;
+
+                if (Math.Abs((plcTime - pcTime).TotalMinutes) > 1)
+                {
+                    return true;
+                }               
+            }
+
+            else if (prop.GetType() == typeof(Prop7))
+            {
+                var isConnected = LogoControler.LOGOConnection[7].connectionStatusLOGO;
+                if (isConnected != Connection.Status.Connected)
+                {
+                    return false;
+                }
+
+                plcTime = p7.LogoDatetime.Value_Datetime;
+
+                if (Math.Abs((plcTime - pcTime).TotalMinutes) > 1)
+                {
+                    return true;
+                }               
+            }
+
+            else if (prop.GetType() == typeof(Prop8))
+            {
+                var isConnected = LogoControler.LOGOConnection[8].connectionStatusLOGO;
+                if (isConnected != Connection.Status.Connected)
+                {
+                    return false;
+                }
+
+                plcTime = p8.LogoDatetime.Value_Datetime;
+
+                if (Math.Abs((plcTime - pcTime).TotalMinutes) > 1)
+                {
+                    return true;
+                }               
+            }            
+            return false;
         }
 
         public static void UpdateAll()
         {
-            Val.logocontroler.Prop1.LogoDatetime.Value_Datetime = DateTime.Now;
-            // TODO the rest of PLCs
+            var now = DateTime.Now;
+            Val.logocontroler.Prop1.LogoDatetime.Value_Datetime = now;
+            Val.logocontroler.Prop2.LogoDatetime.Value_Datetime = now;
+            Val.logocontroler.Prop3.LogoDatetime.Value_Datetime = now;
+            Val.logocontroler.Prop4.LogoDatetime.Value_Datetime = now;
+            Val.logocontroler.Prop5.LogoDatetime.Value_Datetime = now;
+            Val.logocontroler.Prop6.LogoDatetime.Value_Datetime = now;
+            Val.logocontroler.Prop7.LogoDatetime.Value_Datetime = now;
+            Val.logocontroler.Prop8.LogoDatetime.Value_Datetime = now;
+          
         }
+
     }
 }

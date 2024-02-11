@@ -86,7 +86,7 @@ namespace KontrolaKadi
 
 
         // Write to PLC
-        public static void PLCwrite(S7Client Client, PlcVars.PlcAddress typeAndAdress, short value, out int errCode)
+        public static void PLCwrite(S7Client Client, PlcVars.PlcAddress typeAndAdress, int value, out int errCode)
         {
             try
             {                
@@ -144,9 +144,9 @@ namespace KontrolaKadi
                 
 
         // Read from PLC
-        public static short BufferRead(S7Client Client, PlcVars.PlcAddress typeAndAdress, out int errCode)
+        public static int BufferRead(S7Client Client, PlcVars.PlcAddress typeAndAdress, out int errCode)
         {            
-            short value = 0;
+            int value = 0;
             try
             {
                 byte[] b = Client.S7PLCbuffer.GetBuffer();
@@ -175,16 +175,14 @@ namespace KontrolaKadi
                 else if (typeAndAdress is PlcVars.DoubleWordAddress)
                 {                    
                     try
-                    {  
-                        value = (short)Convert.ToInt32(S7.GetDWordAt(b, typeAndAdress.Address));
+                    {
+                        value = (int)Convert.ToInt32(S7.GetDWordAt(b, typeAndAdress.Address));
                     }
                     catch
                     {
                         errCode = S7Consts.err_Read;
                     }
-
                 }
-
 
                 // In case if you want to read WORD value
                 else if (typeAndAdress is PlcVars.WordAddress)
@@ -204,7 +202,7 @@ namespace KontrolaKadi
                 {
                     try
                     {                        
-                        value = S7.GetByteAt(b, typeAndAdress.Address);
+                        value = (byte)S7.GetByteAt(b, typeAndAdress.Address);
                     }
                     catch
                     {

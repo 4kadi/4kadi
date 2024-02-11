@@ -30,8 +30,8 @@ namespace KontrolaKadi
         public PlcVars.AlarmBit NapakaNastavitevTemperatur;
         public PlcVars.Word temperaturaAktivnegaUrnika, temperaturaNeaktivnegaUrnika;
 
-        public PlcVars.Word Prisotnost_AutoManSwitch;
-        public PlcVars.Bit Prisotnost_CurrentState;
+        public PlcVars.Word Prisotnost_AutoManSwitch1, Prisotnost_AutoManSwitch2, Prisotnost_AutoManSwitch3, Prisotnost_AutoManSwitch4, Prisotnost_AutoManSwitch5;
+        public PlcVars.Bit Prisotnost_CurrentState1, Prisotnost_CurrentState2, Prisotnost_CurrentState3, Prisotnost_CurrentState4, Prisotnost_CurrentState5;
 
         public PlcVars.Word Grelec1_AutoManSwitch, Grelec2_AutoManSwitch;
         public PlcVars.Bit Grelec1_CurrentState, Grelec2_CurrentState;
@@ -85,6 +85,8 @@ namespace KontrolaKadi
 
         public PlcVars.Word PhSetpoint;
 
+        public PlcVars.DWord ImeKadi1, ImeKadi2, ImeKadi3, ImeKadi4, ImeKadi5, DoublewordStorage;
+
         public Prop1(Sharp7.S7Client client) : base(client)
         {
             
@@ -128,10 +130,7 @@ namespace KontrolaKadi
             NapakaNastavitevTemperatur = new PlcVars.AlarmBit(this, new PlcVars.BitAddress(71, 0), "Napaka nastavitev željenih temperatur");
             temperaturaAktivnegaUrnika = new PlcVars.Word(this, new PlcVars.WordAddress(72), true);
             temperaturaNeaktivnegaUrnika = new PlcVars.Word(this, new PlcVars.WordAddress(74), true);
-
-            Prisotnost_AutoManSwitch = new PlcVars.Word(this, new PlcVars.WordAddress(76), true);
-            Prisotnost_CurrentState = new PlcVars.Bit(this, new PlcVars.BitAddress(78, 0), false);
-
+            
             Grelec1_AutoManSwitch = new PlcVars.Word(this, new PlcVars.WordAddress(80), true);
             Grelec1_CurrentState = new PlcVars.Bit(this, new PlcVars.BitAddress(82, 0), false);
             Grelec2_AutoManSwitch = new PlcVars.Word(this, new PlcVars.WordAddress(86), true);
@@ -210,6 +209,31 @@ namespace KontrolaKadi
             SenFailRezerva3 = new PlcVars.AlarmBit(this, new PlcVars.BitAddress(190, 7), "Napaka meritve rezerva3", true);
 
             PhSetpoint = new PlcVars.Word(this, new PlcVars.WordAddress(200), true);
+
+            //
+
+            Prisotnost_AutoManSwitch1 = new PlcVars.Word(this, new PlcVars.WordAddress(232), true);
+            Prisotnost_CurrentState1 = new PlcVars.Bit(this, new PlcVars.BitAddress(230, 1), false);
+
+            Prisotnost_AutoManSwitch2 = new PlcVars.Word(this, new PlcVars.WordAddress(234), true);
+            Prisotnost_CurrentState2 = new PlcVars.Bit(this, new PlcVars.BitAddress(230, 2), false);
+
+            Prisotnost_AutoManSwitch3 = new PlcVars.Word(this, new PlcVars.WordAddress(236), true);
+            Prisotnost_CurrentState3 = new PlcVars.Bit(this, new PlcVars.BitAddress(230, 3), false);
+
+            Prisotnost_AutoManSwitch4 = new PlcVars.Word(this, new PlcVars.WordAddress(238), true);
+            Prisotnost_CurrentState4 = new PlcVars.Bit(this, new PlcVars.BitAddress(230, 4), false);
+
+            Prisotnost_AutoManSwitch5 = new PlcVars.Word(this, new PlcVars.WordAddress(300), true);
+            Prisotnost_CurrentState5 = new PlcVars.Bit(this, new PlcVars.BitAddress(230, 5), false);
+
+            ImeKadi1 = new PlcVars.DWord(this, new PlcVars.DoubleWordAddress(304), true);
+            ImeKadi2 = new PlcVars.DWord(this, new PlcVars.DoubleWordAddress(308), true);
+            ImeKadi3 = new PlcVars.DWord(this, new PlcVars.DoubleWordAddress(312), true);
+            ImeKadi4 = new PlcVars.DWord(this, new PlcVars.DoubleWordAddress(316), true);
+            ImeKadi5 = new PlcVars.DWord(this, new PlcVars.DoubleWordAddress(320), true);
+            DoublewordStorage = new PlcVars.DWord(this, new PlcVars.DoubleWordAddress(324), true);
+
         }
     }
 }

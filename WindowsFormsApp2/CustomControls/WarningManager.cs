@@ -5,30 +5,48 @@ using System;
 using System.Threading;
 using System.Windows.Forms;
 using System.ComponentModel;
+using System.Drawing;
 
 namespace KontrolaKadi
 {
 
-    public class WarningManager : RichTextBox
+    public class WarningManager : SGroupBox
     {
-        // Local warnings
-        public static WarningNoConnection NoConnWarningPLC1 = new WarningNoConnection();
+        RichTextBox tb;
+        // Local warnings        
+        public static List<Warning> Warnings = new List<Warning>();
 
-        // --
-
-        public static List<Warning> Warnings = new List<Warning>();        
-
-        Thread DisplayOnScreenThread;
+        MyTimer DisplayOnScreenTimer;
+        Thread ConnecttionStatusErrorReportThread;
 
         public WarningManager()
-        {       
-            StartWarningTrackerThread(); 
-            Height = 150;
-            Width = 250;
-            Multiline = true;            
-            Setup();
-                        
+        {
+            tb = new RichTextBox()
+            {
+                Font = new Font("arial", 10),
+                Height = 150,
+                Width = 260,
+                Top = 25,
+                Left = 5
+            };
 
+            Controls.Add(tb);
+            StartWarningTrackerThread();
+
+
+            tb.Multiline = true;
+            Setup();
+
+            Width = tb.Width + tb.Left*2;
+            Height = tb.Height + tb.Top+5;
+
+            Font = new Font("arial", 12, FontStyle.Bold);
+            tb.ScrollBars = RichTextBoxScrollBars.None;
+        }
+
+        void AddTitle()
+        {
+            Text = "ALARMI";
         }
 
         static Misc.SmartThread WarningTrackerThread;        
@@ -37,63 +55,96 @@ namespace KontrolaKadi
         void Setup()
         {
             bool designMode = (LicenseManager.UsageMode == LicenseUsageMode.Designtime);
-            if (!designMode)
+            if (designMode)
             {
-                DisplayOnScreenThread = new Thread(DisplayOnScreen);
-                DisplayOnScreenThread.Start();
-
+                return;                
             }
-            ReadOnly = true;
+
+            tb.ReadOnly = true;
+            tb.HandleCreated += WarningManager_HandleCreated;            
         }
 
-        void DisplayOnScreen()
+        private void WarningManager_HandleCreated(object sender, EventArgs e)
         {
-            var m = new MethodInvoker(delegate { ShowOnDisplay(); });
-            while (FormControl.Gui == null)
-            {
-                Thread.Sleep(100); 
-                Application.DoEvents();
-            }
-            Thread.Sleep(1000);
+            AddTitle();
+            tb.Enter += WarningManager_Enter;
 
-            while (true)
+            ShowOnDisplayMethodInvoker = new MethodInvoker(delegate { ShowOnDisplay(); });
+            DisplayOnScreenTimer = new MyTimer()
             {
-                try
-                {
-                    FormControl.Gui.Invoke(m);
-                }
-                catch
-                {
+                Interval = Settings.UpdateValuesPCms,
+                AutoReset = false
+            };
+            DisplayOnScreenTimer.Elapsed += DisplayOnScreenTimer_Elapsed;
+            DisplayOnScreenTimer.Start();
 
+            ConnecttionStatusErrorReportThread = new Thread(connectionStatusErrorReport);
+            ConnecttionStatusErrorReportThread.Start();
+
+            
+        }
+
+
+        MethodInvoker ShowOnDisplayMethodInvoker;
+        private void DisplayOnScreenTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            Invoke(ShowOnDisplayMethodInvoker);
+        }
+
+        void connectionStatusErrorReport()
+        {
+            var form = FindForm();
+            var controls = Helper.GetAllControls(form);
+
+            foreach (var item in controls)
+            {
+                if (item.GetType() == typeof(ConnectedButton))
+                {
+                    // TODO connection error report
                 }
-                Thread.Sleep(Settings.UpdateValuesPCms);
             }
         }
+
+        private void WarningManager_Enter(object sender, EventArgs e)
+        {
+            Helper.Unfocus(sender);
+        }
+
 
         string sporocilaZaprikazBuff = "";
         void ShowOnDisplay()
         {
-            sporocilaZaprikazBuff = "";            
+            try
+            {
+                sporocilaZaprikazBuff = "";
 
-            for (int i = 0; i < Warnings.Count; i++)
-            {
-                sporocilaZaprikazBuff += Warnings[i].GetMessage() + Environment.NewLine + Environment.NewLine;
+                for (int i = 0; i < Warnings.Count; i++)
+                {
+                    sporocilaZaprikazBuff += Warnings[i].GetMessage() + Environment.NewLine;
+                }
+                tb.Text = sporocilaZaprikazBuff;
             }
-            Text = sporocilaZaprikazBuff;
-        }
-        public static void AddMessageForUser_Warning(string message)
-        {
-            if (!PreventThisMessage_IsDuplicacate(message))
+            catch (Exception ex)
             {
-                Warnings.Add(new Warning(message));
+                throw;
+            }
+
+            DisplayOnScreenTimer.Start();
+
+
+        }
+        public static void AddMessageForUser_Warning(string source, string message)
+        {
+            if (!PreventThisMessage_IsDuplicacate(source, message))
+            {
+                Warnings.Add(new Warning(source, message));
                 SysLog.Message.SetMessage("Message shown to user: " + message);
             }
         }
 
         void WarningTrackerThreadMethod()
         {
-            bool Alarm = false;
-            Warnings = new List<Warning>();            
+            bool Alarm = false;                
             
             try
             {
@@ -107,11 +158,11 @@ namespace KontrolaKadi
 
                         if (Alarm)
                         {
-                            AddMessageForUser_Warning(item.WarningMessage);
+                            AddMessageForUser_Warning(item.WarningSource, item.WarningMessage);
                         }
                         else
                         {                            
-                            RemoveMessageForUser_Warning(item.WarningMessage);
+                            RemoveMessageForUser_Warning(item.WarningSource, item.WarningMessage);
                         }
                     }
                 }                
@@ -123,16 +174,16 @@ namespace KontrolaKadi
             }
         }
 
-        public static void AddWarningTrackerFromPLCVar(PlcVars.PlcType PlcVar, object valueToTrigerWarning, WarningTriggerCondition Condition, string WarningMessage)
+        public static void AddWarningTrackerFromPLCVar(PlcVars.PlcType PlcVar, object valueToTrigerWarning, WarningTriggerCondition Condition, string WarningSource, string WarningMessage)
         {
-            Tracker t = new Tracker(PlcVar, valueToTrigerWarning, Condition, WarningMessage);
+            Tracker t = new Tracker(PlcVar, valueToTrigerWarning, Condition, WarningSource, WarningMessage);
             MessageTrackerList.Add(t);
                         
         }
 
         public static void AddMessageForUser_Warning(Warning warning)
         {
-            if (!PreventThisMessage_IsDuplicacate(warning.GetMessage()))
+            if (!PreventThisMessage_IsDuplicacate(warning.GetSource(), warning.GetMessage()))
             { 
                 Warnings.Add(warning);
                 SysLog.Message.SetMessage("Message shown to user: " + warning);
@@ -147,7 +198,7 @@ namespace KontrolaKadi
                 Warnings.Remove(warning);
             }            
         }
-        public static void RemoveMessageForUser_Warning(string warning)
+        public static void RemoveMessageForUser_Warning(string source, string warning)
         {
             if (Warnings != null)
             {         
@@ -157,8 +208,12 @@ namespace KontrolaKadi
                     buff = Warnings[i];
                     if (buff.GetMessage() == warning)
                     {
-                        Warnings.RemoveAt(i);
-                        return;
+                        if (buff.GetSource() == source)
+                        {
+                            Warnings.RemoveAt(i);
+                            return;
+                        }
+                        
                     }
                 }
             }
@@ -176,7 +231,7 @@ namespace KontrolaKadi
         }
 
         
-        static bool PreventThisMessage_IsDuplicacate(string message)
+        static bool PreventThisMessage_IsDuplicacate(string source, string message)
         {
             if (Warnings != null)
             {
@@ -184,7 +239,10 @@ namespace KontrolaKadi
                 {
                     if (message == item.GetMessage())
                     {
-                        return true;
+                        if (source == item.GetSource())
+                        {
+                            return true;
+                        }                        
                     }
                 }
             }
@@ -205,10 +263,12 @@ namespace KontrolaKadi
             public object valueToTrigerWarning;
             public WarningTriggerCondition Condition;
             public string WarningMessage;
+            public string WarningSource;
 
-            public Tracker(PlcVars.PlcType PlcVar, object valueToTrigerWarning, WarningTriggerCondition Condition, string WarningMessage)
+            public Tracker(PlcVars.PlcType PlcVar, object valueToTrigerWarning, WarningTriggerCondition Condition, string WarningSource, string WarningMessage)
             {
                 this.WarningMessage = WarningMessage;
+                this.WarningSource = WarningSource;
 
                 // Type checks only
                 var typ = PlcVar.GetType();
@@ -507,49 +567,30 @@ namespace KontrolaKadi
         public class Warning
         {       
             readonly string message = "";
+            readonly string source = "";
 
-            public Warning(string Message)
+            public Warning(string Source, string Message)
             {               
                 message = Message;
+                source = Source;
+            }
+
+            public string GetCompleteMessage()
+            {
+                return "[" + source + "]" + message;
+            }
+
+            public string GetSource()
+            {
+                return  source;
             }
 
             public string GetMessage()
             {
                 return message;
             }
-            
         }
-
-        public class WarningNoConnection : Warning
-        {            
-            static readonly string message = "NI POVEZAVE S KRMILNIKOM";
-            System.Timers.Timer poll = new System.Timers.Timer();
-
-            public WarningNoConnection() : base(message)
-            {
-                poll.Elapsed += Poll_Elapsed;
-                poll.Interval = Settings.UpdateValuesPCms;
-                poll.Start();
-            }
-
-            private void Poll_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-            {
-                for (int i = 1; i < LogoControler.LOGOConnection.Length; i++)
-                {
-                    var conStatus = LogoControler.LOGOConnection[i].connectionStatusLOGO;
-                    var enabled = XmlController.IsLogoEnabled(i);
-
-                    if ( enabled && conStatus != Connection.Status.Connected)
-                    {
-                        AddMessageForUser_Warning(message + i);
-                    }
-                    else
-                    {
-                        RemoveMessageForUser_Warning(message +i);
-                    }
-                }
-            }
-        }
+       
     }
 
 

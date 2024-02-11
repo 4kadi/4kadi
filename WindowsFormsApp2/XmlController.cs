@@ -720,19 +720,6 @@ namespace KontrolaKadi
                 throw new Exception("Error while loading serverIP value under LOGO" + device + " category. Please provide valid entry for that. " + "Exception message: " + ex.Message);
             }
 
-        }
-
-        public static string GetImeKadi(int kadIndex)
-        {
-            try
-            {
-                var buff = XmlKadi.Element("Kad" + kadIndex).Element("Ime").Value;
-                return buff;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error while loading Ime (Kadi) from xml file." + "Exception message: " + ex.Message);
-            }
-        }
+        }        
     }
 }

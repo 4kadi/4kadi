@@ -24,7 +24,7 @@ namespace KontrolaKadi
     {
         public KadNaslov()
         {
-            Font = new System.Drawing.Font(System.Drawing.FontFamily.GenericSansSerif, 16, System.Drawing.FontStyle.Bold);
+            Font = new System.Drawing.Font("arial", 16, FontStyle.Bold);
             BackColor = Color.Red;
             Enabled = false;            
             Text = "ABCD";

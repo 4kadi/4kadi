@@ -40,21 +40,7 @@ namespace KontrolaKadi
 
             Click += KadSubmenu_Click;
             LostFocus += KadSubmenu_LostFocus;
-            FormClosing += KadSubmenu_FormClosing;
-            Load += KadSubmenu_Load;
-        }
-
-        private void KadSubmenu_Load(object sender, EventArgs e)
-        {
-            manageID();
-        }
-
-        void manageID()
-        {
-            if (ID == 0)
-            {
-                throw new Exception("You should set ID property to the control KadSubmenu.");
-            }
+            FormClosing += KadSubmenu_FormClosing;          
         }
 
         private void KadSubmenu_FormClosing(object sender, FormClosingEventArgs e)

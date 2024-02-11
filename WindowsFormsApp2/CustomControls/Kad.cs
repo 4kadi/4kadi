@@ -10,31 +10,21 @@ using System.Windows.Forms;
 
 namespace KontrolaKadi
 {
-    class Kad : UserControl
-    {
-        private int id;
-        public int ID 
-        {
-            get 
-            {
-                return id; 
-            }
-            set 
-            { 
-                id = value; 
-            }
-
-        }
-
+    class Kad : SPanel
+    {        
         private string _displayName;
 
         public string DisplayName
         {
             get { return _displayName; }
             set 
-            { 
+            {
+                if (value == null)
+                {
+                    return;
+                }
                 _displayName = value;
-                displayNameChanged.Invoke(null, null);
+                displayNameChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -62,13 +52,33 @@ namespace KontrolaKadi
         public PVSelector PvSelector;    // just reference from submenu
         public PhControler Ph;    // just reference from submenu
 
+        private PlcVars.DWord nameOfKad;
+
+        public PlcVars.DWord NameOfKad
+        {
+            get { return nameOfKad; }
+            set 
+            {
+                if (value == null)
+                { return; }
+                nameOfKad = value;
+                nameOfKad.ValueChanged += NameOfKad_ValueChanged;
+            }
+        }
+
+        private void NameOfKad_ValueChanged(object sender, EventArgs e)
+        {
+            var dn = StringDoubleWordConverter.DecodeDoubleWordToString(nameOfKad.Value_int);
+            DisplayName = dn;
+        }
+
         public Kad():base()
         {
             this.SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer, true); // Prevents flicker
 
             designMode = (LicenseManager.UsageMode == LicenseUsageMode.Designtime);
 
-            Height = 600;
+            Height = 700;
             Width = 250;
 
             ManageBackImage();            
@@ -84,36 +94,17 @@ namespace KontrolaKadi
             Paint += Kad_Paint;
             
             XmlController.XmlChanged += RefreshFromXml;
-
-            this.Load += Kad_Load;           
-
+          
+            HandleCreated += Kad_HandleCreated;
         }
+        
 
-        private void manageNextMoveLable()
+        private void Kad_HandleCreated(object sender, EventArgs e)
         {
-            lblNextMove.Dock = DockStyle.None;
-            lblNextMove.Top = 270;
-            lblNextMove.Left = 25;
-            lblNextMove.Width = 200;
-            lblNextMove.Height = 25;
-            lblNextMove.Text = "";
-            Controls.Add(lblNextMove);
-        }
-        private void BackImage_Click(object sender, EventArgs e)
-        {            
-            submenu.Show();
-            submenu.BringToFront();
-            submenu.WindowState = FormWindowState.Normal;
-
-        }
-
-        private void Kad_Load(object sender, EventArgs e)
-        {
-            RefreshFromXml(null, null);
+            RefreshFromXml(this, EventArgs.Empty);
 
             submenu = new KadSubmenu()
-            {
-                ID = id,
+            {            
                 Width = 1500,
                 Height = 1100,
             };
@@ -126,11 +117,68 @@ namespace KontrolaKadi
             PvSelector = submenu.PVSelector;
             Ph = submenu.PhControler;
 
-            backImage.Click += BackImage_Click;
+            backImage.MouseUp += BackImage_MouseUp;
             Urnik.NextEventDescription_Changed += Urnik_NextEventDescription_Changed;
-
         }
 
+        private void BackImage_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                showSubmenu();
+            }
+
+            if (e.Button == MouseButtons.Right)
+            {
+                changeDisplayName();
+            }
+        }
+
+        void changeDisplayName()
+        {
+            using (var form = new InputForm(this.DisplayName))
+            {
+                var result = form.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    string val = form.InputValue;
+                    // You might want to validate the input before assigning
+                    if (val.Length <= 4)
+                    {
+                        if (NameOfKad == null)
+                        {
+                            throw new Exception("Internal error: You forgot to set NameOfKad property and link it to PLC value");
+                        }
+                        var buff = StringDoubleWordConverter.EncodeStringToDoubleWord(val);
+                        NameOfKad.Value_int = buff;
+                    }
+                    else
+                    {                    
+                        MessageBox.Show("Dolžina imena mora biti največ 4 znake");                                              
+                    }
+                }
+            }
+        }
+
+        void showSubmenu()
+        {
+            submenu.Show();
+            submenu.BringToFront();
+            submenu.WindowState = FormWindowState.Normal;
+        }
+
+        private void manageNextMoveLable()
+        {
+            lblNextMove.Dock = DockStyle.None;
+            lblNextMove.Top = 270;
+            lblNextMove.Left = 25;
+            lblNextMove.Width = 200;
+            lblNextMove.Height = 25;
+            lblNextMove.Text = "";
+            Controls.Add(lblNextMove);
+        }
+
+              
         private void Urnik_NextEventDescription_Changed(object sender, EventArgs e)
         {
             Urnik_NextEventDescription_Changed();
@@ -154,7 +202,7 @@ namespace KontrolaKadi
             {
                 var m = new MethodInvoker(delegate 
                 { 
-                    DisplayName = XmlController.GetImeKadi(ID); 
+                    //
                 });
                 FormControl.Gui.Invoke(m);
                 
@@ -216,20 +264,6 @@ namespace KontrolaKadi
 
     }
 
-    public partial class ErrDialogForm : Form
-    {
-        public ErrDialogForm()
-        {
-            
-        }
-
-        private void btnOK_Click(object sender, EventArgs e)
-        {
-            // Close the form when the OK button is clicked
-            this.Close();
-        }
-    }
-
 
     class EnojnaKad : Kad
     {
@@ -254,11 +288,16 @@ namespace KontrolaKadi
 
         void displayName(object sender, EventArgs e)
         {
+            if (!IsHandleCreated || DisplayName == null)
+            {
+                return;
+            }
+
             MethodInvoker m = new MethodInvoker(delegate 
             {
-                lblKadNaslov.Text = base.DisplayName;
+                lblKadNaslov.Text = DisplayName; 
             });
-            m.Invoke();
+            Invoke(m);
         }
         
         private void EnojnaKad_Paint(object sender, PaintEventArgs e)
@@ -281,4 +320,66 @@ namespace KontrolaKadi
             
         }
     }
+    public partial class InputForm : Form
+    {
+        public string InputValue { get; private set; }
+        Button confirmation;
+
+        public InputForm(string currentName)
+        {
+            // Set up the form, add a Label, a TextBox, and a Button
+            this.Text = "Spremeni ime kadi";
+            this.Size = new Size(300, 150);
+
+            Label label = new Label() { Left = 50, Top = 20, Text = "Ime:" };
+            TextBox textBox = new TextBox() { Left = 50, Top = 50, Width = 200 };
+            textBox.Text = currentName;
+            confirmation = new Button() { Text = "Ok", Left = 100, Width = 100, Top = 80 };
+            confirmation.Click += (sender, e) => { InputValue = textBox.Text; this.DialogResult = DialogResult.OK; };
+
+            this.Controls.Add(label);
+            this.Controls.Add(textBox);
+            this.Controls.Add(confirmation);
+            textBox.KeyDown += TextBox_KeyDown;
+        }
+
+        private void TextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                confirmation.PerformClick();
+            }
+        }
+    }
+
+    public class StringDoubleWordConverter
+    {
+        // Encodes up to the first 4 characters of a string to a double word (32-bit integer)
+        public static int EncodeStringToDoubleWord(string input)
+        {
+            // Ensure the string is exactly 4 characters long by padding with '\0' (NULL) if it's shorter
+            input = input.PadRight(4, '\0');
+
+            int encodedValue = 0;
+            for (int i = 0; i < 4; i++)
+            {
+                // '\0' will simply add no value in the corresponding byte
+                encodedValue |= input[i] << (24 - i * 8);
+            }
+            return encodedValue;
+        }
+
+        // Decodes a double word (32-bit integer) to a 4-character string
+        public static string DecodeDoubleWordToString(int doubleWord)
+        {
+            char[] chars = new char[4];
+            for (int i = 0; i < 4; i++)
+            {
+                chars[i] = (char)((doubleWord >> (24 - i * 8)) & 0xFF);
+            }
+            // Create a string from the char array and then trim the NULL characters at the end
+            return new string(chars).TrimEnd('\0');
+        }
+    }
+
 }

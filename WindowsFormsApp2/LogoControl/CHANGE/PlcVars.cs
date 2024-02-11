@@ -137,9 +137,9 @@ namespace KontrolaKadi
 
 
 
-            public void AddWarningMonitor(object valueToTrigerWarning, WarningManager.WarningTriggerCondition Condition, string WarningMessage)
+            public void AddWarningMonitor(object valueToTrigerWarning, WarningManager.WarningTriggerCondition Condition, string Source, string WarningMessage)
             {
-                WarningManager.AddWarningTrackerFromPLCVar(this, valueToTrigerWarning, Condition, WarningMessage);
+                WarningManager.AddWarningTrackerFromPLCVar(this, valueToTrigerWarning, Condition, Source, WarningMessage);
             }
         }
 
@@ -253,7 +253,7 @@ namespace KontrolaKadi
                 {
                     if (Client != null)
                     {
-                        buffRead = Connection.BufferRead(Client, _TypeAndAdress, out ErrRead);
+                        buffRead = (short)Connection.BufferRead(Client, _TypeAndAdress, out ErrRead);
                         if (ErrRead == 0 && buffRead != null)
                         {
                             if (buffRead != PLCval)
@@ -583,7 +583,7 @@ namespace KontrolaKadi
 
         public class DWord : PlcType
         {
-            public short? Value
+            public int? Value
             {
                 get
                 {
@@ -598,13 +598,13 @@ namespace KontrolaKadi
                 }
             }
 
-            public short? Value_short
+            public int Value_int
             {
                 get
                 {
                     if (PLCval != null)
                     {
-                        return (short)PLCval;
+                        return (int)PLCval;
                     }
                     else
                     {
@@ -612,11 +612,8 @@ namespace KontrolaKadi
                     }
                 }
                 set
-                {
-                    if (value != null)
-                    {
-                        ReadFromPCtoBuffer(value);
-                    }
+                {                   
+                    ReadFromPCtoBuffer(value);                    
                 }
             }
 
@@ -633,15 +630,15 @@ namespace KontrolaKadi
                 }
             }
 
-            private short? PLCval;
-            private short? previousPLCval;
-            private short? PCval;
+            private int? PLCval;
+            private int? previousPLCval;
+            private int? PCval;
             private bool directionToPLC = false;
             private DoubleWordAddress _TypeAndAdress;            
             int ErrRead;
             int ErrWrite;
-            short? buffRead;
-            short? buffWrite;
+            int? buffRead;
+            int? buffWrite;
             string _prefixToShow;
             string _postFixToShow;
             bool _IsWritable = false;
@@ -690,6 +687,8 @@ namespace KontrolaKadi
                 {
                     if (Client != null)
                     {
+                        if (_TypeAndAdress.Address == 304) 
+                        { }
                         buffRead = Connection.BufferRead(Client, _TypeAndAdress, out ErrRead);
                         if (ErrRead == 0 && buffRead != null)
                         {
@@ -714,7 +713,15 @@ namespace KontrolaKadi
 
             void InvokeOnValueChangeEvent()
             {
-                ValueChanged?.Invoke(this, EventArgs.Empty);
+                try
+                {
+                    ValueChanged?.Invoke(this, EventArgs.Empty);
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+                
             }
 
             private void WriteToPLCFromBuffer()
@@ -735,7 +742,7 @@ namespace KontrolaKadi
                             {
                                 if (_IsWritable)
                                 {
-                                    Connection.PLCwrite(Client, _TypeAndAdress, (short)buffWrite, out ErrWrite);
+                                    Connection.PLCwrite(Client, _TypeAndAdress, (int)buffWrite, out ErrWrite);
                                     if (ErrWrite == 0)
                                     {
                                         PLCval = buffWrite;
@@ -756,7 +763,7 @@ namespace KontrolaKadi
                 }
             }
 
-            private void ReadFromPCtoBuffer(short? value)
+            private void ReadFromPCtoBuffer(int? value)
             {
                 if (value != null)
                 {
@@ -855,7 +862,7 @@ namespace KontrolaKadi
                 {
                     if (_Client != null)
                     {
-                        buffRead = Connection.BufferRead(_Client, _TypeAndAdress, out ErrRead);
+                        buffRead = (short)Connection.BufferRead(_Client, _TypeAndAdress, out ErrRead);
                         if (ErrRead == 0 && buffRead != null) 
                         {                          
                            PLCval = buffRead; buffRead = null;                           
@@ -1096,7 +1103,7 @@ namespace KontrolaKadi
                 {
                     if (_Client != null)
                     {
-                        buffRead = Connection.BufferRead(_Client, _TypeAndAdress, out ErrRead);
+                        buffRead = (short)Connection.BufferRead(_Client, _TypeAndAdress, out ErrRead);
                         if (ErrRead == 0 && buffRead != null) 
                         { 
                             PLCval = buffRead; buffRead = null; 
@@ -1331,7 +1338,7 @@ namespace KontrolaKadi
                 {
                     if (_Client != null)
                     {
-                        buffRead = Connection.BufferRead(_Client, _TypeAndAdress, out ErrRead);
+                        buffRead = (short)Connection.BufferRead(_Client, _TypeAndAdress, out ErrRead);
                         if (ErrRead == 0 && buffRead != null)
                         {
                             if (buffRead > 0) 
@@ -1557,12 +1564,14 @@ namespace KontrolaKadi
         public class AlarmBit : Bit
         {
             public string Message { get; private set; }
+            public string Source { get; private set; }
             public bool InvertState = false;
 
             public AlarmBit(PropComm prop, BitAddress TypeAndAdress, string Message, bool invertState, bool IsWritable) : base(prop, TypeAndAdress, IsWritable)
             {
                 InvertState = invertState;               
                 this.Message = Message;
+                this.Source = Source;
                 AllAlarmMessageVars.Add(this);
                 AddMonitor();
             }
@@ -1586,11 +1595,11 @@ namespace KontrolaKadi
             {
                 if (InvertState)
                 {
-                    AddWarningMonitor(false, WarningManager.WarningTriggerCondition.EqualTo, Message);
+                    AddWarningMonitor(false, WarningManager.WarningTriggerCondition.EqualTo, Source, Message);
                 }
                 else
                 {
-                    AddWarningMonitor(true, WarningManager.WarningTriggerCondition.EqualTo, Message);
+                    AddWarningMonitor(true, WarningManager.WarningTriggerCondition.EqualTo, Source, Message);
                 }
 
             }

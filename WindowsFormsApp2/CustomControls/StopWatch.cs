@@ -10,7 +10,7 @@ using System.ComponentModel;
 
 namespace KontrolaKadi
 {
-    public class StopWatch : Panel
+    public class StopWatch : SGroupBox
     {
         bool designMode;
         bool initialized = false;
@@ -145,7 +145,7 @@ namespace KontrolaKadi
             this.label4 = new Label();
             this.label3 = new Label();
             this.label2 = new Label();
-            this.stopwatchTime = new Label();           
+            this.stopwatchTime = new Label();
             this.label11 = new Label();
             this.label12 = new Label();
             this.btnOpomnik = new BtnTimeset();
@@ -177,6 +177,10 @@ namespace KontrolaKadi
             groupBox2.Size = new Size(panelMaxWidth - 6, Size.Height - 35);
             groupBox2.TabIndex = 1;
             groupBox2.TabStop = false;
+            groupBox2.Top = 7;
+            groupBox2.Left = 5;
+
+
             // 
             // label4
             // 
@@ -233,9 +237,9 @@ namespace KontrolaKadi
             // 
             // btnOpomnik
             // 
-            this.btnOpomnik.Location = new Point(groupBox2.Left +5, 83);
+            this.btnOpomnik.Location = new Point(groupBox2.Left + 5, 83);
             this.btnOpomnik.Name = "btnOpomnik";
-            this.btnOpomnik.Size = new Size(groupBox2.Width -16, 30);
+            this.btnOpomnik.Size = new Size(groupBox2.Width - 16, 30);
             this.btnOpomnik.TabIndex = 1;
             this.btnOpomnik.UseVisualStyleBackColor = true;
             btnOpomnik.Enabled = true;
@@ -252,7 +256,7 @@ namespace KontrolaKadi
             this.btnPause.TabIndex = 1;
             this.btnPause.UseVisualStyleBackColor = true;
             btnPause.Enabled = true;
-            btnPause.Click += btnPause_Click; 
+            btnPause.Click += btnPause_Click;
             btnPause.OKbtn.Click += btnPauseOK_Click;
             btnPause.StopWatchReference = this;
             btnPause.Font = new Font("arial", 13, FontStyle.Bold);
@@ -263,35 +267,51 @@ namespace KontrolaKadi
             chkUpostevajPrisotnost.Click += ChkUpostevajPrisotnost_Click;
             chkUpostevajPrisotnost.Top = btnPause.Bottom + 10;
             chkUpostevajPrisotnost.Left = 10;
-            chkUpostevajPrisotnost.Width = 125;            
+            chkUpostevajPrisotnost.Width = 125;
             //
             // ManStart
             //
             ManStart.Text = "...";
             ManStart.Top = groupBox2.Bottom + 5;
-            ManStart.Left = groupBox2.Left +2;
-            ManStart.Width = groupBox2.Width /2 - 4;
+            ManStart.Left = groupBox2.Left + 2;
+            ManStart.Width = groupBox2.Width / 2 - 4;
             Controls.Add(ManStart);
             //
             // ManReset
             //
             ManReset.Text = "...";
             ManReset.Top = ManStart.Top;
-            ManReset.Left = ManStart.Right +5;
+            ManReset.Left = ManStart.Right + 5;
             ManReset.Width = ManStart.Width;
             Controls.Add(ManReset);
 
+            Height = ManStart.Bottom + 12;
+            Width = groupBox2.Width + groupBox2.Left * 2 +2;
+
+            TextChanged += StopWatch_TextChanged;
+            HandleCreated += StopWatch_HandleCreated;            
+        }
+
+        private void StopWatch_TextChanged(object sender, EventArgs e)
+        {
+            Text = "";
+        }
+
+        private void StopWatch_HandleCreated(object sender, EventArgs e)
+        {      
+            Text = "";
+           
             if (designMode)
             {
                 return;
             }
 
             ManStart.Reset_Clicked += ManStart_Reset_Clicked;
-            ManStart.Start_Clicked += ManStart_Start_Clicked; 
+            ManStart.Start_Clicked += ManStart_Start_Clicked;
             ManStart.Stop_Clicked += ManStart_Stop_Clicked;
 
-            ManReset.Reset_Clicked += ManReset_Reset_Clicked;
-
+            ManReset.Reset_Clicked += ManReset_Reset_Clicked;          
+            
         }
 
         private void ManReset_Reset_Clicked(object sender, EventArgs e)
@@ -428,25 +448,30 @@ namespace KontrolaKadi
         private void btnOpomnikOK_Click(object sender, EventArgs e)
         {
             var timeSpan = (btnOpomnik.dateTimePicker.Value - DateTime.MinValue).TotalSeconds;
-            ReminderTime.Value_short = (short)timeSpan;
+            ReminderTime.Value_int = (int)timeSpan;
             btnOpomnik.OpomnikSetFormSetForm.Hide();
         }
 
         private void btnPauseOK_Click(object sender, EventArgs e) 
         {
             var timeSpan = (btnPause.dateTimePicker.Value - DateTime.MinValue).TotalSeconds;
-            PauseTime.Value_short = (short)timeSpan;
+            PauseTime.Value_int = (int)timeSpan;
             btnPause.OpomnikSetFormSetForm.Hide();
         }
 
         private void Updater_Elapsed(object sender, EventArgs e)
-        {           
+        {
+            Task.Run(update);            
+        }
+
+        void update()
+        {
             if (initialized)
             {
-                Invoke(new MethodInvoker(delegate 
+                Invoke(new MethodInvoker(delegate
                 {
-                    var test = ConvertPlcVarToDisplayTime(CurrentTime); 
-                    
+                    var test = ConvertPlcVarToDisplayTime(CurrentTime);
+
                     decideMainStopwatchText();
                     btnOpomnik.SetValue(ReminderTime);
                     btnPause.Text = ConvertPlcVarToDisplayTime(PauseTime);
@@ -454,8 +479,8 @@ namespace KontrolaKadi
                     autostart();
                     ManButtonFunctionDecide();
                 }));
-                    
-            }      
+
+            }
         }
 
         void decideMainStopwatchText()
@@ -529,7 +554,7 @@ namespace KontrolaKadi
 
         public static string ConvertPlcVarToDisplayTime(PlcVars.DWord plcTime)
         {
-            var buff = new TimeSpan(0, 0, (int)plcTime.Value_short);
+            var buff = new TimeSpan(0, 0, plcTime.Value_int);
             var str = buff.ToString(dflttimeFormat2);
             return str;  
         }
@@ -543,7 +568,7 @@ namespace KontrolaKadi
         public static DateTime ConvertPlcVarToDateTime(PlcVars.DWord plcTime)
         {
             var d = DateTime.MinValue;
-            var dt = d.AddSeconds((int)plcTime.Value_short);
+            var dt = d.AddSeconds(plcTime.Value_int);
             return dt;
         }
         public static DateTime ConvertPlcVarToDateTime(PlcVars.Word plcTime)

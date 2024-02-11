@@ -16,19 +16,33 @@ namespace KontrolaKadi
         bool firstSync = true;
         int poolCnt = 1;
         private static string[] WatchdogValues = new string[Settings.Devices + 1];
+        private static string[] ConnectionStatuses = new string[Settings.Devices + 1];
         public PlcVars.LogoDateTime LogoDatetime;
 
-        
+        private string name = "";
+
+        public string Name
+        {
+            get { return name; }
+            set 
+            {
+                name = value;
+                NameChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        public event EventHandler NameChanged;
 
         public PropComm(Sharp7.S7Client client)
         {
             Client = client;
-            LogoDatetime = new PlcVars.LogoDateTime(this);
+            LogoDatetime = new PlcVars.LogoDateTime(this);      
 
         }
 
         public void SyncVars()
         {
+
             FirstSync();
 
             SyncEveryLoopVars(AutoSync.VarsListPool[1]);
@@ -40,6 +54,7 @@ namespace KontrolaKadi
             SmartSyncDistributor(AutoSync.VarsListPool[5], 5, poolCnt);
     
             PoolCnt();
+            
         }
 
 
@@ -191,7 +206,6 @@ namespace KontrolaKadi
         public List<PlcVars.PlcType> VarsList { get; private set; }
         public List<PlcVars.PlcType>[] VarsListPool = new List<PlcVars.PlcType>[6]; // different pools for syncing every other loop
 
-
         public AutoSync()
         {
             VarsList = new List<PlcVars.PlcType>();
@@ -206,11 +220,8 @@ namespace KontrolaKadi
         {
             VarsList.Add(var);
         }
-
        
     }
-
-    
 
 }
 

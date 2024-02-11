@@ -15,24 +15,28 @@ namespace KontrolaKadi
 {
     public partial class Gui_MalaPec : Form
     {
-        GuiLink guiLink;    
+        static GuiLink guiLink;    
         
 
         public Gui_MalaPec()
         {
+            this.SuspendLayout();
             InitializeComponent();           
             FormatTopPanel();
+            BackgroundImage = Properties.Resources.white_background_image;
+            
             FormClosed += Gui_MalaPec_FormClosed;
             Resize += Gui_MalaPec_Resize;
             SetupForm();
-            Load += Gui_MalaPec_Load;            
+            Load += Gui_MalaPec_Load;                   
         }
  
         private void Gui_MalaPec_Load(object sender, EventArgs e)
         {           
             registerEvents();
-            guiLink = new GuiLink(this);     
-            
+            guiLink = new GuiLink(this);
+            this.ResumeLayout(false);
+            this.PerformLayout(); 
         }
 
 
@@ -94,31 +98,5 @@ namespace KontrolaKadi
             return val.ToString("c");
         }
 
-        private void warningManager1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void Gui_MalaPec_Load_1(object sender, EventArgs e)
-        {
-
-        }
-
-        private void enojnaKad1_Load(object sender, EventArgs e)
-        {
-
-        }
-    }
-
-    class SysTimer : System.Timers.Timer
-    {
-        public SysTimer() : base()
-        {
-
-        }
-        public SysTimer(double interval) : base(interval)
-        {
-
-        }
-    }
+    }    
 }

@@ -89,7 +89,7 @@ namespace KontrolaKadi
             this.Click += Switch3point_Click;
             
         }
-
+                
         private void Switch3point_Click(object sender, EventArgs e)
         {
             
@@ -147,8 +147,9 @@ namespace KontrolaKadi
         }
 
         protected override void OnPaint(PaintEventArgs e)
-        {           
+        {
             base.OnPaint(e);
+
             Graphics g = e.Graphics;
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;                      
 
